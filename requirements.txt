@@ -1,0 +1,6 @@
+-e src/qumos
+-e src/wisim
+-e src/traf
+-e src/rfidsim
+-e src/rfidam
+
