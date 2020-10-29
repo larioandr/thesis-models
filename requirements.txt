@@ -1,6 +1,9 @@
+-e src/corelib
 -e src/qumos
 -e src/wisim
 -e src/traf
+-e src/rfid_core
 -e src/rfidsim
 -e src/rfidam
-
+jupyter>=1.0.0
+ipython>=7.17.0

@@ -2,20 +2,15 @@ from setuptools import setup
 
 
 setup(
-    name='rfidsim',
+    name='corelib',
     version='1.0',
-    py_modules=['rfidsim'],
+    py_modules=['corelib'],
     python_requires=">=3.9",
     install_requires=[
-        'Click',
         'numpy>=1.19.2',
         'marshmallow>=3.8.0',
     ],
     tests_requires=[
         'pytest',
-    ],
-    entry_points='''
-        [console_scripts]
-        rfidsim=rfidsim.main:cli
-    '''
+    ]
 )
