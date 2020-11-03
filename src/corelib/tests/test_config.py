@@ -3,7 +3,7 @@ import re
 import pytest
 
 from corelib.config import ValRange, ValArray, ValSetEval, ValSetJoin, \
-    ValSetProd, ValSetZip, make_unique
+    ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype
 
 
 #
@@ -13,9 +13,9 @@ def test_ValRange__values():
     """
     Test that ValRange.values() returns a list with values.
     """
-    assert ValRange(left=10, right=47, step=10).values() == (10, 20, 30, 40, 47)
-    assert ValRange(left=42, right=42, step=1).values() == (42,)
-    assert ValRange(5, 8).values() == (5, 6, 7, 8)
+    assert ValRange(left=10, right=47, step=10).values == (10, 20, 30, 40, 47)
+    assert ValRange(left=42, right=42, step=1).values == (42,)
+    assert ValRange(5, 8).values == (5, 6, 7, 8)
 
 
 def test_ValRange__raise_error_when_left_is_greater_than_right():
@@ -58,18 +58,6 @@ def test_ValRange__len():
 
 
 # noinspection PyPropertyAccess
-def test_ValRange__id():
-    """
-    Test ValRange has id that is sequentially incremented and read-only.
-    """
-    r1 = ValRange(34, 34)
-    r2 = ValRange(42, 42)
-    assert r2.id == r1.id + 1
-    with pytest.raises(AttributeError):
-        r1.id = 123
-
-
-# noinspection PyPropertyAccess
 def test_ValRange__left_right_step_props():
     """
     Test that ValRange provides left, right and step read-only properties.
@@ -90,14 +78,8 @@ def test_ValRange__repr():
     """
     Test ValRange implements repr.
     """
-    pattern = r'<ValRange #(\d+): left=(\d+), right=(\d+), step=(\d+)>'
     range_ = ValRange(left=23, right=49, step=8)
-    m = re.match(pattern, str(range_))
-    assert m
-    assert range_.id == int(m.group(1))
-    assert range_.left == int(m.group(2))
-    assert range_.right == int(m.group(3))
-    assert range_.step == int(m.group(4))
+    assert str(range_) == "ValRange{left=23, right=49, step=8}"
 
 
 #
@@ -105,11 +87,11 @@ def test_ValRange__repr():
 # ----------------
 def test_ValArray__accepts_any_iterable():
     """Test that ValArray can be constructed from list, tuple or iterator."""
-    assert ValArray().values() == ()
-    assert ValArray([]).values() == ()
-    assert ValArray([10, 20, 30]).values() == (10, 20, 30)
-    assert ValArray((10, 20, 30)).values() == (10, 20, 30)
-    assert ValArray(x**2 for x in range(5)).values() == (0, 1, 4, 9, 16)
+    assert ValArray().values == ()
+    assert ValArray([]).values == ()
+    assert ValArray([10, 20, 30]).values == (10, 20, 30)
+    assert ValArray((10, 20, 30)).values == (10, 20, 30)
+    assert ValArray(x**2 for x in range(5)).values == (0, 1, 4, 9, 16)
 
 
 def test_ValArray__iter():
@@ -123,29 +105,28 @@ def test_ValArray__len():
     assert len(ValArray([1, 2, 10])) == 3
 
 
-# noinspection PyPropertyAccess
-def test_ValArray__id():
-    """Test ValArray has id that is incremented on each object creation."""
-    array1 = ValArray()
-    array2 = ValArray()
-    assert array2.id == array1.id + 1
-    with pytest.raises(AttributeError):
-        array1.id = 42
+def test_ValArray__dtype():
+    """Test that ValArray provides dtype property."""
+    assert ValArray(dtype='integer').dtype == 'integer'
+    assert ValArray(dtype='matrix').dtype == 'matrix'
+    assert ValArray([1, 2]).dtype == 'integer'
+    assert ValArray().dtype == 'float'
+    assert ValArray(['1', '2']).dtype == 'string'
+
+    with pytest.raises(TypeError):
+        ValArray([1, '2'])
 
 
 def test_ValArray__repr():
     """Test that ValArray implements __repr__ magic method."""
-    pattern1 = r"<ValArray #(\d+): \[34, 42\] size=(\d+)>"
-    array1 = ValArray((34, 42))
-    m1 = re.match(pattern1, str(array1))
-    assert array1.id == int(m1.group(1))
-    assert len(array1) == int(m1.group(2))
+    array_1 = ValArray([1, 2, 3])
+    assert str(array_1) == 'ValArray{dtype=integer, values=[1, 2, 3]}'
 
-    pattern2 = r"<ValArray #(\d+): \[1, 2 ... 100\] size=(\d+)>"
-    array2 = ValArray(range(1, 101))
-    m2 = re.match(pattern2, str(array2))
-    assert array2.id == int(m2.group(1))
-    assert len(array2) == int(m2.group(2))
+    array_2 = ValArray()
+    assert str(array_2) == 'ValArray{dtype=float, values=[]}'
+
+    array_3 = ValArray(["6.25us", "12.5us"])
+    assert str(array_3) == 'ValArray{dtype=string, values=[6.25us, 12.5us]}'
 
 
 #
@@ -220,42 +201,31 @@ def test_ValSetEval__len():
     assert len(ValSetEval({"a": (34, 42), "b": (1, 2, 3), "c": (8, 9)})) == 12
 
 
-# noinspection PyPropertyAccess
-def test_ValSetEval__id():
+def test_ValSetEval__data():
     """
-    Test ValSetEval has id that is incremented each time an object created.
-    """
-    val_set_1 = ValSetEval()
-    val_set_2 = ValSetEval()
-    assert val_set_2.id == val_set_1.id + 1
-    with pytest.raises(AttributeError):
-        val_set_1.id = 42
-
-
-def test_ValSetEval__dict_like_api():
-    """
-    Test ValSetEval provides methods similar to dict to study keys, values
-    and iterate over key-value pairs, namely keys(), values() and items().
+    Test ValSetEval returns data dictionary that was used in creation.
     """
     A_VAL = ValRange(10, 20)
     B_VAL = ValArray(("hello", "bye"))
     D = {"a": A_VAL, "b": B_VAL}
     val_set = ValSetEval(D)
-    assert {"a", "b"} == set(val_set.keys())
-    assert {A_VAL, B_VAL} == set(val_set.values())
-    assert (('a', A_VAL), ('b', B_VAL)) == tuple(val_set.items())
+    assert val_set.data == D
 
 
 def test_ValSetEval__repr_magic():
     """
     Test that ValSetEval can be casted to string.
     """
-    pattern = r"<ValSetEval #(\d+): size=(\d+)>"
-    ve = ValSetEval({"a": (34, 42), "b": ValRange(10, 20, 2)})
-    m = re.match(pattern, str(ve))
-    assert m
-    assert ve.id == int(m.group(1))
-    assert len(ve) == int(m.group(2))
+    val_set = ValSetEval({
+        "speed": ValRange(10, 20, 3),
+        "m": ValArray([1, 2, 4, 8]),
+        "x": [10, 20, 30]
+    })
+    assert str(val_set) == '''
+ValSetEval:
+    speed: ValRange{left=10, right=20, step=3}
+    m    : ValArray{dtype=integer, values=[1, 2, 4, 8]}
+    x    : [10, 20, 30]'''.strip()
 
 
 #
@@ -345,17 +315,6 @@ def test_ValSetJoin__len():
     assert len(ValSetJoin([D1, D2], [D3])) == 3
 
 
-def test_ValSetJoin__id():
-    """
-    Test that consequent calls to ValSetJoin assign sequential ids.
-    """
-    D1 = {"a": 1}
-    D2 = {"b": 20}
-    vs1 = ValSetJoin([D1])
-    vs2 = ValSetJoin([D1, D2])
-    assert vs1.id + 1 == vs2.id
-
-
 # noinspection PyPropertyAccess
 def test_ValSetJoin__args():
     """
@@ -377,17 +336,23 @@ def test_ValSetJoin__repr():
     """
     Validate that ValSetJoin implements __repr__
     """
-    D1 = {"a": 17, "b": 34}
-    D2 = {"a": 19, "b": 42}
+    D1 = {"a": 17}
+    D2 = {"b": 42}
     D3 = {"a": 9, "b": 13}
+    val_set_eval = ValSetEval({'x': [10, 20, 30], 'y': [34, 42]})
 
-    pattern = r"<ValSetJoin #(\d+): size=(\d+)>"
+    string = '''
+ValSetJoin:
+    [{'a': 17}, {'b': 42}, {'a': 9, 'b': 13}]
+    ValSetEval:
+        x: [10, 20, 30]
+        y: [34, 42]
+'''.strip()
 
-    val_set = ValSetJoin([D1, D2, D3])
-    match = re.match(pattern, str(val_set))
-    assert match
-    assert int(match.group(1)) == val_set.id
-    assert int(match.group(2)) == len(val_set)
+    assert str(ValSetJoin([D1, D2, D3], val_set_eval)) == string
+
+    assert str(ValSetJoin()) == 'ValSetJoin{empty=True}'
+    assert str(ValSetJoin(unique=True)) == 'ValSetJoin{unique=True, empty=True}'
 
 
 #
@@ -459,6 +424,7 @@ def test_ValSetProd__accepts_sets_with_different_keys():
     assert ValSetProd([D1, D2], [D3, D4]).all() == ALL
 
 
+# noinspection PyTypeChecker
 def test_ValSetProd__accepts_only_iterables_with_dicts():
     """
     Test that ValSetProd accepts iterable arguments with dicts inside.
@@ -504,20 +470,6 @@ def test_ValSetProd__len(val_set_prod_data):
     assert len(prod) == 4
 
 
-# noinspection PyPropertyAccess
-def test_ValSetProd__ids():
-    """
-    Test that ValSetProd implements id read-only property which is
-    incremented in sequential ValSetProd() objects instantiations.
-    """
-    prod_1 = ValSetProd([{"a": 1}])
-    prod_2 = ValSetProd([{"b": 42}])
-    assert prod_1.id + 1 == prod_2.id
-
-    with pytest.raises(AttributeError):
-        prod_1.id = 34
-
-
 def test_ValSetProd__args(val_set_prod_data):
     """Test that ValSetProd provides args property with a tuple of args."""
     prod, ARGS, _ = val_set_prod_data
@@ -527,10 +479,15 @@ def test_ValSetProd__args(val_set_prod_data):
 def test_ValSetProd__repr(val_set_prod_data):
     """Test that ValSetProd implements __repr__ magic method."""
     prod, _, _ = val_set_prod_data
-    pattern = r"<ValSetJoin #(\d+): size=(\d+)>"
-    m = re.match(pattern, str(prod))
-    assert int(m.group(1)) == prod.id
-    assert int(m.group(2)) == len(prod)
+    string = '''
+ValSetProd:
+    [{'a': 1, 'b': 'hello'}, {'a': 2, 'b': 'bye'}]
+    ({'c': 34}, {'c': 42})
+    [{'d': 'in-each'}]
+    '''.strip()
+    assert str(prod) == string
+    assert str(ValSetProd()) == 'ValSetProd{empty=True}'
+    assert str(ValSetProd(unique=True)) == 'ValSetProd{unique=True, empty=True}'
 
 
 #
@@ -563,63 +520,6 @@ def test_ValSetZip__all(val_set_zip_data):
     assert ValSetZip([{}], [{}]).all() == ({},)
     zip_, _, ALL = val_set_zip_data
     assert zip_.all() == ALL
-
-
-def test_ValSetZip__raise_error_when_dimensions_differ():
-    """Test that ValSetZip accepts sets with equal number of elements only.
-    """
-    with pytest.raises(IndexError):
-        ValSetZip([{}], [{}, {}])
-
-
-def test_ValSetZip__raise_error_when_argument_is_not_iterable_of_dicts():
-    """Test that ValSetZip accepts only iterables of dictionaries.
-    """
-    with pytest.raises(TypeError):
-        ValSetZip({"a": 10})
-    with pytest.raises(TypeError):
-        ValSetZip("abc")
-
-
-def test_ValSetZip__iter(val_set_zip_data):
-    """Test ValSetZip implements iterator __iter__ magic."""
-    assert tuple(ValSetZip()) == ()
-    zip_, _, ALL = val_set_zip_data
-    assert tuple(zip_) == ALL
-
-
-def test_ValSetZip__len(val_set_zip_data):
-    """Test ValSetZip implements __len__ magic."""
-    assert len(ValSetZip()) == 0
-    zip_ = val_set_zip_data[0]
-    assert len(zip_) == 3
-
-
-def test_ValSetZip__id():
-    """Test ValSetZip objects provide id read-only property."""
-    zip1 = ValSetZip()
-    zip2 = ValSetZip()
-    assert zip1.id + 1 == zip2.id
-    with pytest.raises(AttributeError):
-        zip1.id = 10
-
-
-def test_ValSetZip__args(val_set_zip_data):
-    """Test ValSetZip provides args ro-property with a tuple of arguments."""
-    zip_, ARGS, _ = val_set_zip_data
-    assert zip_.args == tuple(ARGS)
-    with pytest.raises(AttributeError):
-        zip_.args.append(({"a": 10}))
-
-
-def test_ValSetZip__repr(val_set_zip_data):
-    """Test ValSetZip implements __repr__ magic."""
-    pattern = r'<ValSetZip #(\d+): size=(\d+)>'
-    zip_ = val_set_zip_data[0]
-    m = re.match(pattern, str(zip_))
-    assert m
-    assert int(m.group(1)) == zip_.id
-    assert int(m.group(2)) == len(zip_)
 
 
 def test_ValSetZip__remove_duplicates_when_unique_set():
@@ -665,6 +565,60 @@ def test_ValSetZip__raise_error_when_key_sets_intersect():
         ValSetZip([D11, D12, D13], [D21, D22, D23])
 
 
+def test_ValSetZip__raise_error_when_dimensions_differ():
+    """Test that ValSetZip accepts sets with equal number of elements only.
+    """
+    with pytest.raises(IndexError):
+        ValSetZip([{}], [{}, {}])
+
+
+# noinspection PyTypeChecker
+def test_ValSetZip__raise_error_when_argument_is_not_iterable_of_dicts():
+    """Test that ValSetZip accepts only iterables of dictionaries.
+    """
+    with pytest.raises(TypeError):
+        ValSetZip({"a": 10})
+    with pytest.raises(TypeError):
+        ValSetZip("abc")
+
+
+def test_ValSetZip__iter(val_set_zip_data):
+    """Test ValSetZip implements iterator __iter__ magic."""
+    assert tuple(ValSetZip()) == ()
+    zip_, _, ALL = val_set_zip_data
+    assert tuple(zip_) == ALL
+
+
+def test_ValSetZip__len(val_set_zip_data):
+    """Test ValSetZip implements __len__ magic."""
+    assert len(ValSetZip()) == 0
+    zip_ = val_set_zip_data[0]
+    assert len(zip_) == 3
+
+
+# noinspection PyUnresolvedReferences
+def test_ValSetZip__args(val_set_zip_data):
+    """Test ValSetZip provides args ro-property with a tuple of arguments."""
+    zip_, ARGS, _ = val_set_zip_data
+    assert zip_.args == tuple(ARGS)
+    with pytest.raises(AttributeError):
+        zip_.args.append(({"a": 10}))
+
+
+def test_ValSetZip__repr(val_set_zip_data):
+    """Test ValSetZip implements __repr__ magic."""
+    string = '''
+ValSetZip:
+    [{'a': 1}, {'a': 2}, {'b': 10}]
+    [{'u': 100}, {'u': 101}, {'u': 102, 'v': 'wow'}]
+    [{'x': 800}, {'y': 900}, {'x': 801, 'y': 901}]
+    '''.strip()
+    zip_ = val_set_zip_data[0]
+    assert str(zip_) == string
+    assert str(ValSetZip()) == 'ValSetZip{empty=True}'
+    assert str(ValSetZip(unique=True)) == 'ValSetZip{unique=True, empty=True}'
+
+
 #
 # TESTING HELPERS
 # ---------------
@@ -676,6 +630,14 @@ def test_make_unique():
     D5 = {"x": 34}
     D6 = {"x": 34}
     assert make_unique((D1, D2, D3, D4, D5, D6)) == [D1, D3, D4, D5]
+
+
+def test_guess_dtype():
+    assert guess_dtype([]) == 'float'
+    assert guess_dtype([1, 2]) == 'integer'
+    assert guess_dtype([1, 2.3]) == 'float'
+    assert guess_dtype(['abc', 'def']) == 'string'
+    assert guess_dtype([1, '2']) is None
 
 
 #
@@ -714,3 +676,52 @@ def test_complex_val_set__rfid():
         {"speed": 60, "tari": "18.75us", "m": 4},
         {"speed": 60, "tari": "25.0us", "m": 2},
     )
+
+    assert str(data) == '''
+ValSetJoin{unique=True}:
+    ValSetEval:
+        speed: ValRange{left=30, right=50, step=10}
+        tari : ValArray{dtype=string, values=[12.5us, 18.75us]}
+        m    : ValArray{dtype=integer, values=[8]}
+    ValSetProd:
+        ValSetEval:
+            speed: ValRange{left=50, right=60, step=5}
+        ValSetZip:
+            ValSetEval:
+                tari: ValArray{dtype=string, values=[12.5us, 18.75us, 25.0us]}
+            ValSetEval:
+                m: ValArray{dtype=integer, values=[8, 4, 2]}'''.strip()
+
+#
+# SCHEMA FIELDS TESTING
+# ---------------------
+
+
+#
+# VALUE SETS SCHEMAS TESTING
+# --------------------------
+@pytest.mark.xfail
+def test_ValArraySchema():
+    """
+    Test ValArray serialization and deserialization.
+
+    Given
+    -----
+    - ValArray instance with non-empty values
+
+    Validate
+    --------
+    - serialized string contains '"values"' keys
+    - deserialization given a ValArray instance
+    - deserialized instance has the same values and id as the original one
+    """
+    array = ValArray([10, 20, 30])
+    schema = ValArraySchema()
+    serialized = schema.dump(array)
+
+    assert 'values' in serialized
+    assert 'id' in serialized
+
+    deserialized = schema.load(serialized)
+    assert isinstance(deserialized, ValArray)
+    assert deserialized.values == array.values

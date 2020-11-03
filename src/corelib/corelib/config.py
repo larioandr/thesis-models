@@ -13,12 +13,18 @@ import functools
 import itertools
 from functools import reduce
 from itertools import product
-from typing import TypeVar, Any
+from typing import TypeVar, Any, Optional, Mapping, Literal
 from collections.abc import Iterable
+
+from marshmallow import Schema, fields, post_load
+from marshmallow.fields import Field
 
 _Num = TypeVar('_Num', int, float)
 _T = TypeVar('_T')
 _DST = dict[str, _T]
+
+# TODO: remove IDs
+# TODO: make repr return a formatted nested output
 
 
 class ValRange(Iterable[_Num]):
@@ -35,15 +41,13 @@ class ValRange(Iterable[_Num]):
 
     Examples
     --------
-    >>> ValRange(10, 20, 3).values()
+    >>> ValRange(10, 20, 3).values
     [10, 13, 16, 19, 20]
-    >>> ValRange(10, 10).values()
+    >>> ValRange(10, 10).values
     [10]
-    >>> tuple(ValArray(10, 14))
+    >>> tuple(ValArray((10, 14)))
     (10, 11, 12, 13, 14)
     """
-
-    __next_id = itertools.count(1)
 
     def __init__(self, left: _Num, right: _Num, step: _Num = 1):
         """
@@ -69,9 +73,8 @@ class ValRange(Iterable[_Num]):
         self._left: _Num = left
         self._right: _Num = right
         self._step: _Num = step
-        self.__id = next(ValRange.__next_id)
 
-    @functools.cache
+    @functools.cached_property
     def values(self) -> tuple[_Num, ...]:
         """
         Convert range to a list of values.
@@ -93,17 +96,12 @@ class ValRange(Iterable[_Num]):
         return tuple(ret)
 
     def __iter__(self):
-        values = self.values()
+        values = self.values
         for i in values:
             yield i
 
     def __len__(self):
-        return len(self.values())
-
-    @property
-    def id(self) -> int:  # pylint: disable=C0103
-        """Unique ID of this ValRange instance."""
-        return self.__id
+        return len(self.values)
 
     @property
     def left(self) -> _Num:
@@ -120,9 +118,13 @@ class ValRange(Iterable[_Num]):
         """Grid step value."""
         return self._step
 
-    def __repr__(self) -> str:
-        return f"<ValRange #{self.id}: left={self.left}, right={self.right}, " \
-               f"step={self.step}>"
+    def __repr__(self):
+        return f"ValRange{{left={self.left}, " \
+               f"right={self.right}, step={self.step}}}"
+
+
+_DTYPE = Literal['integer', 'float', 'string', 'matrix', 'vector', 'vec2d',
+                  'vec3d']
 
 
 class ValArray(Iterable[_T]):
@@ -131,10 +133,10 @@ class ValArray(Iterable[_T]):
 
     Examples
     --------
-    >>> ValArray([10, 20, 30]).values()
+    >>> ValArray([10, 20, 30]).values
     [10, 20, 30]
     >>> # noinspection PyUnresolvedReferences
-    >>> ValArray((x**2 for x in range(1, 4))).values()
+    >>> ValArray((x**2 for x in range(1, 4))).values
     [1, 4, 9]
     >>> for i in ValArray((34, 42)):
     >>>     print(i)
@@ -142,25 +144,67 @@ class ValArray(Iterable[_T]):
     42
     """
 
-    __next_id = itertools.count(1)
-
-    def __init__(self, data: Iterable[_T] = ()):
+    # noinspection PyShadowingBuiltins
+    def __init__(self, data: Iterable[_T] = (), dtype: Optional[_DTYPE] = None):
         """
         Initialize a ValArray.
+
+        The array is statically typed. That is, all elements must have the
+        same type. Data type can be provided explicitly via `dtype` argument.
+        Otherwise, it is determined by the first item in the array. If the
+        array is empty and `dtype` is not provided, then by default 'float'
+        is assumed.
+
+        Possible data types are:
+
+        - "integer"
+        - "float"
+        - "string"
+
+        Future:
+
+        - "matrix" - numpy.ndarray with 2 dimensions or convertible
+        - "vector" - numpy.ndarray with 1 dimension or convertible
+        - "vec2d" - numpy.ndarray with 2 elements or convertible
+        - "vec3d" - numpy.ndarray with 2 elements or convertible
 
         Parameters
         ----------
         data : Iterable, optional
             default is empty tuple
+        dtype : _DTYPE, optional
+            type of the elements, stored in the array.
         """
-        self._values: tuple[_T] = tuple(data)
-        self.__id = next(ValArray.__next_id)
+        values: tuple[_T] = tuple(data)
+        if dtype is None:
+            dtype = guess_dtype(values)
+            if dtype is None:
+                raise TypeError("failed to determine data type")
+            self._values = values
+        elif dtype in ['integer', 'float', 'string']:
+            fn = {
+                'integer': int,
+                'float': float,
+                'string': str,
+            }[dtype]
+            try:
+                self._values = tuple([fn(item) for item in values])
+            except ValueError as ex:
+                raise TypeError(f"wrong type, {dtype} expected") from ex
+        else:
+            self._values = values
+        self._dtype = dtype
 
+    @property
     def values(self) -> tuple[_T, ...]:
         """
         Returns a list with all array values.
         """
         return self._values
+
+    @property
+    def dtype(self):
+        return self._dtype
 
     def __iter__(self):
         for i in self._values:
@@ -169,22 +213,10 @@ class ValArray(Iterable[_T]):
     def __len__(self):
         return len(self._values)
 
-    @property
-    def id(self):  # pylint: disable=C0103
-        """Unique ID of this ValArray instance."""
-        return self.__id
-
     def __repr__(self):
-        size: int = len(self._values)
-        if size > 5:
-            s_values = (
-                ", ".join(f"{val}" for val in self._values[:2]) +
-                " ... " +
-                f"{self._values[-1]}"
-            )
-        else:
-            s_values = ", ".join(f"{val}" for val in self._values)
-        return f"<ValArray #{self.id}: [{s_values}] size={len(self)}>"
+        values = [str(item) for item in self.values]
+        values_str = ", ".join(values)
+        return f"ValArray{{dtype={self._dtype}, values=[{values_str}]}}"
 
 
 class ValSetEval(Iterable[_DST]):
@@ -237,8 +269,6 @@ class ValSetEval(Iterable[_DST]):
     ()
     """
 
-    __next_id = itertools.count(1)
-
     def __init__(self, data: dict[str, Iterable] = None):
         """
         Initialize a ValSetEval instance.
@@ -253,8 +283,6 @@ class ValSetEval(Iterable[_DST]):
         TypeError
             raised when data is not a dictionary
         """
-        self.__id = next(self.__next_id)
-
         if data is None:
             self._data: dict[str, _T] = {}
             self._all: tuple[dict[str, _T], ...] = ()
@@ -285,24 +313,19 @@ class ValSetEval(Iterable[_DST]):
         return len(self._all)
 
     @property
-    def id(self) -> int:  # pylint: disable=C0103
-        """Unique ID of this ValSetEval instance."""
-        return self.__id
+    def data(self):
+        return self._data
 
-    def keys(self):
-        """Set of keys defined in this values set."""
-        return self._data.keys()
-
-    def values(self):
-        """Set of values defined in this values set."""
-        return self._data.values()
-
-    def items(self):
-        """Iterator over key-value pairs."""
-        return self._data.items()
-
-    def __repr__(self) -> str:
-        return f"<ValSetEval #{self.id}: size={len(self)}>"
+    def __repr__(self):
+        keys = list(self.data.keys())
+        max_len = max([0] + [len(key) for key in keys])
+        padding = ' '*4
+        lines = [
+            f'{padding}{key:<{max_len}}: {self._data[key]}'
+            for key in keys
+        ]
+        lines_str = '\n'.join(lines)
+        return f"ValSetEval:\n{lines_str}"
 
 
 class ValSetJoin(Iterable[_DST]):
@@ -358,8 +381,6 @@ class ValSetJoin(Iterable[_DST]):
     >>> ValSetJoin([{"a": 10}, {"b": 20}], [{"b": 42, "x": "hello"}]).all()
     ({"a": 10}, {"b": 20}, {"b": 42, "x": "hello"})
     """
-    __next_id = itertools.count(1)
-
     def __init__(self, *args: Iterable[_DST], unique: bool = False):
         """
         Initialize a ValSetJoin instance.
@@ -385,9 +406,9 @@ class ValSetJoin(Iterable[_DST]):
                 items_list.append(item)
         if unique:
             items_list = make_unique(items_list)
-        self.__id = next(ValSetJoin.__next_id)
         self._args = args
         self._data = tuple(items_list)
+        self._unique = unique
 
     def all(self) -> tuple[dict[str, Any], ...]:
         """
@@ -407,17 +428,20 @@ class ValSetJoin(Iterable[_DST]):
         return len(self._data)
 
     @property
-    def id(self) -> int:  # pylint: disable=C0103
-        """Unique ID of the ValSetJoin."""
-        return self.__id
-
-    @property
     def args(self) -> tuple[Iterable[_DST], ...]:
         """Get the arguments those were passed when creating an object."""
         return self._args
 
+    @property
+    def unique(self) -> bool:
+        return self._unique
+
     def __repr__(self):
-        return f"<ValSetJoin #{self.__id}: size={len(self)}>"
+        args_lines = _pad_args_lines(self._args)
+        flags_str = _str_flags(unique=self.unique, empty=(len(self) == 0))
+        if args_lines:
+            return f"ValSetJoin{flags_str}:\n{args_lines}"
+        return f"ValSetJoin{flags_str}"
 
 
 class ValSetProd(Iterable[_DST]):
@@ -475,8 +499,6 @@ class ValSetProd(Iterable[_DST]):
     ({"a": 1, "b": 10}, {"a": 1, "b": 20}, {"a": 2, "b": 10}, {"a": 2, "b": 20})
     """
 
-    __next_id = itertools.count(1)
-
     def __init__(self, *args: Iterable[_DST], unique: bool = False):
         """
         Initialize a ValSetProd instance.
@@ -523,10 +545,10 @@ class ValSetProd(Iterable[_DST]):
             items_list = []
 
         # If unique=True, then remove duplicates:
+        self._unique = unique
         if unique:
             items_list = make_unique(items_list)
 
-        self.__id = next(ValSetProd.__next_id)
         self._data = tuple(items_list)
 
     def all(self) -> tuple[_DST, ...]:
@@ -541,9 +563,8 @@ class ValSetProd(Iterable[_DST]):
         return len(self._data)
 
     @property
-    def id(self) -> int:  # pylint: disable=C0103
-        """Unique ID of the ValSetProd instance."""
-        return self.__id
+    def unique(self) -> bool:
+        return self._unique
 
     @property
     def args(self) -> tuple[Iterable[_DST], ...]:
@@ -551,7 +572,11 @@ class ValSetProd(Iterable[_DST]):
         return self._args
 
     def __repr__(self):
-        return f"<ValSetJoin #{self.id}: size={len(self)}>"
+        args_lines = _pad_args_lines(self._args)
+        flags_str = _str_flags(unique=self.unique, empty=(len(self) == 0))
+        if args_lines:
+            return f"ValSetProd{flags_str}:\n{args_lines}"
+        return f"ValSetProd{flags_str}"
 
 
 class ValSetZip(Iterable[dict[str, _T]]):
@@ -625,8 +650,6 @@ class ValSetZip(Iterable[dict[str, _T]]):
     ({"a": 1, "b": 100}, {"a": 2, "b": 200})
     """
 
-    __next_id = itertools.count(1)
-
     def __init__(self, *args: Iterable[_DST], unique: bool = False):
         """
         Initialize a ValSetZip instance.
@@ -670,9 +693,9 @@ class ValSetZip(Iterable[dict[str, _T]]):
         # Build items list
         items_list: list[dict[str, _T], ...] = [
             reduce(lambda u, v: u | v, item) for item in zip(*args)]
+        self._unique = unique
         if unique:
             items_list = make_unique(items_list)
-        self.__id: int = next(ValSetZip.__next_id)
         self._data = tuple(items_list)
 
     def all(self) -> tuple[_DST, ...]:
@@ -692,12 +715,15 @@ class ValSetZip(Iterable[dict[str, _T]]):
         return self._args
 
     @property
-    def id(self) -> int:  # pylint: disable=C0103
-        """Unique ID of ValSetZip instance."""
-        return self.__id
+    def unique(self) -> bool:
+        return self._unique
 
     def __repr__(self):
-        return f"<ValSetZip #{self.id}: size={len(self)}>"
+        args_lines = _pad_args_lines(self._args)
+        flags_str = _str_flags(unique=self.unique, empty=(len(self) == 0))
+        if args_lines:
+            return f"ValSetZip{flags_str}:\n{args_lines}"
+        return f"ValSetZip{flags_str}"
 
 
 def make_unique(dicts: Iterable[dict]) -> list[dict]:
@@ -727,3 +753,82 @@ def make_unique(dicts: Iterable[dict]) -> list[dict]:
         if not found:
             new_dicts.append(dict_)
     return new_dicts
+
+
+# noinspection PyUnresolvedReferences
+def guess_dtype(values: Iterable[_T]) -> Optional[_DTYPE]:
+    """Determine the data type of the array."""
+    if not values:
+        return 'float'
+    head = values[0]
+    if isinstance(head, int):
+        if all(isinstance(item, int) for item in values[1:]):
+            return 'integer'
+    if all(isinstance(item, int) or isinstance(item, float) for item in values):
+        return 'float'
+    if all(isinstance(item, str) for item in values):
+        return 'string'
+    return None
+
+
+def _pad_args_lines(args, padding=' '*4):
+    lines = []
+    padding = ' ' * 4
+    for arg in args:
+        arg_lines = str(arg).split('\n')
+        arg_lines = [f"{padding}{line}" for line in arg_lines]
+        lines.append("\n".join(arg_lines))
+    return '\n'.join(lines)
+
+
+def _str_flags(**kwargs):
+    flags = []
+    for key, value in kwargs.items():
+        if value:
+            flags.append(key)
+    flags_str = ", ".join([f"{flag}=True" for flag in flags])
+    if flags_str:
+        flags_str = f"{{{flags_str}}}"
+    return flags_str
+
+
+#
+# SCHEMA DEFINITIONS
+# ------------------
+
+# We want to serialize list items like:
+# {"type": "integer", "values": [1, 2, 100]}
+# {"type": "float", "values": [1.0, 2.0]}
+# {"type": "string", "values": ["hello", "bye"]}
+# {"type": "vec2d", "values": [[0.5, 1.0], [0.2, 0.8]]}
+# {"type": "vec3d", "values": [[0.1, 0.9, 0.2], [0.5, 0.4, 0.3]]}
+# {"type": "vector", "values": [[0, 1, 2, 3.4], [2, 3]}
+# {"type": "matrix", "values": [[[0,1],[2,3]], [[1,5.2,3.8],[3.2,4.1,3.8]]]
+
+class NumOrStringField(Field):
+    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
+        return str(value)
+
+    def _deserialize(
+        self,
+        value: Any,
+        attr: Optional[str],
+        data: Optional[Mapping[str, Any]],
+        **kwargs
+    ):
+        try:
+            return int(value)
+        except ValueError:
+            try:
+                return float(value)
+            except ValueError:
+                return str(value)
+
+
+class ValArraySchema(Schema):
+    id = fields.Integer()
+    values = fields.List(NumOrStringField)
+
+    @post_load
+    def make_instance(self, data, **kwargs):
+        return ValArray(kwargs.get('values'), id=kwargs.get('id', None))

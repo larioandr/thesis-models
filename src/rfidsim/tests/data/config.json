@@ -1,0 +1,115 @@
+{
+  "config": {
+    "rfidsim": {
+      "model": {
+        "lanes": {
+          "count": 2,
+          "width": 3.5
+        },
+        "vehicle": {
+          "speed": {
+            "type": "range",
+            "args": { "min": 30, "max": 50, "step": 10 }
+          },
+          "plates": ["front", "back"],
+          "length": 4,
+          "posUpdateInterval": 1e-2,
+          "startOffset": -10.0,
+          "plateHeight": 0.5,
+          "direction": [1, 0, 0],
+          "lifetime": 2.0,
+          "interval": {
+            "dist": "uniform",
+            "args": { "min": 0.9, "max": 1.1 }
+          }
+        },
+        "tag": {
+          "gain": 1.0,
+          "modulationLoss": -10.0,
+          "sensitivity": -18.0,
+          "antenna": {
+            "angle": 0,
+            "radiationPattern": "dipole",
+            "polarization": 1.0,
+            "gain": 2.0
+          }
+        },
+        "reader": {
+          "antenna": {
+            "side": ["front", "back"],
+            "angle": 45.0,
+            "offset": 1.0,
+            "radiationPattern": "dipole",
+            "gain": 8.0,
+            "cableLoss": -1.0,
+            "polarization": 0.5
+          },
+          "inventory": {
+            "roundsPerAntenna": 1,
+            "roundsPerInventoryFlag": 1,
+            "sessionStrategy": "A",
+            "tari": {
+              "type": "array",
+              "data": ["12.5us", "18.75us", "25.0us"]
+            },
+            "m": {
+              "type": "array",
+              "data": [1, 2]
+            },
+            "data0Mul": 2.0,
+            "rtcalMul": 2.0,
+            "sl": "ALL",
+            "session": "S0",
+            "dr": "8",
+            "trext": false,
+            "q": 4,
+            "persistence": { "S1": 0.5, "S2": 2.0, "S3": 2.0 }
+          },
+          "radio": {
+            "frequency": 860e6,
+            "txPower": 31.5,
+            "noise": -80.0,
+            "switchPower": true,
+            "powerOnInterval": 2000e-3,
+            "powerOffInterval": 100e-3
+          }
+        },
+        "channel": {
+          "doppler": true,
+          "thermalNoise": -114.0,
+          "permittivity": 15.0,
+          "conductivity": 3e-2,
+          "berModel": "rayleigh"
+        }
+      },
+      "simulation": {
+        "maxTime": 1000,
+        "maxVehicles": 1000
+      }
+    }
+  },
+  "custom": [
+    {
+      "name": "coarse",
+      "config": {
+        "rfidsim": {
+          "simulation": {
+            "maxTime": 10,
+            "maxVehicles": 5
+          }
+        }
+      }
+    }, 
+    {
+      "name": "refined",
+      "config": {
+        "rfidsim": {
+          "simulation": {
+            "maxTime": 100,
+            "maxVehicles": 55
+          }
+        }
+      }
+    }
+  ]
+}
