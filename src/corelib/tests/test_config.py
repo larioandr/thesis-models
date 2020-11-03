@@ -1,9 +1,12 @@
+import json
 import re
+from typing import Optional
 
 import pytest
 
 from corelib.config import ValRange, ValArray, ValSetEval, ValSetJoin, \
-    ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype
+    ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype, \
+    ValRangeSchema, _DTYPE
 
 
 #
@@ -85,7 +88,7 @@ def test_ValRange__repr():
 #
 # TESTING ValArray
 # ----------------
-def test_ValArray__accepts_any_iterable():
+def test_ValArray__values():
     """Test that ValArray can be constructed from list, tuple or iterator."""
     assert ValArray().values == ()
     assert ValArray([]).values == ()
@@ -115,6 +118,9 @@ def test_ValArray__dtype():
 
     with pytest.raises(TypeError):
         ValArray([1, '2'])
+
+    with pytest.raises(TypeError):
+        ValArray([(1, 2, 3), (3, 4, 5)], dtype='integer')
 
 
 def test_ValArray__repr():
@@ -700,28 +706,76 @@ ValSetJoin{unique=True}:
 #
 # VALUE SETS SCHEMAS TESTING
 # --------------------------
-@pytest.mark.xfail
-def test_ValArraySchema():
+def test_ValRangeSchema_serialize():
     """
-    Test ValArray serialization and deserialization.
+    Test ValRange serialization using ValRangeSchema.
 
     Given
     -----
-    - ValArray instance with non-empty values
+    a valid ValRange instance with the given LEFT, RIGHT and STEP
 
     Validate
     --------
-    - serialized string contains '"values"' keys
-    - deserialization given a ValArray instance
-    - deserialized instance has the same values and id as the original one
+    serialized native dictionary has `left`, `right` and `step` fields
+    with the same values, as original `ValRange` object.
     """
-    array = ValArray([10, 20, 30])
+    LEFT, RIGHT, STEP = 10, 20, 3
+    schema = ValRangeSchema()
+    dict_ = schema.dump(ValRange(LEFT, RIGHT, STEP))
+    assert dict_ == {'op': 'range', 'left': LEFT, 'right': RIGHT, 'step': STEP}
+
+
+def test_ValRangeSchema_deserialize():
+    """
+    Test ValRange deserialization using ValRangeSchema.
+
+    Given
+    -----
+    a string that represents a valid ValRange
+
+    Validate
+    --------
+    - deserialized object is a `ValRange` instance
+    - deserialized object has expected `left`, `right` and `step` props.
+    """
+    LEFT, RIGHT, STEP = 10, 20, 3
+    schema = ValRangeSchema()
+
+    string = '{"left": %d, "right": %d, "step": %d, "op": "range"}' \
+             '' % (LEFT, RIGHT, STEP)
+    range_ = schema.loads(string)
+
+    assert isinstance(range_, ValRange)
+    assert range_.left == LEFT
+    assert range_.right == RIGHT
+    assert range_.step == STEP
+
+
+@pytest.mark.parametrize('dtype,values', [
+    ('float', []),
+    ('integer', [10, 20, 30]),
+    ('float', [2.3, 3.4]),
+    ('string', ['6.25us', '25.0us'])
+])
+def test_ValArraySchema_serialize(dtype: Optional[_DTYPE], values):
+    """Test ValArray serialization using ValArraySchema."""
     schema = ValArraySchema()
-    serialized = schema.dump(array)
+    array = ValArray(values, dtype=dtype)
+    dict_ = schema.dump(array)
+    assert dict_ == {'op': 'array', 'values': tuple(values), 'dtype': dtype}
 
-    assert 'values' in serialized
-    assert 'id' in serialized
 
-    deserialized = schema.load(serialized)
-    assert isinstance(deserialized, ValArray)
-    assert deserialized.values == array.values
+@pytest.mark.parametrize('dtype,values', [
+    ('float', []),
+    ('integer', [10, 20, 30]),
+    ('float', [2.3, 3.4]),
+    ('string', ["6.25us", "25.0us"])
+])
+def test_ValArraySchema_deserialize(dtype: Optional[_DTYPE], values):
+    """Test ValArray deserialization using ValArraySchema."""
+    dict_ = {"op": "array", "dtype": dtype, "values": values}
+    string = json.dumps(dict_)
+    schema = ValArraySchema()
+    array = schema.loads(string)
+    assert array.values == tuple(values)
+    assert array.dtype == dtype

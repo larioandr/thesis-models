@@ -123,8 +123,19 @@ class ValRange(Iterable[_Num]):
                f"right={self.right}, step={self.step}}}"
 
 
+class ValRangeSchema(Schema):
+    op = fields.String(default='range')
+    left = fields.Float()
+    right = fields.Float()
+    step = fields.Float()
+
+    @post_load
+    def create_object(self, data, **kwargs):
+        return ValRange(data['left'], data['right'], data['step'])
+
+
 _DTYPE = Literal['integer', 'float', 'string', 'matrix', 'vector', 'vec2d',
-                  'vec3d']
+                 'vec3d']
 
 
 class ValArray(Iterable[_T]):
@@ -177,9 +188,12 @@ class ValArray(Iterable[_T]):
         """
         values: tuple[_T] = tuple(data)
         if dtype is None:
-            dtype = guess_dtype(values)
-            if dtype is None:
-                raise TypeError("failed to determine data type")
+            if not values:
+                dtype = 'float'
+            else:
+                dtype = guess_dtype(values)
+                if dtype is None:
+                    raise TypeError("failed to determine data type")
             self._values = values
         elif dtype in ['integer', 'float', 'string']:
             fn = {
@@ -217,6 +231,47 @@ class ValArray(Iterable[_T]):
         values = [str(item) for item in self.values]
         values_str = ", ".join(values)
         return f"ValArray{{dtype={self._dtype}, values=[{values_str}]}}"
+
+
+class TypedListField(Field):
+    """
+    This field type looks at 'dtype' field of the object to guess value type.
+    """
+    def _deserialize(self, value: Any, attr: Optional[str],
+                     data: Optional[Mapping[str, Any]], **kwargs):
+        """Guess data type by looking at the owner object dtype field."""
+        dtype = data['dtype']
+        schema = {
+            "integer": fields.Integer,
+            "string": fields.String,
+            "float": fields.Float,
+        }[dtype]
+        self.inner = schema()
+        return super()._deserialize(value, attr, data, **kwargs)
+
+
+class ValArraySchema(Schema):
+    """Schema for ValArray objects."""
+    op = fields.String(default="array")
+    dtype = fields.String(default="float")
+    values = TypedListField()
+
+    @post_load
+    def make_object(self, data, **kwargs):
+        """Create ValArray instance."""
+        return ValArray(data['values'], dtype=data['dtype'])
+
+
+# TODO: define an umbrella field with either ValArraySchema or ValRangeSchema
+#       (determine the type based on 'op')
+#       Good (?) idea: give a dictionary "op->schema", so this field will
+#       be usable in ValSetProdSchema/ValSetZipSchema/ValSetJoinSchema also
+
+# TODO: define object schema that accepts unknown fields, which values
+#       should be deserialized using a class defined in above umbrella field.
+
+# TODO: implement ValSetEvalSchema that will accept 'values' field with
+#       the schema defined above (with unknown fields)
 
 
 class ValSetEval(Iterable[_DST]):
@@ -790,45 +845,3 @@ def _str_flags(**kwargs):
     if flags_str:
         flags_str = f"{{{flags_str}}}"
     return flags_str
-
-
-#
-# SCHEMA DEFINITIONS
-# ------------------
-
-# We want to serialize list items like:
-# {"type": "integer", "values": [1, 2, 100]}
-# {"type": "float", "values": [1.0, 2.0]}
-# {"type": "string", "values": ["hello", "bye"]}
-# {"type": "vec2d", "values": [[0.5, 1.0], [0.2, 0.8]]}
-# {"type": "vec3d", "values": [[0.1, 0.9, 0.2], [0.5, 0.4, 0.3]]}
-# {"type": "vector", "values": [[0, 1, 2, 3.4], [2, 3]}
-# {"type": "matrix", "values": [[[0,1],[2,3]], [[1,5.2,3.8],[3.2,4.1,3.8]]]
-
-class NumOrStringField(Field):
-    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
-        return str(value)
-
-    def _deserialize(
-        self,
-        value: Any,
-        attr: Optional[str],
-        data: Optional[Mapping[str, Any]],
-        **kwargs
-    ):
-        try:
-            return int(value)
-        except ValueError:
-            try:
-                return float(value)
-            except ValueError:
-                return str(value)
-
-
-class ValArraySchema(Schema):
-    id = fields.Integer()
-    values = fields.List(NumOrStringField)
-
-    @post_load
-    def make_instance(self, data, **kwargs):
-        return ValArray(kwargs.get('values'), id=kwargs.get('id', None))
