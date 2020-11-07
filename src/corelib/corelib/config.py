@@ -9,22 +9,24 @@ specification - `ValRange`, `ValArray`, `ValSetProd`, `ValSetEval`,
 Author: Andrey Larionov <larioandr@gmail.com>
 License: MIT
 """
+
+# Disable pylint warnings about unsubscriptable types (E1136) - they don't
+# work properly for Python 3.9 for now. Also disable module length check -
+# comments are very large (C0302).
+# pylint: disable=E1136,C0302
+
 import functools
-import itertools
 from functools import reduce
 from itertools import product
-from typing import TypeVar, Any, Optional, Mapping, Literal
+from typing import TypeVar, Any, Optional, Mapping, Literal, Union
 from collections.abc import Iterable
 
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load, ValidationError, missing
 from marshmallow.fields import Field
 
 _Num = TypeVar('_Num', int, float)
 _T = TypeVar('_T')
 _DST = dict[str, _T]
-
-# TODO: remove IDs
-# TODO: make repr return a formatted nested output
 
 
 class ValRange(Iterable[_Num]):
@@ -128,19 +130,7 @@ class ValRange(Iterable[_Num]):
                f"right={self.right}, step={self.step}}}"
 
 
-class ValRangeSchema(Schema):
-    op = fields.String(default='range')
-    left = fields.Float()
-    right = fields.Float()
-    step = fields.Float()
-
-    @post_load
-    def create_object(self, data, **kwargs):
-        return ValRange(data['left'], data['right'], data['step'])
-
-
-DTYPE = Literal['integer', 'float', 'string', 'matrix', 'vector', 'vec2d',
-                 'vec3d']
+DTYPE = Literal['int', 'float', 'str', 'matrix', 'vector', 'vec2d', 'vec3d']
 
 
 class ValArray(Iterable[_T]):
@@ -173,9 +163,9 @@ class ValArray(Iterable[_T]):
 
         Possible data types are:
 
-        - "integer"
+        - "int"
         - "float"
-        - "string"
+        - "str"
 
         Future:
 
@@ -200,14 +190,14 @@ class ValArray(Iterable[_T]):
                 if dtype is None:
                     raise TypeError("failed to determine data type")
             self._values = values
-        elif dtype in ['integer', 'float', 'string']:
-            fn = {
-                'integer': int,
+        elif dtype in ['int', 'float', 'str']:
+            fun = {
+                'int': int,
                 'float': float,
-                'string': str,
+                'str': str,
             }[dtype]
             try:
-                self._values = tuple([fn(item) for item in values])
+                self._values = tuple([fun(item) for item in values])
             except ValueError as ex:
                 raise TypeError(f"wrong type, {dtype} expected") from ex
         else:
@@ -223,6 +213,7 @@ class ValArray(Iterable[_T]):
 
     @property
     def dtype(self):
+        """Array data type."""
         return self._dtype
 
     def __iter__(self):
@@ -241,36 +232,23 @@ class ValArray(Iterable[_T]):
         return f"ValArray{{dtype={self._dtype}, values=[{values_str}]}}"
 
 
-class TypedListField(Field):
+# Disable pylint warning about too few public methods - its a mixin:
+# pylint: disable=R0903
+class ValSetEqMixin:
     """
-    This field type looks at 'dtype' field of the object to guess value type.
+    A mixin that compares value sets by their data.
+
+    Two value sets are considered equal, if they provide the same
+    datasets ahdn have the same type.
     """
-    def _deserialize(self, value: Any, attr: Optional[str],
-                     data: Optional[Mapping[str, Any]], **kwargs):
-        """Guess data type by looking at the owner object dtype field."""
-        dtype = data['dtype']
-        schema = {
-            "integer": fields.Integer,
-            "string": fields.String,
-            "float": fields.Float,
-        }[dtype]
-        self.inner = schema()
-        return super()._deserialize(value, attr, data, **kwargs)
+    # noinspection PyTypeChecker
+    def __eq__(self, other: Iterable[_DST]):
+        return isinstance(self, type(other)) and \
+               isinstance(other, type(self)) and \
+               list(self) == list(other)
 
 
-class ValArraySchema(Schema):
-    """Schema for ValArray objects."""
-    op = fields.String(default="array")
-    dtype = fields.String(default="float")
-    values = TypedListField()
-
-    @post_load
-    def make_object(self, data, **kwargs):
-        """Create ValArray instance."""
-        return ValArray(data['values'], dtype=data['dtype'])
-
-
-class ValSetEval(Iterable[_DST]):
+class ValSetEval(Iterable[_DST], ValSetEqMixin):
     """
     Represents a set of records, where each key is defined with an iterable.
 
@@ -365,10 +343,16 @@ class ValSetEval(Iterable[_DST]):
 
     @property
     def data(self):
+        """
+        A dictionary that was used when creating the object, alias to `args`.
+        """
         return self._data
 
     @property
     def args(self):
+        """
+        A dictionary that was used when creating the object, alias to `data`.
+        """
         return self._data
 
     def __repr__(self):
@@ -383,59 +367,7 @@ class ValSetEval(Iterable[_DST]):
         return f"ValSetEval:\n{lines_str}"
 
 
-class ValueField(Field):
-    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
-        schema = None
-        if isinstance(value, ValRange):
-            schema = ValRangeSchema
-        elif isinstance(value, ValArray):
-            schema = ValArraySchema
-        else:
-            raise TypeError(f"unexpected value type {type(value)}")
-        return schema().dump(value)
-
-    def _deserialize(self, value: Any, attr: Optional[str],
-                     data: Optional[Mapping[str, Any]], **kwargs):
-        """Determined type based on the 'op' field value."""
-        op = None
-        try:
-            op = value['op']
-        except TypeError:
-            # Assume that value was a float
-            return float(value)
-        schema = None
-        if op == 'array':
-            schema = ValArraySchema
-        elif op == 'range':
-            schema = ValRangeSchema
-        else:
-            raise ValidationError(f'wrong operand type "{op}"')
-        return schema().load(value)
-
-
-class ValSetEvalSchema(Schema):
-    op = fields.String(default="eval")
-    args = fields.Dict(keys=fields.String(), values=ValueField())
-
-    @post_load
-    def make_object(self, data, **kwargs):
-        """Create ValSetEval instance."""
-        return ValSetEval(data['args'])
-
-
-# TODO: define an umbrella field with either ValArraySchema or ValRangeSchema
-#       (determine the type based on 'op')
-#       Good (?) idea: give a dictionary "op->schema", so this field will
-#       be usable in ValSetProdSchema/ValSetZipSchema/ValSetJoinSchema also
-
-# TODO: define object schema that accepts unknown fields, which values
-#       should be deserialized using a class defined in above umbrella field.
-
-# TODO: implement ValSetEvalSchema that will accept 'values' field with
-#       the schema defined above (with unknown fields)
-
-
-class ValSetJoin(Iterable[_DST]):
+class ValSetJoin(Iterable[_DST], ValSetEqMixin):
     """
     ValSetJoin concatenates sets of values.
 
@@ -541,6 +473,7 @@ class ValSetJoin(Iterable[_DST]):
 
     @property
     def unique(self) -> bool:
+        """Flag indicating that all records are unique."""
         return self._unique
 
     def __repr__(self):
@@ -551,7 +484,7 @@ class ValSetJoin(Iterable[_DST]):
         return f"ValSetJoin{flags_str}"
 
 
-class ValSetProd(Iterable[_DST]):
+class ValSetProd(Iterable[_DST], ValSetEqMixin):
     """
     Build a cartesian product of sets of dict values.
 
@@ -671,6 +604,7 @@ class ValSetProd(Iterable[_DST]):
 
     @property
     def unique(self) -> bool:
+        """Flag indicating that all records are unique."""
         return self._unique
 
     @property
@@ -686,7 +620,7 @@ class ValSetProd(Iterable[_DST]):
         return f"ValSetProd{flags_str}"
 
 
-class ValSetZip(Iterable[dict[str, _T]]):
+class ValSetZip(Iterable[dict[str, _T]], ValSetEqMixin):
     """
     Build a ZIP from sets of dict values.
 
@@ -823,6 +757,7 @@ class ValSetZip(Iterable[dict[str, _T]]):
 
     @property
     def unique(self) -> bool:
+        """Flag indicating that all records are unique."""
         return self._unique
 
     def __repr__(self):
@@ -870,11 +805,11 @@ def guess_dtype(values: Iterable[_T]) -> Optional[DTYPE]:
     head = values[0]
     if isinstance(head, int):
         if all(isinstance(item, int) for item in values[1:]):
-            return 'integer'
-    if all(isinstance(item, int) or isinstance(item, float) for item in values):
+            return 'int'
+    if all(isinstance(item, (int, float)) for item in values):
         return 'float'
     if all(isinstance(item, str) for item in values):
-        return 'string'
+        return 'str'
     return None
 
 
@@ -897,3 +832,237 @@ def _str_flags(**kwargs):
     if flags_str:
         flags_str = f"{{{flags_str}}}"
     return flags_str
+
+
+#
+# MARSHMALLOW SCHEMAS
+# ===================
+
+class ValRangeSchema(Schema):
+    """Marshmallow schema for ValRange objects."""
+    op = fields.String(default='range')
+    left = fields.Float()
+    right = fields.Float()
+    step = fields.Float()
+
+    # Disable pylint warnings about unused kwargs (W0613) and that this
+    # method can be made a function since it can not be done (R0201)
+    # pylint: disable=W0613
+    # pylint: disable=R0201
+    @post_load
+    def create_object(self, data, **kwargs):
+        """Create ValRange instance."""
+        return ValRange(data['left'], data['right'], data['step'])
+
+
+class TypedListField(Field):
+    """
+    This field type looks at 'dtype' field of the object to guess value type.
+    """
+    def _deserialize(self, value: Any, attr: Optional[str],
+                     data: Optional[Mapping[str, Any]], **kwargs):
+        """Guess data type by looking at the owner object dtype field."""
+        dtype = data['dtype']
+        schema = {
+            "int": fields.Integer,
+            "str": fields.String,
+            "float": fields.Float,
+        }[dtype]
+        self.inner = schema()  # pylint: disable=W0201
+        return super()._deserialize(value, attr, data, **kwargs)
+
+
+class ValArraySchema(Schema):
+    """Marshmallow schema for ValArray objects."""
+    op = fields.String(default="array")
+    dtype = fields.String(default="float")
+    values = TypedListField()
+
+    # Disable pylint warnings about unused kwargs (W0613) and that this
+    # method can be made a function since it can not be done (R0201)
+    # pylint: disable=W0613
+    # pylint: disable=R0201
+    @post_load
+    def make_object(self, data, **kwargs):
+        """Create ValArray instance."""
+        return ValArray(data['values'], dtype=data['dtype'])
+
+
+class OperationField(Field):
+    """
+    Marshmallow field that is serialized to JSON object with 'op' attr.
+    See constructor documentation for more information.
+    """
+    def __init__(self, *args,
+                 ops: Iterable[tuple[str, type, Union[type, str]]],
+                 **kwargs):
+        """
+        Create an operation field.
+
+        Field must receive a mapping of operation string code to the
+        operation class and serialization schema, e.g.
+        `ops = [('plus', Plus, PlusSchema), ('minus', Minus, MinusSchema)]`.
+
+        Schema may be defined either by a class, or by this class name
+        (last option is to face forward-declaration problem).
+
+        Parameters
+        ----------
+        args : see `marshmallow.Field` for reference
+        ops : Iterable[tuple[str, str, str]]
+            an iterable of triplets (`operation code`, `class`, `schema`)
+        kwargs :  see `marshmallow.Field` for reference
+        """
+        super().__init__(*args, **kwargs)
+        self.ops = ops
+
+    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
+        schema = None
+        for _, type_, schema in self.ops:
+            if isinstance(value, type_):
+                if isinstance(schema, str):
+                    schema = globals()[schema]
+                return schema().dump(value)
+        raise TypeError(f"unexpected value type {type(value)}")
+
+    def _deserialize(self, value: Any, attr: Optional[str],
+                     data: Optional[Mapping[str, Any]], **kwargs):
+        """Determined type based on the 'op' field value."""
+        for code_, _, schema in self.ops:
+            if code_ == value['op']:
+                if isinstance(schema, str):
+                    schema = globals()[schema]
+                return schema().load(value)
+        raise ValidationError(f'wrong operand type "{value["op"]}"')
+
+
+class ValSetEvalSchema(Schema):
+    """
+    Marshmallow schema for ValSetEval.
+
+    Value set serialized JSON looks like this when `unique=False`:
+
+    ```
+    {'op': 'eval', 'args': {'key': {'op': 'array_or_range', ...}}}
+    ```
+
+    When `unique=True`, adds `'unique': true` to this JSON.
+
+    All arguments in `'args'` value should be serialized `ValArray` or
+    `ValRange`.
+    """
+    op = fields.String(default="eval")
+    args = fields.Dict(fields.String(), OperationField(ops=(
+        ("array", ValArray, ValArraySchema),
+        ("range", ValRange, ValRangeSchema),
+    )))
+
+    # Disable pylint warnings about unused kwargs (W0613) and that this
+    # method can be made a function since it can not be done (R0201)
+    # pylint: disable=W0613
+    # pylint: disable=R0201
+    @post_load
+    def make_object(self, data, **kwargs):
+        """Create ValSetEval instance."""
+        return ValSetEval(data['args'])
+
+
+class UniqueField(Field):
+    """
+    If unique is true, it should add "'unique': true", otherwise - skip.
+    """
+    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
+        if value:
+            return super()._serialize(value, attr, obj, **kwargs)
+        return missing
+
+
+class ValSetSchemaBase(Schema):
+    """
+    Base class for value sets operations ValSetProd, ValSetZip, ValSetJoin.
+
+    For non-unique objects, it serializes an operation to JSON like:
+
+    ```
+    {
+        'op': OPCODE,
+        'args': [
+            # list of ValSet serialized objects
+        ]
+    }
+    ```
+
+    If `unique=True`, then adds `'unique': true` to this JSON.
+
+    DO define a concrete schema, subclass should specify `opcode` and
+    `make_class` fields:
+
+    - `opcode`: OPCODE value that will be put into JSON 'op' attribute.
+    - `make_class`: to this class JSON will be deserialized.
+    """
+    opcode: str = ''
+    make_class: Optional[type] = None
+
+    op = fields.String()
+    args = fields.List(OperationField(ops=(
+        ("eval", ValSetEval, ValSetEvalSchema),
+        ('prod', ValSetProd, 'ValSetProdSchema'),
+        ('join', ValSetJoin, 'ValSetJoinSchema'),
+        ('zip', ValSetZip, 'ValSetZipSchema'),
+    )))
+    unique = UniqueField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['op'].default = self.opcode
+
+    # Disable pylint warnings about unused kwargs (W0613) and not callable
+    # make_class field (E1102)
+    # pylint: disable=W0613
+    # pylint: disable=E1102
+    @post_load
+    def make_object(self, data, **kwargs):
+        """Create value set instance."""
+        return self.make_class(
+            *data['args'],
+            unique=data.get('unique', False)
+        )
+
+
+class ValSetJoinSchema(ValSetSchemaBase):
+    """
+    Marshmallow schema for ValSetProd class.
+
+    Format
+    ------
+    - if unique=False: `{'op': 'join', 'args': [...]}`
+    - if unique=True: `{'op': 'join', 'unique': True, 'args': [...]}`
+    """
+    opcode = 'join'
+    make_class = ValSetJoin
+
+
+class ValSetProdSchema(ValSetSchemaBase):
+    """
+    Marshmallow schema for ValSetProd class.
+
+    Format
+    ------
+    - if unique=False: `{'op': 'prod', 'args': [...]}`
+    - if unique=True: `{'op': 'prod', 'unique': True, 'args': [...]}`
+    """
+    opcode = 'prod'
+    make_class = ValSetProd
+
+
+class ValSetZipSchema(ValSetSchemaBase):
+    """
+    Marshmallow schema for ValSetZip class.
+
+    Format
+    ------
+    - if unique=False: `{'op': 'zip', 'args': [...]}`
+    - if unique=True: `{'op': 'zip', 'unique': True, 'args': [...]}`
+    """
+    opcode = 'zip'
+    make_class = ValSetZip

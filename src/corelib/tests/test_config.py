@@ -1,12 +1,12 @@
 import json
-import re
 from typing import Optional
 
 import pytest
 
 from corelib.config import ValRange, ValArray, ValSetEval, ValSetJoin, \
     ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype, \
-    ValRangeSchema, DTYPE, ValSetEvalSchema
+    ValRangeSchema, DTYPE, ValSetEvalSchema, ValSetJoinSchema, ValSetProdSchema, \
+    ValSetZipSchema
 
 
 #
@@ -119,22 +119,22 @@ def test_ValArray__len():
 
 def test_ValArray__dtype():
     """Test that ValArray provides dtype property."""
-    assert ValArray(dtype='integer').dtype == 'integer'
+    assert ValArray(dtype='int').dtype == 'int'
     assert ValArray(dtype='matrix').dtype == 'matrix'
-    assert ValArray([1, 2]).dtype == 'integer'
+    assert ValArray([1, 2]).dtype == 'int'
     assert ValArray().dtype == 'float'
-    assert ValArray(['1', '2']).dtype == 'string'
+    assert ValArray(['1', '2']).dtype == 'str'
 
     with pytest.raises(TypeError):
         ValArray([1, '2'])
 
     with pytest.raises(TypeError):
-        ValArray([(1, 2, 3), (3, 4, 5)], dtype='integer')
+        ValArray([(1, 2, 3), (3, 4, 5)], dtype='int')
 
 
 def test_ValArray__compare():
-    a1 = ValArray([1, 2, 3], dtype='integer')
-    a2 = ValArray((1, 2, 3), dtype='integer')
+    a1 = ValArray([1, 2, 3], dtype='int')
+    a2 = ValArray((1, 2, 3), dtype='int')
     a3 = ValArray([1, 2, 3], dtype='float')
     a4 = ValArray([34, 42])
     assert a1 == a2
@@ -145,13 +145,13 @@ def test_ValArray__compare():
 def test_ValArray__repr():
     """Test that ValArray implements __repr__ magic method."""
     array_1 = ValArray([1, 2, 3])
-    assert str(array_1) == 'ValArray{dtype=integer, values=[1, 2, 3]}'
+    assert str(array_1) == 'ValArray{dtype=int, values=[1, 2, 3]}'
 
     array_2 = ValArray()
     assert str(array_2) == 'ValArray{dtype=float, values=[]}'
 
     array_3 = ValArray(["6.25us", "12.5us"])
-    assert str(array_3) == 'ValArray{dtype=string, values=[6.25us, 12.5us]}'
+    assert str(array_3) == 'ValArray{dtype=str, values=[6.25us, 12.5us]}'
 
 
 #
@@ -226,6 +226,17 @@ def test_ValSetEval__len():
     assert len(ValSetEval({"a": (34, 42), "b": (1, 2, 3), "c": (8, 9)})) == 12
 
 
+def test_ValSetEval__compare():
+    """Validate ValSetEval eq() compare datasets defined by the operation. """
+    v1 = ValSetEval({"x": [1, 2, 3], "y": [10, 20]})
+    v2 = ValSetEval({"x": ValRange(1, 3), "y": ValArray((10, 20))})
+    v3 = ValSetEval({"x": ValRange(1, 3), "y": ValArray((20, 10))})
+    v4 = ValSetEval({"x": ValRange(1, 3), "y": ValArray((34, 42))})
+    assert v1 == v2
+    assert v1 != v3, "order matters"
+    assert v1 != v4, "values matter"
+
+
 def test_ValSetEval__data():
     """
     Test ValSetEval returns data dictionary that was used in creation.
@@ -255,7 +266,7 @@ def test_ValSetEval__repr_magic():
     assert str(val_set) == '''
 ValSetEval:
     speed: ValRange{left=10, right=20, step=3}
-    m    : ValArray{dtype=integer, values=[1, 2, 4, 8]}
+    m    : ValArray{dtype=int, values=[1, 2, 4, 8]}
     x    : [10, 20, 30]'''.strip()
 
 
@@ -361,6 +372,19 @@ def test_ValSetJoin__args():
 
     with pytest.raises(AttributeError):
         val_set.args = (set2, set1)
+
+
+def test_ValSetJoin__compare():
+    """Validate ValSetJoin eq()/neq()."""
+    dict1 = {"x": [10, 20], "y": [1, 2, 3]}
+    dict2 = {"x": (10, 20), "y": (1, 2, 3)}
+    dict3 = {"x": [34, 42], "y": [1, 2, 3]}
+    dict4 = {"x": [34, 42], "y": [1, 2]}  # missing y=3
+    vs1 = ValSetJoin(ValSetEval(dict1), ValSetEval(dict3))
+    vs2 = ValSetJoin(ValSetEval(dict2), ValSetEval(dict3))
+    vs3 = ValSetJoin(ValSetEval(dict1), ValSetEval(dict4))
+    assert vs1 == vs2
+    assert vs1 != vs3
 
 
 def test_ValSetJoin__repr():
@@ -501,6 +525,21 @@ def test_ValSetProd__len(val_set_prod_data):
     assert len(prod) == 4
 
 
+def test_ValSetProd__compare():
+    """Validate ValSetProd eq()/neq()."""
+    D1 = {"x": 34}
+    D2 = {"x": 42}
+    D3 = {"y": 10}
+    D4 = {"y": 13}
+    vs1 = ValSetProd([D1, D2], [D3])
+    vs2 = ValSetProd((D1, D2), [D3])
+    vs3 = ValSetProd([D2, D1], [D3])
+    vs4 = ValSetProd([D1, D2], [D4])
+    assert vs1 == vs2
+    assert vs1 != vs3, "order matters"
+    assert vs1 != vs4, "values matter"
+
+
 def test_ValSetProd__args(val_set_prod_data):
     """Test that ValSetProd provides args property with a tuple of args."""
     prod, ARGS, _ = val_set_prod_data
@@ -627,6 +666,22 @@ def test_ValSetZip__len(val_set_zip_data):
     assert len(zip_) == 3
 
 
+def test_ValSetZip__compare():
+    """Validate ValSetZip eq()/neq()."""
+    D1 = {"x": 34}
+    D2 = {"x": 42}
+    D3 = {"y": 10}
+    D4 = {"y": 20}
+    D5 = {"y": 13}
+    vs1 = ValSetZip([D1, D2], [D3, D4])
+    vs2 = ValSetZip([D3, D4], (D1, D2))
+    vs3 = ValSetZip([D2, D1], [D3, D4])
+    vs4 = ValSetZip([D1, D2], [D3, D5])
+    assert vs1 == vs2
+    assert vs1 != vs3, "order matters"
+    assert vs1 != vs4, "values matter"
+
+
 # noinspection PyUnresolvedReferences
 def test_ValSetZip__args(val_set_zip_data):
     """Test ValSetZip provides args ro-property with a tuple of arguments."""
@@ -652,7 +707,7 @@ ValSetZip:
 
 #
 # TESTING HELPERS
-# ---------------
+# ===============
 def test_make_unique():
     D1 = {"a": 1, "b": 2}
     D2 = {"b": 2, "a": 1}  # == D1
@@ -665,72 +720,15 @@ def test_make_unique():
 
 def test_guess_dtype():
     assert guess_dtype([]) == 'float'
-    assert guess_dtype([1, 2]) == 'integer'
+    assert guess_dtype([1, 2]) == 'int'
     assert guess_dtype([1, 2.3]) == 'float'
-    assert guess_dtype(['abc', 'def']) == 'string'
+    assert guess_dtype(['abc', 'def']) == 'str'
     assert guess_dtype([1, '2']) is None
 
 
 #
-# INTEGRATED TESTS
-# ----------------
-def test_complex_val_set__rfid():
-    """Create a complex values set from RFID config and validate it."""
-    data = ValSetJoin(
-        ValSetEval({
-            "speed": ValRange(30, 50, step=10),
-            "tari": ValArray(["12.5us", "18.75us"]),
-            "m": ValArray([8])
-        }),
-        ValSetProd(
-            ValSetEval({"speed": ValRange(50, 60, step=5)}),
-            ValSetZip(
-                ValSetEval({"tari": ValArray(["12.5us", "18.75us", "25.0us"])}),
-                ValSetEval({"m": ValArray([8, 4, 2])})
-            )
-        ),
-        unique=True
-    )
-    assert data.all() == (
-        {"speed": 30, "tari": "12.5us", "m": 8},
-        {"speed": 30, "tari": "18.75us", "m": 8},
-        {"speed": 40, "tari": "12.5us", "m": 8},
-        {"speed": 40, "tari": "18.75us", "m": 8},
-        {"speed": 50, "tari": "12.5us", "m": 8},
-        {"speed": 50, "tari": "18.75us", "m": 8},
-        {"speed": 50, "tari": "18.75us", "m": 4},
-        {"speed": 50, "tari": "25.0us", "m": 2},
-        {"speed": 55, "tari": "12.5us", "m": 8},
-        {"speed": 55, "tari": "18.75us", "m": 4},
-        {"speed": 55, "tari": "25.0us", "m": 2},
-        {"speed": 60, "tari": "12.5us", "m": 8},
-        {"speed": 60, "tari": "18.75us", "m": 4},
-        {"speed": 60, "tari": "25.0us", "m": 2},
-    )
-
-    assert str(data) == '''
-ValSetJoin{unique=True}:
-    ValSetEval:
-        speed: ValRange{left=30, right=50, step=10}
-        tari : ValArray{dtype=string, values=[12.5us, 18.75us]}
-        m    : ValArray{dtype=integer, values=[8]}
-    ValSetProd:
-        ValSetEval:
-            speed: ValRange{left=50, right=60, step=5}
-        ValSetZip:
-            ValSetEval:
-                tari: ValArray{dtype=string, values=[12.5us, 18.75us, 25.0us]}
-            ValSetEval:
-                m: ValArray{dtype=integer, values=[8, 4, 2]}'''.strip()
-
-#
-# SCHEMA FIELDS TESTING
-# ---------------------
-
-
-#
 # VALUE SETS SCHEMAS TESTING
-# --------------------------
+# ==========================
 def test_ValRangeSchema__serialize():
     """
     Test ValRange serialization using ValRangeSchema.
@@ -778,9 +776,9 @@ def test_ValRangeSchema__deserialize():
 
 @pytest.mark.parametrize('dtype,values', [
     ('float', []),
-    ('integer', [10, 20, 30]),
+    ('int', [10, 20, 30]),
     ('float', [2.3, 3.4]),
-    ('string', ['6.25us', '25.0us'])
+    ('str', ['6.25us', '25.0us'])
 ])
 def test_ValArraySchema__serialize(dtype: Optional[DTYPE], values):
     """Test ValArray serialization using ValArraySchema."""
@@ -792,9 +790,9 @@ def test_ValArraySchema__serialize(dtype: Optional[DTYPE], values):
 
 @pytest.mark.parametrize('dtype,values', [
     ('float', []),
-    ('integer', [10, 20, 30]),
+    ('int', [10, 20, 30]),
     ('float', [2.3, 3.4]),
-    ('string', ["6.25us", "25.0us"])
+    ('str', ["6.25us", "25.0us"])
 ])
 def test_ValArraySchema__deserialize(dtype: Optional[DTYPE], values):
     """Test ValArray deserialization using ValArraySchema."""
@@ -818,7 +816,7 @@ def test_ValSetEvalSchema__serialize_with_valid_data():
     schema = ValSetEvalSchema()
     dict_ = schema.dump(val_set)
     assert dict_ == {'op': 'eval', 'args': {
-        'x': {'op': 'array', 'dtype': 'integer', 'values': (34, 42)},
+        'x': {'op': 'array', 'dtype': 'int', 'values': (34, 42)},
         'y': {'op': 'range', 'left': 1, 'right': 10, 'step': 3}
     }}
 
@@ -839,7 +837,7 @@ def test_ValSetEvalSchema__deserialize():
     dict_ = {
         'op': 'eval',
         'args': {
-            'x': {'op': 'array', 'dtype': 'integer', 'values': (34, 42)},
+            'x': {'op': 'array', 'dtype': 'int', 'values': (34, 42)},
             'y': {'op': 'range', 'left': 1, 'right': 10, 'step': 3}
         }
     }
@@ -851,3 +849,268 @@ def test_ValSetEvalSchema__deserialize():
         "x": ValArray([34, 42]),
         "y": ValRange(1, 10, step=3)
     }
+
+
+JOIN_SCHEMA_DATA = (
+    ValSetJoin(
+        ValSetEval({'x': ValArray([1, 2, 3])}),
+        ValSetEval({'x': ValArray([10, 20])})
+    ),
+    {
+        'op': 'join',
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 3)}}
+        }, {
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (10, 20)}}
+        }]
+    })
+
+JOIN_UNIQUE_SCHEMA_DATA = (
+    ValSetJoin(
+        ValSetEval({'x': ValArray([1, 2, 3])}),
+        unique=True
+    ),
+    {
+        'op': 'join',
+        'unique': True,
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 3)}}
+        }]
+    })
+
+PROD_SCHEMA_DATA = (
+    ValSetProd(
+        ValSetEval({'x': ValArray([1, 2, 3])}),
+        ValSetEval({'y': ValArray([10, 20])})
+    ),
+    {
+        'op': 'prod',
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 3)}}
+        }, {
+            'op': 'eval',
+            'args': {'y': {'op': 'array', 'dtype': 'int', 'values': (10, 20)}}
+        }]
+    })
+
+PROD_UNIQUE_SCHEMA_DATA = (
+    ValSetProd(
+        ValSetEval({'x': ValArray([1, 2, 3])}),
+        unique=True
+    ),
+    {
+        'op': 'prod',
+        'unique': True,
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 3)}}
+        }]
+    })
+
+
+ZIP_SCHEMA_DATA = (
+    ValSetZip(
+        ValSetEval({'x': ValArray([1, 2, 3])}),
+        ValSetEval({'y': ValArray([9, 8, 7])})
+    ),
+    {
+        'op': 'zip',
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 3)}}
+        }, {
+            'op': 'eval',
+            'args': {'y': {'op': 'array', 'dtype': 'int', 'values': (9, 8, 7)}}
+        }]
+    })
+
+ZIP_UNIQUE_SCHEMA_DATA = (
+    ValSetZip(
+        ValSetEval({'x': ValArray([1, 2, 2])}),
+        ValSetEval({'y': ValArray([9, 8, 8])}),
+        unique=True
+    ),
+    {
+        'op': 'zip',
+        'unique': True,
+        'args': [{
+            'op': 'eval',
+            'args': {'x': {'op': 'array', 'dtype': 'int', 'values': (1, 2, 2)}}
+        }, {
+            'op': 'eval',
+            'args': {'y': {'op': 'array', 'dtype': 'int', 'values': (9, 8, 8)}}
+        }]
+    })
+
+
+@pytest.mark.parametrize('klass,schema_class,data', [
+    (ValSetJoin, ValSetJoinSchema, JOIN_SCHEMA_DATA),
+    (ValSetJoin, ValSetJoinSchema, JOIN_UNIQUE_SCHEMA_DATA),
+    (ValSetProd, ValSetProdSchema, PROD_SCHEMA_DATA),
+    (ValSetProd, ValSetProdSchema, PROD_UNIQUE_SCHEMA_DATA),
+    (ValSetZip, ValSetZipSchema, ZIP_SCHEMA_DATA),
+    (ValSetZip, ValSetZipSchema, ZIP_UNIQUE_SCHEMA_DATA),
+])
+def test_val_set__serialize_and_deserialize(klass, schema_class, data):
+    """Validate serialization with correct args."""
+    val_set, expected = data
+    schema = schema_class()
+
+    # Serialization:
+    dict_ = schema.dump(val_set)
+    assert dict_ == expected, f"serialization of {klass} with {schema_class}"
+
+    # Deserialization:
+    string = json.dumps(expected)
+    deserialized = schema.loads(string)
+    assert isinstance(deserialized, klass)
+    assert deserialized == val_set
+
+
+def test_ValSetJoin__serialize_error_for_non_ValXXX_values():
+    """Validate serialization of ValSetJoin with illegal args raise error."""
+    schema = ValSetJoinSchema()
+    with pytest.raises(TypeError):
+        schema.dump(ValSetJoin([{"x": ValArray([1, 2, 3])}]))
+
+
+def test_ValSetProd__serialize_error_for_non_ValXXX_value():
+    """Validate serialization of ValSetProd with illegal args raise error."""
+    schema = ValSetProdSchema()
+    with pytest.raises(TypeError):
+        schema.dump(ValSetProd([{"x": ValArray([1, 2, 3])}]))
+
+
+def test_ValSetZip__serialize_error_for_non_ValXXX_value():
+    """Validate serialization of ValSetZip with illegal args raise error."""
+    schema = ValSetZipSchema()
+    with pytest.raises(TypeError):
+        schema.dump(ValSetZip([{"x": ValArray([1, 2, 3])}]))
+
+
+#
+# INTEGRATED TESTS
+# ================
+@pytest.fixture
+def rfid_data_set():
+    data = ValSetJoin(
+        ValSetEval({
+            "speed": ValRange(30, 50, step=10),
+            "tari": ValArray(["12.5us", "18.75us"]),
+            "m": ValArray([8])
+        }),
+        ValSetProd(
+            ValSetEval({"speed": ValRange(50, 60, step=5)}),
+            ValSetZip(
+                ValSetEval({"tari": ValArray(["12.5us", "18.75us", "25.0us"])}),
+                ValSetEval({"m": ValArray([8, 4, 2])})
+            )
+        ),
+        unique=True
+    )
+    return data
+
+
+def test_rfid_data_set__all_str(rfid_data_set):
+    """Create a complex values set from RFID config and validate it."""
+    assert rfid_data_set.all() == (
+        {"speed": 30, "tari": "12.5us", "m": 8},
+        {"speed": 30, "tari": "18.75us", "m": 8},
+        {"speed": 40, "tari": "12.5us", "m": 8},
+        {"speed": 40, "tari": "18.75us", "m": 8},
+        {"speed": 50, "tari": "12.5us", "m": 8},
+        {"speed": 50, "tari": "18.75us", "m": 8},
+        {"speed": 50, "tari": "18.75us", "m": 4},
+        {"speed": 50, "tari": "25.0us", "m": 2},
+        {"speed": 55, "tari": "12.5us", "m": 8},
+        {"speed": 55, "tari": "18.75us", "m": 4},
+        {"speed": 55, "tari": "25.0us", "m": 2},
+        {"speed": 60, "tari": "12.5us", "m": 8},
+        {"speed": 60, "tari": "18.75us", "m": 4},
+        {"speed": 60, "tari": "25.0us", "m": 2},
+    )
+
+    assert str(rfid_data_set) == '''
+ValSetJoin{unique=True}:
+    ValSetEval:
+        speed: ValRange{left=30, right=50, step=10}
+        tari : ValArray{dtype=str, values=[12.5us, 18.75us]}
+        m    : ValArray{dtype=int, values=[8]}
+    ValSetProd:
+        ValSetEval:
+            speed: ValRange{left=50, right=60, step=5}
+        ValSetZip:
+            ValSetEval:
+                tari: ValArray{dtype=str, values=[12.5us, 18.75us, 25.0us]}
+            ValSetEval:
+                m: ValArray{dtype=int, values=[8, 4, 2]}'''.strip()
+
+
+def test_rfid_data_set__serialization_deserialization(rfid_data_set):
+    """
+    Create a complex values set from RFID config and validate its
+    serialization and deserialization.
+    """
+    expected_dict = {
+        'op': 'join',
+        'unique': True,
+        'args': [{
+            'op': 'eval',
+            'args': {
+                'speed': {
+                    'op': 'range', 'left': 30, 'right': 50, 'step': 10
+                },
+                'tari': {
+                    'op': 'array',
+                    'dtype': 'str',
+                    'values': ('12.5us', '18.75us')
+                },
+                'm': {
+                    'op': 'array', 'dtype': 'int', 'values': (8,)
+                }
+            }
+        },
+        {
+            'op': 'prod',
+            'args': [{
+                'op': 'eval',
+                'args': {
+                    'speed': {
+                        'op': 'range', 'left': 50, 'right': 60, 'step': 5
+                    }
+                }
+            },
+            {
+                'op': 'zip',
+                'args': [{
+                    'op': 'eval',
+                    'args': {
+                        'tari': {
+                            'op': 'array', 'dtype': 'str',
+                            'values': ('12.5us', '18.75us', '25.0us')
+                        },
+                    }
+                }, {
+                    'op': 'eval',
+                    'args': {
+                        'm': {
+                            'op': 'array', 'dtype': 'int', 'values': (8, 4, 2)
+                        }
+                    }
+                }]
+            }]
+        }]
+    }
+    # Serialization:
+    schema = ValSetJoinSchema()
+    dict_ = schema.dump(rfid_data_set)
+    assert dict_ == expected_dict, "serialization gone wrong"
+
+    # Deserialization:
+    string = json.dumps(expected_dict)
+    val_set = schema.loads(string)
+    assert val_set == rfid_data_set
