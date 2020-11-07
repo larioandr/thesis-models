@@ -6,7 +6,7 @@ import pytest
 
 from corelib.config import ValRange, ValArray, ValSetEval, ValSetJoin, \
     ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype, \
-    ValRangeSchema, _DTYPE
+    ValRangeSchema, DTYPE, ValSetEvalSchema
 
 
 #
@@ -58,6 +58,15 @@ def test_ValRange__len():
     """
     assert len(ValRange(34, 34)) == 1
     assert len(ValRange(left=23, right=49, step=8)) == 5
+
+
+def test_ValRange__compare():
+    """Test eq() and neq() operations for ValRange."""
+    r1 = ValRange(1, 10, 3)
+    r2 = ValRange(1.0, 10.0, 3.0)
+    r3 = ValRange(34, 42, 5)
+    assert r1 == r2
+    assert r1 != r3
 
 
 # noinspection PyPropertyAccess
@@ -121,6 +130,16 @@ def test_ValArray__dtype():
 
     with pytest.raises(TypeError):
         ValArray([(1, 2, 3), (3, 4, 5)], dtype='integer')
+
+
+def test_ValArray__compare():
+    a1 = ValArray([1, 2, 3], dtype='integer')
+    a2 = ValArray((1, 2, 3), dtype='integer')
+    a3 = ValArray([1, 2, 3], dtype='float')
+    a4 = ValArray([34, 42])
+    assert a1 == a2
+    assert a1 != a3
+    assert a1 != a4
 
 
 def test_ValArray__repr():
@@ -216,6 +235,12 @@ def test_ValSetEval__data():
     D = {"a": A_VAL, "b": B_VAL}
     val_set = ValSetEval(D)
     assert val_set.data == D
+
+
+def test_ValSetEval__args():
+    """Test that args property is an alias to data property."""
+    val_set = ValSetEval({"x": [10, 20], "y": (1, 2, 3)})
+    assert val_set.args == val_set.data
 
 
 def test_ValSetEval__repr_magic():
@@ -706,7 +731,7 @@ ValSetJoin{unique=True}:
 #
 # VALUE SETS SCHEMAS TESTING
 # --------------------------
-def test_ValRangeSchema_serialize():
+def test_ValRangeSchema__serialize():
     """
     Test ValRange serialization using ValRangeSchema.
 
@@ -725,7 +750,7 @@ def test_ValRangeSchema_serialize():
     assert dict_ == {'op': 'range', 'left': LEFT, 'right': RIGHT, 'step': STEP}
 
 
-def test_ValRangeSchema_deserialize():
+def test_ValRangeSchema__deserialize():
     """
     Test ValRange deserialization using ValRangeSchema.
 
@@ -757,7 +782,7 @@ def test_ValRangeSchema_deserialize():
     ('float', [2.3, 3.4]),
     ('string', ['6.25us', '25.0us'])
 ])
-def test_ValArraySchema_serialize(dtype: Optional[_DTYPE], values):
+def test_ValArraySchema__serialize(dtype: Optional[DTYPE], values):
     """Test ValArray serialization using ValArraySchema."""
     schema = ValArraySchema()
     array = ValArray(values, dtype=dtype)
@@ -771,7 +796,7 @@ def test_ValArraySchema_serialize(dtype: Optional[_DTYPE], values):
     ('float', [2.3, 3.4]),
     ('string', ["6.25us", "25.0us"])
 ])
-def test_ValArraySchema_deserialize(dtype: Optional[_DTYPE], values):
+def test_ValArraySchema__deserialize(dtype: Optional[DTYPE], values):
     """Test ValArray deserialization using ValArraySchema."""
     dict_ = {"op": "array", "dtype": dtype, "values": values}
     string = json.dumps(dict_)
@@ -779,3 +804,50 @@ def test_ValArraySchema_deserialize(dtype: Optional[_DTYPE], values):
     array = schema.loads(string)
     assert array.values == tuple(values)
     assert array.dtype == dtype
+
+
+def test_ValSetEvalSchema__serialize_with_valid_data():
+    """
+    Validate that ValSetEvalSchema serializes a ValSetEval with ValArray or
+    ValRange data.
+    """
+    val_set = ValSetEval({
+        "x": ValArray([34, 42]),
+        "y": ValRange(1, 10, step=3)
+    })
+    schema = ValSetEvalSchema()
+    dict_ = schema.dump(val_set)
+    assert dict_ == {'op': 'eval', 'args': {
+        'x': {'op': 'array', 'dtype': 'integer', 'values': (34, 42)},
+        'y': {'op': 'range', 'left': 1, 'right': 10, 'step': 3}
+    }}
+
+
+def test_ValSetEvalSchema__serialize_error_for_non_ValXXX_values():
+    """
+    Check serialization error when something besides ValArray or ValRage
+    is used as a value inside ValSetEval.
+    """
+    val_set = ValSetEval({"x": [34, 42]})
+    schema = ValSetEvalSchema()
+    with pytest.raises(TypeError):
+        schema.dump(val_set)
+
+
+def test_ValSetEvalSchema__deserialize():
+    """Validate ValSetEvalSchema properly deserialize to ValSetEval."""
+    dict_ = {
+        'op': 'eval',
+        'args': {
+            'x': {'op': 'array', 'dtype': 'integer', 'values': (34, 42)},
+            'y': {'op': 'range', 'left': 1, 'right': 10, 'step': 3}
+        }
+    }
+    string = json.dumps(dict_)
+    schema = ValSetEvalSchema()
+    val_set = schema.loads(string)
+    assert isinstance(val_set, ValSetEval)
+    assert val_set.args == {
+        "x": ValArray([34, 42]),
+        "y": ValRange(1, 10, step=3)
+    }

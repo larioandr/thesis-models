@@ -16,7 +16,7 @@ from itertools import product
 from typing import TypeVar, Any, Optional, Mapping, Literal
 from collections.abc import Iterable
 
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, post_load, ValidationError
 from marshmallow.fields import Field
 
 _Num = TypeVar('_Num', int, float)
@@ -103,6 +103,11 @@ class ValRange(Iterable[_Num]):
     def __len__(self):
         return len(self.values)
 
+    def __eq__(self, other):
+        return self.left == other.left and \
+               self.right == other.right and \
+               self.step == other.step
+
     @property
     def left(self) -> _Num:
         """Left boundary."""
@@ -134,7 +139,7 @@ class ValRangeSchema(Schema):
         return ValRange(data['left'], data['right'], data['step'])
 
 
-_DTYPE = Literal['integer', 'float', 'string', 'matrix', 'vector', 'vec2d',
+DTYPE = Literal['integer', 'float', 'string', 'matrix', 'vector', 'vec2d',
                  'vec3d']
 
 
@@ -156,7 +161,7 @@ class ValArray(Iterable[_T]):
     """
 
     # noinspection PyShadowingBuiltins
-    def __init__(self, data: Iterable[_T] = (), dtype: Optional[_DTYPE] = None):
+    def __init__(self, data: Iterable[_T] = (), dtype: Optional[DTYPE] = None):
         """
         Initialize a ValArray.
 
@@ -227,6 +232,9 @@ class ValArray(Iterable[_T]):
     def __len__(self):
         return len(self._values)
 
+    def __eq__(self, other):
+        return self.values == other.values and self.dtype == other.dtype
+
     def __repr__(self):
         values = [str(item) for item in self.values]
         values_str = ", ".join(values)
@@ -260,18 +268,6 @@ class ValArraySchema(Schema):
     def make_object(self, data, **kwargs):
         """Create ValArray instance."""
         return ValArray(data['values'], dtype=data['dtype'])
-
-
-# TODO: define an umbrella field with either ValArraySchema or ValRangeSchema
-#       (determine the type based on 'op')
-#       Good (?) idea: give a dictionary "op->schema", so this field will
-#       be usable in ValSetProdSchema/ValSetZipSchema/ValSetJoinSchema also
-
-# TODO: define object schema that accepts unknown fields, which values
-#       should be deserialized using a class defined in above umbrella field.
-
-# TODO: implement ValSetEvalSchema that will accept 'values' field with
-#       the schema defined above (with unknown fields)
 
 
 class ValSetEval(Iterable[_DST]):
@@ -371,6 +367,10 @@ class ValSetEval(Iterable[_DST]):
     def data(self):
         return self._data
 
+    @property
+    def args(self):
+        return self._data
+
     def __repr__(self):
         keys = list(self.data.keys())
         max_len = max([0] + [len(key) for key in keys])
@@ -381,6 +381,58 @@ class ValSetEval(Iterable[_DST]):
         ]
         lines_str = '\n'.join(lines)
         return f"ValSetEval:\n{lines_str}"
+
+
+class ValueField(Field):
+    def _serialize(self, value: Any, attr: str, obj: Any, **kwargs):
+        schema = None
+        if isinstance(value, ValRange):
+            schema = ValRangeSchema
+        elif isinstance(value, ValArray):
+            schema = ValArraySchema
+        else:
+            raise TypeError(f"unexpected value type {type(value)}")
+        return schema().dump(value)
+
+    def _deserialize(self, value: Any, attr: Optional[str],
+                     data: Optional[Mapping[str, Any]], **kwargs):
+        """Determined type based on the 'op' field value."""
+        op = None
+        try:
+            op = value['op']
+        except TypeError:
+            # Assume that value was a float
+            return float(value)
+        schema = None
+        if op == 'array':
+            schema = ValArraySchema
+        elif op == 'range':
+            schema = ValRangeSchema
+        else:
+            raise ValidationError(f'wrong operand type "{op}"')
+        return schema().load(value)
+
+
+class ValSetEvalSchema(Schema):
+    op = fields.String(default="eval")
+    args = fields.Dict(keys=fields.String(), values=ValueField())
+
+    @post_load
+    def make_object(self, data, **kwargs):
+        """Create ValSetEval instance."""
+        return ValSetEval(data['args'])
+
+
+# TODO: define an umbrella field with either ValArraySchema or ValRangeSchema
+#       (determine the type based on 'op')
+#       Good (?) idea: give a dictionary "op->schema", so this field will
+#       be usable in ValSetProdSchema/ValSetZipSchema/ValSetJoinSchema also
+
+# TODO: define object schema that accepts unknown fields, which values
+#       should be deserialized using a class defined in above umbrella field.
+
+# TODO: implement ValSetEvalSchema that will accept 'values' field with
+#       the schema defined above (with unknown fields)
 
 
 class ValSetJoin(Iterable[_DST]):
@@ -811,7 +863,7 @@ def make_unique(dicts: Iterable[dict]) -> list[dict]:
 
 
 # noinspection PyUnresolvedReferences
-def guess_dtype(values: Iterable[_T]) -> Optional[_DTYPE]:
+def guess_dtype(values: Iterable[_T]) -> Optional[DTYPE]:
     """Determine the data type of the array."""
     if not values:
         return 'float'
