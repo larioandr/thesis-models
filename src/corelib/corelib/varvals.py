@@ -27,6 +27,10 @@ from marshmallow.fields import Field
 _Num = TypeVar('_Num', int, float)
 _T = TypeVar('_T')
 _DST = dict[str, _T]
+DTYPE = Literal['int', 'float', 'str', 'matrix', 'vector', 'vec2d', 'vec3d']
+
+
+# TODO: add support for DTYPE = 'matrix', 'vector ,'vec2d', 'vec3d'
 
 
 class ValRange(Iterable[_Num]):
@@ -128,9 +132,6 @@ class ValRange(Iterable[_Num]):
     def __repr__(self):
         return f"ValRange{{left={self.left}, " \
                f"right={self.right}, step={self.step}}}"
-
-
-DTYPE = Literal['int', 'float', 'str', 'matrix', 'vector', 'vec2d', 'vec3d']
 
 
 class ValArray(Iterable[_T]):

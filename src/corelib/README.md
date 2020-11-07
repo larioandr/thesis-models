@@ -60,7 +60,7 @@ corelib: общая библиотека моделей
 В Python эти значения задаются так:
 
 ```python
-from corelib.config import ValArray, ValRange
+from corelib.varvals import ValArray, ValRange
 
 speed = ValRange(left=30, right=59, step=10)
 m = ValArray([2, 4])
@@ -238,7 +238,7 @@ m = ValArray([2, 4])
 
 
 ```python
-from corelib.config import ValRange, ValArray, ValSetJoin, ValSetProd, \
+from corelib.varvals import ValRange, ValArray, ValSetJoin, ValSetProd, \
     ValSetEval, ValSetZip
 
 data = ValSetJoin(

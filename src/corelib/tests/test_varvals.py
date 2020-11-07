@@ -3,10 +3,10 @@ from typing import Optional
 
 import pytest
 
-from corelib.config import ValRange, ValArray, ValSetEval, ValSetJoin, \
+from corelib.varvals import ValRange, ValArray, ValSetEval, ValSetJoin, \
     ValSetProd, ValSetZip, make_unique, ValArraySchema, guess_dtype, \
-    ValRangeSchema, DTYPE, ValSetEvalSchema, ValSetJoinSchema, ValSetProdSchema, \
-    ValSetZipSchema
+    ValRangeSchema, DTYPE, ValSetEvalSchema, ValSetJoinSchema, \
+    ValSetProdSchema, ValSetZipSchema
 
 
 #
