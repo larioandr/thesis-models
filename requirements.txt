@@ -11,3 +11,9 @@ ipython==7.19.0
 pandas==1.1.5
 matplotlib==3.3.3
 scipy==1.5.4
+
+setuptools~=41.2.0
+pyons~=1.0
+pytest~=6.1.2
+rfidsim~=1.0
+click~=7.1.2

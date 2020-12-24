@@ -9,13 +9,13 @@ setup(
     install_requires=[
         'Click',
         'numpy>=1.19.2',
-        'marshmallow>=3.8.0',
     ],
     tests_requires=[
         'pytest',
     ],
     entry_points='''
         [console_scripts]
-        rfidsim=rfidsim.main:cli
+        rfidsim=rfidsim.roadrfidsim:main      
     '''
 )
+#         rfidsim=rfidsim.main:cli

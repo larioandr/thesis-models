@@ -1,13 +1,13 @@
 from enum import Enum
 import numpy as np
-from collections import Iterable
+from collections.abc import Iterable
 
 import pyons
 from pyons import Entity
-import phy
-import protocol as gen2
-import journal
-import pyradise
+from . import phy
+from . import protocol as gen2
+from . import journal
+from . import pyradise
 
 
 class ReaderDescriptor(object):

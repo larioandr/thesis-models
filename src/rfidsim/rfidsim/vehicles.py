@@ -2,7 +2,7 @@ import numpy as np
 
 import pyons
 from pyons import Entity
-import journal
+from . import journal
 
 
 class Vehicle(Entity):

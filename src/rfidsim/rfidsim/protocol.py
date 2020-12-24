@@ -109,7 +109,7 @@ def encode(value, width=0, use_ebv=False):
         return encode(list(binascii.unhexlify(value.strip())))
     elif isinstance(value, bytes):
         return encode(list(bytes))
-    elif isinstance(value, collections.Iterable):
+    elif isinstance(value, collections.abc.Iterable):
         return "".join(format(x, "08b") for x in value)
     else:
         raise ValueError("unsupported field type={}".format(type(value)))

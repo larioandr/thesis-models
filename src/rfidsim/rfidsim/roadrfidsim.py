@@ -1,17 +1,17 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import time as systime
 
 import pyons
-import journal
-from factory import Factory
-from model import Model
-from parameters import ModelDescriptor
-from generator import Generator
-import protocol as gen2
-from reader import Reader
-import pyradise
+
+from . import journal
+from . factory import Factory
+from .model import Model
+from .parameters import ModelDescriptor
+from .generator import Generator
+from . import protocol as gen2
+from .reader import Reader
+from . import pyradise
 
 # @pyons.stop_condition()
 # def check_sim_time():
@@ -75,7 +75,7 @@ def plot_path_loss_line(chan_df, lane, reader_side, tag_location, vehicle_id):
     # print("HO-HO-HO\n" * 10)
     # print(df.to_string())
 
-if __name__ == '__main__':
+def main():
     md = ModelDescriptor()
 
     md.lanes_number = 2
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     md.reader_session_strategy = Reader.SessionStrategy.ONLY_A
     md.vehicle_length = 4.0
     md.tag_start_offset = 31.0
-    md.vehicle_speed = 180 * 5.0/18
+    md.vehicle_speed = 20.0
     md.vehicle_lifetime = 2 * md.tag_start_offset / md.vehicle_speed
     md.use_doppler = True
     md.tag_modulation_loss = -12.0
@@ -192,3 +192,6 @@ if __name__ == '__main__':
     #                   reader_x=fmt_pos, reader_y=fmt_pos, reader_z=fmt_pos,
     #                   tag_x=fmt_pos, tag_y=fmt_pos, tag_z=fmt_pos)
     # print(channel_df.to_string(formatters=formatters))
+
+if __name__ == '__main__':
+    main()

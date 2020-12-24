@@ -2,7 +2,7 @@ import pandas as pd
 
 import pyons
 from pyons.base import Singleton
-import pyradise
+from . import pyradise
 
 
 class VehicleInfoRecord(object):

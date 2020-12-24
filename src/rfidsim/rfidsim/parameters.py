@@ -1,12 +1,12 @@
 import numpy as np
 
-import phy
-import reader
-import protocol as gen2
-import pyradise
+from . import phy
+from . import reader
+from . import protocol as gen2
+from . import pyradise
 
 
-class ModelDescriptor(object):
+class ModelDescriptor:
     def __init__(self):
         self.lanes_number = 2
         self.reader_antennas_sides = ['front', 'back']
@@ -62,3 +62,14 @@ class ModelDescriptor(object):
         self.vehicle_lifetime = 2.0
         self.vehicle_generation_interval = lambda: np.random.uniform(0.9, 1.1)
         self.max_vehicles_num = 1.0
+
+    def validate(self) -> bool:
+        """
+        Validate parameters, raises `ValueError` if errors found.
+
+        Returns: True, if no errors found.
+        """
+        if self.lanes_number <= 0 or self.lanes_number > 2:
+            raise ValueError(
+                f"expected 1 or 2 lanes, {self.lanes_number} found")
+        return True

@@ -1,7 +1,7 @@
 import unittest
 
 import pyons
-from examples.roadrfidsim import protocol as gen2
+from rfidsim import protocol as gen2
 
 
 class TestEncode(unittest.TestCase):
@@ -288,7 +288,7 @@ class TestReadCommand(unittest.TestCase):
         pd = self.sync.duration
         d0 = self.data0
         d1 = self.data1
-        with self.assertRaises(pyons.MissingFieldError):
+        with self.assertRaises(pyons.errors.MissingFieldError):
             # noinspection PyStatementEffect
             self.frame_no_preamble.duration
         self.assertAlmostEqual(self.frame1.duration, pd + 55 * d0 + 3 * d1, delta=self.tol)

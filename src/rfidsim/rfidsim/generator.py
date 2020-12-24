@@ -2,7 +2,7 @@ import time as systime
 
 import pyons
 from pyons import Entity
-from factory import Factory
+from rfidsim.factory import Factory
 
 
 class Generator(Entity):

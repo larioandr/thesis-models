@@ -1,15 +1,15 @@
 import binascii
-from collections import Iterable
+from collections.abc import Iterable
 from enum import Enum
 import numpy as np
 
 import pyons
 from pyons import Entity
-import phy
-import vectors
-import protocol as gen2
-import journal
-import pyradise
+from . import phy
+from . import vectors
+from . import protocol as gen2
+from . import journal
+from . import pyradise
 
 
 INIT_TAG_STAGE = (2, "Init tag")

@@ -3,10 +3,11 @@ from enum import Enum
 
 import pyons
 from pyons import Entity
-import protocol as gen2
-import vectors
-import journal
-import pyradise
+
+from . import protocol as gen2
+from . import vectors
+from . import journal
+from . import pyradise
 
 
 SPEED_OF_LIGHT = 299792458.0    # meters per second

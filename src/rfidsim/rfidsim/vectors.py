@@ -57,7 +57,7 @@ def rad2deg(value, reduce=True):
 
 
 def vec3(v):
-    if not isinstance(v, collections.Iterable) or len(v) != 3:
+    if not isinstance(v, collections.abc.Iterable) or len(v) != 3:
         raise ValueError("failed to interpret v={} (type:{}) as 3D vector"
                          "".format(v, type(v)))
     return v if isinstance(v, np.ndarray) else np.array(v)
