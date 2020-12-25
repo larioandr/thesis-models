@@ -782,12 +782,16 @@ def MAPFromTrace(trace, orders, maxIter=200, stopCond=1e-7, initial=None,
             for ordk in allord:
                 if verbose:
                     print("Trying orders ", ordk)
-                res = MAPFromTrace(trace, ordk, maxIter, stopCond, initial,
-                                   result, True)
-                # noinspection PyUnresolvedReferences
-                if res[2] > bestres[2]:
-                    bestres = res
-                    bestOrders = ordk
+                try:
+                    res = MAPFromTrace(trace, ordk, maxIter, stopCond, initial,
+                                       result, True, verbose=verbose)
+                    # noinspection PyUnresolvedReferences
+                    if res[2] > bestres[2]:
+                        bestres = res
+                        bestOrders = ordk
+                except ValueError as e:
+                    if verbose:
+                        print(f'Oops.. something gone wrong in evaluating orders = {ordk}, trying next')
         if verbose:
             print("Best solution: logli =", bestres[2], "orders =", bestOrders)
         if retlogli:
@@ -886,12 +890,12 @@ def MAPFromTrace(trace, orders, maxIter=200, stopCond=1e-7, initial=None,
 
         steps += 1
         if verbose and steps % 10 == 0:
-            clear_output()
+            #clear_output()
             print("iteration: ", steps, ", logli: ", logli)
             sys.stdout.flush()
 
     if verbose:
-        clear_output()
+        #clear_output()
         print("Num of iterations: ", steps, ", logli: ", logli)
         print("EM algorithm terminated.", orders)
         sys.stdout.flush()
