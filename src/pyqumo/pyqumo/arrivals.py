@@ -1,10 +1,11 @@
-from functools import lru_cache
+from functools import cached_property, lru_cache
 
 import numpy as np
 
 from pyqumo import chains
 from pyqumo.matrix import is_infinitesimal, cached_method, cbdiag, order_of
 from pyqumo.distributions import Exp
+from pyqumo.stochastic import Rnd
 
 
 class ArrivalProcess:
@@ -94,7 +95,7 @@ class MAP(ArrivalProcess):
     def exponential(rate):
         """MAP representation of a Poisson process with the given rate.
 
-        :param rate exponential distribution rate ($1/\mu$)
+        :param rate exponential distribution rate ($1/\\mu$)
         """
         if rate <= 0:
             raise ValueError("positive rate expected, '{}' found".format(rate))
@@ -132,8 +133,10 @@ class MAP(ArrivalProcess):
         super().__init__()
         d0 = np.asarray(d0)
         d1 = np.asarray(d1)
+        self._generator = d0 + d1
+        self._order = order_of(d0)
         if check:
-            if not is_infinitesimal(d0 + d1, rtol=rtol, atol=atol):
+            if not is_infinitesimal(self._generator, rtol=rtol, atol=atol):
                 raise ValueError("D0 + D1 must be infinitesimal")
 
             if not np.all(d1 >= -atol):
@@ -143,11 +146,50 @@ class MAP(ArrivalProcess):
                 raise ValueError("all non-diagonal D0 elements must be "
                                  "non-negative")
 
-        self._d0 = d0
-        self._d1 = d1
-        self.__cache__ = {}
-        self.__state = None  # used in __call__()
-    
+        self._d = [d0, d1]
+        self.__inv_d0 = np.linalg.inv(self.D0)
+
+        # Since we will use Mmap for data generation, we need to generate
+        # special matrices for transitions probabilities and rates.
+
+        # 1) We need to store rates (we will use them when choosing random
+        #    time we spend in the state):
+        self._rates = -self._d[0].diagonal()
+
+        # 2) Then, we need to store cumulative transition probabilities P.
+        #    We store them in a stochastic matrix of shape N x (K*N):
+        #      P[I, J] is a probability, that:
+        #      - new state will be J (mod N), and
+        #      - if J < N, then no packet is generated, or
+        #      - if J >= N, then packet of type J // N is generated.
+        self._trans_pmf = np.hstack((
+            self._d[0] + np.diag(self._rates),  # leftmost diagonal is zero
+            self._d[1]
+        )) / self._rates[:, None]
+
+        # Build embedded DTMC and CTMC:
+        self.__ctmc = chains.CTMC(self._generator, check=False)
+        self.__dtmc = chains.DTMC(-self.__inv_d0.dot(self.D1), check=False)
+
+        # Define random variables generators:
+        # -----------------------------------
+        # - random generators for time in each state:
+        self.__rate_rnd = [Rnd(
+            lambda n, r=r: np.random.exponential(1/r, size=n),
+            label=f"exp({r:.3f})"
+        ) for r in self._rates]
+
+        # - random generators of state transitions:
+        n_trans = self._order * len(self._d)
+        self.__trans_rnd = [Rnd(
+            lambda n, p0=p: np.random.choice(np.arange(n_trans), p=p0, size=n),
+            label=f"choose({n_trans}, p={p})"
+        ) for p in self._trans_pmf]
+
+        # Since we have the initial distribution, we find the initial state:
+        self._state = np.random.choice(
+            np.arange(self._order), p=self.__dtmc.steady_pmf())
+
     def copy(self):
         """Build a new MAP with the same matrices D0 and D1 without validation.
         """
@@ -157,81 +199,69 @@ class MAP(ArrivalProcess):
     @property
     def D0(self):
         """Get matrix D0."""
-        return self._d0
+        return self._d[0]
 
     # noinspection PyPep8Naming
     @property
     def D1(self):
         """Get matrix D1."""
-        return self._d1
+        return self._d[1]
 
     # noinspection PyPep8Naming
     def D(self, n):
         """Get matrix Dn for n = 0 or n = 1."""
-        if n == 0:
-            return self.D0
-        elif n == 1:
-            return self.D1
-        else:
-            raise ValueError("illegal n={} found".format(n))
+        self._d[n]
 
-    @property
-    @lru_cache
+    @cached_property
     def generator(self):
-        return self.D0 + self.D1
+        return self._generator
 
-    @property
+    @cached_property
+    def order(self) -> int:
+        return self._order
+
     @lru_cache
-    def order(self):
-        return order_of(self.D0)
-
-    @cached_method('d0n', 1)
-    def d0n(self, k):
-        """Returns $(-D0)^{k}$."""
-        delta = k - round(k)
-        if np.abs(delta) > 1e-10:
-            print("DELTA = {}".format(delta))
-            raise TypeError("illegal degree='{}', integer expected".format(k))
-        k = int(k)
+    def d0n(self, k: int) -> np.ndarray:
+        """
+        Returns $(-D0)^{k}$.
+        """
+        if k == -1:
+            return -self.__inv_d0
         if k == 0:
             return np.eye(self.order)
-        elif k > 0:
+        if k > 0:
             return self.d0n(k - 1).dot(-self.D0)
-        elif k == -1:
-            return -np.linalg.inv(self.D0)
-        else:  # degree <= -2
-            return self.d0n(k + 1).dot(self.d0n(-1))
+        # If we are here, degree <= -2
+        return self.d0n(k + 1).dot(self.d0n(-1))
 
-    @cached_method('moment', index_arg=1)
-    def moment(self, k):
+    @lru_cache
+    def moment(self, k: int) -> np.ndarray:
         pi = self.embedded_dtmc().steady_pmf()
         x = np.math.factorial(k) * pi.dot(self.d0n(-k)).dot(np.ones(self.order))
         return x.item()
 
-    @property
-    @cached_method('rate')
+    @cached_property
     def rate(self):
         return 1.0 / self.moment(1)
 
-    @cached_method('mean')
+    @lru_cache
     def mean(self):
         return self.moment(1)
 
-    @cached_method('var')
+    @lru_cache
     def var(self):
         return self.moment(2) - pow(self.moment(1), 2)
 
-    @cached_method('std')
+    @lru_cache
     def std(self):
         return self.var() ** 0.5
 
-    @cached_method('cv')
+    @lru_cache
     def cv(self):
         return self.std() / self.mean()
 
-    @cached_method('lag', index_arg=1)
+    @lru_cache
     def lag(self, k):
-        # TODO: write unit test
         #
         # Computing lag-k as:
         #
@@ -254,68 +284,33 @@ class MAP(ArrivalProcess):
         denominator = (2 * rate2 * pi.dot(d0ni2).dot(e) - 1)
         return numerator / denominator
 
-    @cached_method('background_ctmc')
+    @lru_cache
     def background_ctmc(self):
-        return chains.CTMC(self.generator, check=False)
+        return self.__ctmc
 
-    @cached_method('embedded_dtmc')
+    @lru_cache
     def embedded_dtmc(self):
-        return chains.DTMC(self.d0n(-1).dot(self.D1), check=False)
+        return self.__dtmc
 
-    def generate(self, size, max_iters_per_sample=None):
-        # Building P - a transition probabilities matrix of size Nx(2N), where:
-        # - P(i, j), j < N, is a probability to move i -> j without arrival;
-        # - P(i, j), N <= j < 2N is a probability to move i -> (j - N) with
-        #   arrival
-        rates = self.__cache__.get('$generate__rates', -self.D0.diagonal())
-        means = self.__cache__.get(
-            '$generate__means', np.diag(np.power(rates, -1)))
-        p0 = self.__cache__.get(
-            '$generate__p0', means.dot(self.D0 + np.diag(rates)))
-        p1 = self.__cache__.get('$generate__p1', means.dot(self.D1))
-        p = self.__cache__.get('$generate__p', np.hstack([p0, p1]))
-
-        self.__cache__.update({
-            '$generate__rates': rates,
-            '$generate__means': means,
-            '$generate__p0': p0,
-            '$generate__p1': p1,
-            '$generate__p': p,
-        })
-
-        if self.__state is None:
-            self.__state = np.random.choice(
-                range(self.order), p=(np.ones(self.order) / self.order)
-            )
-
-        # Yielding random intervals
-        arrival_interval = 0.0
-        num_generated = 0
-        all_states = list(range(2 * self.order))
-
-        it = 0
-        while (num_generated < size and 
-               (max_iters_per_sample is None or it < max_iters_per_sample)):
-            arrival_interval += np.random.exponential(1 / rates[self.__state])
-            next_state = np.random.choice(all_states, p=p[self.__state])
-            if next_state >= self.order:
-                self.__state = next_state - self.order
-                num_generated += 1
-                yield arrival_interval
-                it = 0
-                arrival_interval = 0.0
-            else:
-                self.__state = next_state
-                it += 1
-        if num_generated < size:
-            raise RuntimeError(
-                f'{num_generated}/{size} generated in {it} iterations')
+    def generate(self, size):
+        for _ in range(size):
+            pkt_type = 0
+            interval = 0.0
+            # print('> start in state ', self._state)
+            i = self._state
+            while pkt_type == 0:
+                interval += self.__rate_rnd[i]()
+                j = self.__trans_rnd[i]()
+                pkt_type, i = divmod(j, self._order)
+            self._state = i
+            yield interval
     
     def __call__(self):
         return next(self.generate(1))
     
     def reset_generate_state(self):
-        self.__state = None
+        self._state = np.random.choice(
+            np.arange(self._order), p=self.__dtmc.steady_pmf())
 
     def compose(self, other):
         # TODO:  write unit tests
@@ -326,8 +321,8 @@ class MAP(ArrivalProcess):
         d0_out = np.kron(self.D0, other_eye) + np.kron(other.D0, self_eye)
         d1_out = np.kron(self.D1, other_eye) + np.kron(other.D1, self_eye)
         return MAP(d0_out, d1_out)
-
-    @cached_method('_pow_dtmc_matrix', index_arg=1)
+    
+    @lru_cache
     def _pow_dtmc_matrix(self, k):
         if k == 0:
             return np.eye(self.order)
