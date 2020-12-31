@@ -220,7 +220,7 @@ def test_fix_stochastic__fixable_matrix():
     # Maximum error of elements is: 0.08
     # Maximum error of row sums is: 0.11
 
-    fixed_mat, max_elem_err, max_row_err = fix_stochastic(mat, max_err=max_err)
+    fixed_mat, error = fix_stochastic(mat, tol=max_err)
 
     assert_allclose(fixed_mat, [
         [0, 0.1/1.1, 0.8/1.1, 0.2/1.1],
@@ -228,26 +228,22 @@ def test_fix_stochastic__fixable_matrix():
         [1.09/1.11, 0, 0.02/1.11, 0],
         [0.4, 0.4, 0, 0.2]
     ], rtol=1e-9)
-    assert_allclose(max_elem_err, 0.08)
-    assert_allclose(max_row_err, 0.11)
+    assert_allclose(error, 0.11)
 
 
-@pytest.mark.parametrize('mat, result, elem_err, row_err, tol, comment', [
-    ([-0.02, 0.28, 0.73], [0, 0.3/1.05, 0.75/1.05], 0.02, 0.05, 0.051,
+@pytest.mark.parametrize('mat, result, error, tol, comment', [
+    ([-0.02, 0.28, 0.73], [0, 0.3/1.05, 0.75/1.05], 0.05, 0.051,
      'negative elements are added, then row is divided'),
-    ([0.99], [1.0], 0.0, 0.01, 0.02,
-     'row with sum less then 1.0 should be divided')
+    ([0.99], [1.0], 0.01, 0.02, 'row with sum less then 1.0 should be divided')
 ])
-def test_fix_stochastic__fixable_vector(mat, result, elem_err, row_err, tol,
-                                        comment):
+def test_fix_stochastic__fixable_vector(mat, result, error, tol, comment):
     """
     Validate test_stochastic() correctly processes a almost stochastic vector.
     """
     mat = asarray(mat)
-    fixed_mat, max_elem_err, max_row_err = fix_stochastic(mat, max_err=tol)
+    fixed_mat, max_err = fix_stochastic(mat, tol=tol)
     assert_allclose(fixed_mat, result, err_msg=comment)
-    assert_allclose(max_elem_err, elem_err, err_msg=comment)
-    assert_allclose(max_row_err, row_err, err_msg=comment)
+    assert_allclose(max_err, error, err_msg=comment)
 
 
 def test_fix_stochastic__too_small_element_raise_error():
@@ -255,7 +251,7 @@ def test_fix_stochastic__too_small_element_raise_error():
     Validate test_stochastic() raises error when element is too negative.
     """
     with pytest.raises(CellValueError) as excinfo:
-        fix_stochastic(asarray([[0.02, -0.08, 0.72, 0.12]]), max_err=0.07)
+        fix_stochastic(asarray([[0.02, -0.08, 0.72, 0.12]]), tol=0.07)
     ex = excinfo.value
     assert ex.row == 0
     assert ex.col == 1
@@ -274,7 +270,7 @@ def test_fix_stochastic__row_sum_too_large():
     Validate test_stochastic() raises error when row sum is too large.
     """
     with pytest.raises(RowSumError) as excinfo:
-        fix_stochastic(asarray([[0, 1], [0.8, 0.25]]), max_err=0.04)
+        fix_stochastic(asarray([[0, 1], [0.8, 0.25]]), tol=0.04)
     ex = excinfo.value
     assert ex.row == 1
     assert_allclose(ex.actual, 1.05)

@@ -275,10 +275,7 @@ def check_markovian_arrival(matrices: Sequence[ndarray]) -> bool:
 # a given task, e.g. make stochastic or infinitesimal.
 # ############################################################################
 
-def fix_stochastic(
-        mat: ndarray,
-        max_err: Union[float64, float] = 1e-3
-) -> Tuple[ndarray, float64, float64]:
+def fix_stochastic(mat: ndarray, tol: float = 1e-3) -> Tuple[ndarray, float]:
     """
     Try to fix elements of a matrix that is not fully stochastic.
 
@@ -298,18 +295,16 @@ def fix_stochastic(
     ----------
     mat: ndarray
         a 2d matrix, not necessary square
-    max_err: float64, optional
+    tol: float64, optional
         maximum deviation of any matrix element from (0, 1) interval,
         as well as of the row sum from 1.
 
     Returns
     -------
-    stochastic_matrix: ndarray
+    matrix: ndarray
         matrix of the same dimension, but stochastic.
-    max_elem_err: float64
-        maximum error in elements
-    max_row_err: float64
-        maximum error in
+    err: float
+        maximum error
 
     Raises
     ------
@@ -328,34 +323,31 @@ def fix_stochastic(
 
     # From this point, we are sure that matrix has two dimensions.
     num_rows, num_cols = mat.shape
-    element_errors = []  # store (i, j, err), err - abs. smallest element
     new_mat: ndarray = mat.copy()
 
     # Find the smallest elements of each row and record errors.
     min_cols = new_mat.argmin(axis=1)
-    min_elem: Tuple[Any, Any, float] = (None, None, 0)  # value, row, col
+
+    # Store maximum cell error: row, col, value, error
+    cell_err: Tuple[int, int, float, float] = (-1, -1, 0, 0)
+
     for row, col in enumerate(min_cols):
+        # Extract the smallest element of the row. If it is less then 0,
+        # track error and add its absolute value to all row elements:
         el = new_mat[(row, col)]
-        if el < 0:
-            element_errors.append((row, col, -el))
-        # track smallest element:
-        if min_elem[-1] > el:
-            min_elem = (row, col, el)
+        if (error := -el) > 0:
+            if error > cell_err[-1]:
+                cell_err = (row, col, el, error)
+            new_mat[row] -= el * ones(num_cols)
 
     # If the smallest element is smaller than -max_err, raise an exception:
-    if min_elem[-1] < -max_err:
-        row, col, el = min_elem
+    if cell_err[-1] > tol:
+        row, col, el, error = cell_err
         raise CellValueError(
-            row, col, el, error=-el, tol=max_err, lower=0.0, upper=1.0)
-
-    # Iterate over all rows with negative elements and shift
-    # these rows, so the distance between elements is kept:
-    for row, col, err in element_errors:
-        for j in range(num_cols):
-            new_mat[row][j] += err
+            row, col, el, error=error, tol=tol, lower=0.0, upper=1.0)
 
     # Now all new_mat elements should be non-negative:
-    assert (new_mat >= 0).all()
+    assert (new_mat >= -1e-11).all()
 
     # Iterate over all rows and find deviations from 1:
     row_sums = new_mat.sum(axis=1)
@@ -365,10 +357,10 @@ def fix_stochastic(
     row_error = abs_row_errors[row_with_max_err]
 
     # If the maximum deviation is larger then max_err, raise an error:
-    if row_error > max_err:
+    if row_error > tol:
         row_sum = row_sums[row_with_max_err]
         raise RowSumError(
-            row_with_max_err, row_sum, 1.0, error=row_error, tol=max_err)
+            row_with_max_err, row_sum, 1.0, error=row_error, tol=tol)
 
     # Otherwise, divide all elements on the row sum, if this sum is
     # not equal to one:
@@ -378,7 +370,7 @@ def fix_stochastic(
     if is_1d_vector:
         new_mat = new_mat.reshape((new_mat.shape[1],))
 
-    return new_mat, -min_elem[-1], row_error
+    return new_mat, max(cell_err[-1], row_error)
 
 
 def fix_infinitesimal(
@@ -529,7 +521,6 @@ def fix_markovian_arrival(
         raise this exception if some row differs too much from one.
     MatrixShapeError
         raise this exception if matrix shape is not a square
-
     """
     # Validate then at least two matrices provided:
     if len(matrices) < 2:
@@ -543,7 +534,7 @@ def fix_markovian_arrival(
         if mat.shape != (order, order):
             raise MatrixShapeError((order, order), mat.shape, f"D{mi + 1}")
 
-    # Store cell errors: matrix, row, col, value, error
+    # Store cell errors: matrix index, row, col, value, error
     cell_err: Tuple[int, int, int, float, float] = (-1, -1, -1, 0.0, 0.0)
 
     # Store row sum errors: row, value, error
