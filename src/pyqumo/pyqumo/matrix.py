@@ -1,6 +1,6 @@
-from typing import Union, Tuple, Iterable, Sequence, Any
+from typing import Union, Tuple, Iterable, Sequence
 
-from numpy import ndarray, asarray, float64, ones, diag, zeros, allclose
+from numpy import ndarray, asarray, float64, ones, diag, zeros
 
 from pyqumo.errors import MatrixShapeError, CellValueError, \
     RowSumError, RowSumsError
@@ -182,10 +182,29 @@ def is_stochastic(mat: ndarray) -> bool:
         True iff all elements are between 0 and 1, or close to them,
         and each row sum is 1.
     """
-    return ((mat.size > 0) and (mat >= 0).all() and
-            (mat <= 1.0).all() and
-            ((is_vector(mat) and mat.sum() == 1.0) or
-             (mat.sum(axis=1) == ones(mat.shape[0])).all()))
+    if (mat.size == 0) or (mat < 0).any() or (mat > 1).any():
+        return False
+    if is_vector(mat):
+        return mat.sum() == 1.0
+    return (mat.sum(axis=1) == ones(mat.shape[0])).all()
+
+
+def is_pmf(mat: ndarray) -> bool:
+    """
+    Check that 1D array is a probability mass function - a stochastic row.
+
+    Parameters
+    ----------
+    mat : ndarray
+        1D array with sum of elements equal to 1.0
+
+    Returns
+    -------
+    flag : bool
+        True iff the argument is a 1D array, sum of its elements is 1.0 and
+        all elements are non-negative.
+    """
+    return len(mat.shape) == 1 and is_stochastic(mat)
 
 
 def is_infinitesimal(mat: ndarray) -> bool:
@@ -572,44 +591,176 @@ def fix_markovian_arrival(
     return tuple(new_matrices), max([cell_err[-1], row_err[-1]])
 
 
-# def is_pdf(matrix, rtol=1e-05, atol=1e-08):
-#     """Checks whether each row of a given matrix represents a PDF
-#     (distribution), i.e. 0 <= matrix[i][j] <= matrix[i][j+1] and
-#     matrix[i][N] == 1 for each i. If a single vector is given
-#     it is treated as a row.
-#
-#     Args:
-#         matrix: a vector or a matrix where each row is checked to be a
-#             cumulative probability distribution
-#         rtol: relative tolerance, see numpy.allclose for reference
-#         atol: absolute tolerance, see numpy.allclose for reference
-#
-#     Returns:
-#         scalar bool if matrix is a vector, or a vector of bools of
-#         size equal to the number of rows of matrix
-#     """
-#     matrix = np.asarray(matrix)
-#     if is_vector(matrix):
-#         if isinstance(matrix, sparse.spmatrix):
-#             # noinspection PyUnresolvedReferences
-#             vector = matrix.toarray().flatten()
-#         else:
-#             vector = matrix.flatten()
-#         pmf = vector - np.hstack(([0], vector))[0:-1]
-#         return is_pmf(pmf, rtol, atol)
-#     else:
-#         rows_num = matrix.shape[0]
-#         if isinstance(matrix, sparse.spmatrix):
-#             matrix = matrix.tocsc()
-#             pmf = matrix - sparse.hstack((
-#                 np.zeros((rows_num, 1)), matrix)
-#             ).tocsc()[:, :-1]
-#         else:
-#             pmf = matrix - np.hstack((
-#                 np.zeros((rows_num, 1)), matrix))[:, :-1]
-#         return is_pmf(pmf, rtol, atol)
-#
-#
+# ############################################################################
+# OPERATIONS FOR BLOCK MATRICES
+# ############################################################################
+def _validate_cb_blocks(blocks: Iterable[Sequence]) -> None:
+    """
+    Validate blocks for blocks sequence for cbXXX() routines.
+
+    It is assumed that blocks is an iterable of sequences, and last element
+     of each sequence is an `ndarray` instance. Then we validate:
+
+    1) `blocks` sequence is not empty
+    2) `blocks[0][-1]` is a 2D `ndarray`
+    3) all `blocks[i][-1].shape` are the same.
+
+    If first check failed, `ValueError` is thrown. If cases 2 or 3 are
+    violated, then `MatrixShapeError` is thrown.
+
+    Parameters
+    ----------
+    blocks : iterable of sequences (tuples), last element of each is ndarray
+
+    Raises
+    ------
+    ValueError
+        thrown if `blocks` iterable is empty
+    MatrixShapeError
+        thrown if the first block is not a 2D array, or if any block shape
+        differs from the first block shape.
+    """
+    if not blocks:
+        raise ValueError("need at least one block")
+    block_shape = blocks[0][-1].shape
+    if len(block_shape) != 2:
+        raise MatrixShapeError('(N, M)', block_shape, f"B[0]")
+    for bi, block in enumerate(blocks[1:]):
+        if (mat := block[-1]).shape != block_shape:
+            raise MatrixShapeError(block_shape, mat.shape, f"B[{bi + 1}]")
+
+
+def cbmat(blocks: Iterable[Tuple[int, int, ndarray]]) -> ndarray:
+    """
+    For a given sequence of blocks [(i, j, Bij)...] build a block matrix.
+
+    Each block is given with its coordinates in the block matrix, and
+    the block value. All blocks must have the same shape.
+
+    Block shape is studied from the first block. Number of columns and rows
+    in the block matrix are studied from indicies: maximum block row index
+    is the number of rows, maximum block col index is the number of columns.
+
+    Examples
+    --------
+    >>> cbmat([
+    >>>     (0, 0, asarray([[1, 2]])),
+    >>>     (1, 0, asarray([[3, 4]])),
+    >>>     (1, 2, asarray([[5, 6]])),
+    >>> ]).tolist()
+    >>> # Output:
+    >>> [[1, 2, 0, 0, 0, 0], [3, 4, 0, 0, 5, 6]]
+
+    Parameters
+    ----------
+    blocks : iterable of tuples of int, int and ndarray
+        blocks given as `(row, col, block)`
+
+    Returns
+    -------
+    matrix : ndarray
+        a block matrix built from the given blocks
+
+    Raises
+    ------
+    MatrixShapeError
+        raised when any block Bi have shape different from the first block B0,
+        or if block is not a 2D matrix.
+    ValueError
+        raised if an empty sequence of blocks was given
+    """
+    _validate_cb_blocks(blocks)
+    block_shape = blocks[0][-1].shape
+    # Check parameters and learn shape:
+    max_row = max(row for row, col, block in blocks)
+    max_col = max(col for row, col, block in blocks)
+    num_rows = (max_row + 1) * block_shape[0]
+    num_cols = (max_col + 1) * block_shape[1]
+    matrix = zeros((num_rows, num_cols))
+    for row, col, block in blocks:
+        row_0 = row * block_shape[0]
+        row_1 = (row + 1) * block_shape[0]
+        col_0 = col * block_shape[1]
+        col_1 = (col + 1) * block_shape[1]
+        matrix[row_0:row_1, col_0:col_1] = block
+    return matrix
+
+
+def cbdiag(size: int, blocks: Iterable[Tuple[int, ndarray]]) -> ndarray:
+    """
+    Build a block matrix with (sub-)diagonal blocks and the given size.
+
+    Each block is specified with its offset from the diagonal and its data
+    (sub matrix). All blocks are expected to have the same shape. If not,
+    a `MatrixShapeError` exception is raised.
+
+    Offset of each block can be positive, zero or negative. Zero offset means
+    that the block will be used in the diagonal. Non-zero offsets are counted
+    from left to right. For example, offset 1 means a subdiagonal to the
+    right of the main diagonal, i.e. positions (0, 1), (1, 2), etc. Negative
+    offsets specify subdiagonals to the left of the main diagonal.
+
+    Matrix size is computed from the given block size and block shape. If
+    size is equal to N, and block shape is (M, K), then the matrix will have
+    the shape (NM, NK).
+
+    Examples
+    --------
+    >>> # First example: 5-diagonal matrix:
+    >>> cbdiag (6, [
+    >>>     (0, asarray([[1]])), (1, asarray([[2]])), (2, asarray([[3]])),
+    >>>     (-1, asarray([[4]])), (-2, asarray([[5]]))
+    >>> ]).tolist()
+    >>> [[1, 2, 3, 0, 0, 0],
+    >>>  [4, 1, 2, 3, 0, 0],
+    >>>  [5, 4, 1, 2, 3, 0],
+    >>>  [0, 5, 4, 1, 2, 3],
+    >>>  [0, 0, 5, 4, 1, 2],
+    >>>  [0, 0, 0, 5, 4, 1]]
+
+    >>> # Second example: 3-diagonal matrix with 1x2 blocks:
+    >>> cbdiag(4, [
+    >>>     (0, asarray([[1, 1]])),
+    >>>     (1, asarray([[2, 2]])),
+    >>>     (-1, asarray([[3, 3]])),
+    >>> ]).tolist()
+    >>> [[1, 1, 2, 2, 0, 0, 0, 0],
+    >>>  [3, 3, 1, 1, 2, 2, 0, 0],
+    >>>  [0, 0, 3, 3, 1, 1, 2, 2],
+    >>>  [0, 0, 0, 0, 3, 3, 1, 1]]
+
+    Parameters
+    ----------
+    size : int
+        number of block-rows and block-cols
+    blocks : sequence of tuples of int and ndarray
+        blocks, each block is specified with integer offset and the matrix
+
+    Returns
+    -------
+    mat : ndarray
+       a block matrix built from the given blocks.
+
+    Raises
+    ------
+    MatrixShapeError
+        raised if blocks have different shapes
+    """
+    _validate_cb_blocks(blocks)
+    block_shape = blocks[0][-1].shape
+    mat = zeros((size * block_shape[0], size * block_shape[1]))
+    for block_row in range(size):
+        mat_row_0 = block_row * block_shape[0]
+        mat_row_1 = mat_row_0 + block_shape[0]
+        for offset, block in blocks:
+            block_col = offset + block_row
+            if 0 <= block_col < size:
+                mat_col_0 = block_col * block_shape[1]
+                mat_col_1 = mat_col_0 + block_shape[1]
+                mat[mat_row_0:mat_row_1, mat_col_0:mat_col_1] = block
+    return mat
+
+
 # def pmf2pdf(pmf):
 #     """Converts a PMF matrix (each row is expected to be a PMF) into a matrix
 #     of the same size representing PDF. Please note, that no is_pmf() check
@@ -682,55 +833,3 @@ def fix_markovian_arrival(
 #             for i in range(1, cols_num):
 #                 pmf = np.vstack((pmf, matrix[i] - matrix[i - 1]))
 #         return pmf.T
-#
-#
-# def almost_equal(m1, m2, atol=1e-6, rtol=1e-5):
-#     m1 = np.asarray(m1)
-#     m2 = np.asarray(m2)
-#     return np.allclose(m1, m2, rtol=rtol, atol=atol)
-#
-#
-# def cbmat(blocks):
-#     blocks = [(row, col, np.asarray(block)) for row, col, block in blocks]
-#     shapes = [block.shape for row, col, block in blocks]
-#     if not all(shapes[0] == a_shape for a_shape in shapes):
-#         raise ValueError("block shapes mismatch")
-#     bshape = shapes[0]
-#     max_row = max(row for row, col, block in blocks)
-#     max_col = max(col for row, col, block in blocks)
-#     num_rows = (max_row + 1) * bshape[0]
-#     num_cols = (max_col + 1) * bshape[1]
-#     matrix = np.zeros((num_rows, num_cols))
-#     for row, col, block in blocks:
-#         row_0 = row * bshape[0]
-#         row_1 = (row + 1) * bshape[0]
-#         col_0 = col * bshape[1]
-#         col_1 = (col + 1) * bshape[1]
-#         matrix[row_0:row_1, col_0:col_1] = block
-#     return matrix
-#
-#
-# def cbdiag(size, blocks):
-#     blocks = [(i, np.asarray(b)) for i, b in blocks]
-#     shapes = [b.shape for i, b in blocks]
-#     if not all(shapes[0] == a_shape for a_shape in shapes):
-#         raise ValueError("block shapes mismatch")
-#     block_shape = shapes[0]
-#     matrix = np.zeros((size * block_shape[0], size * block_shape[1]))
-#     for i in range(size):
-#         row_0 = i * block_shape[0]
-#         row_1 = (i + 1) * block_shape[0]
-#         for b_col, block in blocks:
-#             b_col += i
-#             if 0 <= b_col < size:
-#                 col_0 = b_col * block_shape[1]
-#                 col_1 = (b_col + 1) * block_shape[1]
-#                 matrix[row_0:row_1, col_0:col_1] = block
-#     return matrix
-#
-#
-# # def fix_subinfinitesimal_matrix(mat: np.ndarray, tol: float=1e-9) -> np.ndarray:
-# #     diagonal = np.diag(mat.diagonal())
-# #     rest = mat - diagonal
-# #     violations = rest <= tol
-#

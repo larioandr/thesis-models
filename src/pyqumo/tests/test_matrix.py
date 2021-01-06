@@ -7,7 +7,8 @@ from pyqumo.matrix import fix_stochastic, CellValueError, \
     RowSumError, row2string, matrix2string, array2string, \
     parse_array, is_square, is_vector, MatrixShapeError, order_of, \
     is_stochastic, is_infinitesimal, is_subinfinitesimal, \
-    check_markovian_arrival, fix_infinitesimal, fix_markovian_arrival
+    check_markovian_arrival, fix_infinitesimal, fix_markovian_arrival, cbmat, \
+    is_pmf, cbdiag
 
 
 # ############################################################################
@@ -126,6 +127,21 @@ def test_order_of(mat, expected, error_string, comment):
 def test_is_stochastic(mat, expected, comment):
     mat = asarray(mat)
     assert is_stochastic(mat) == expected, comment
+
+
+@pytest.mark.parametrize('mat, expected, comment', [
+    ([], False, 'empty array is not a PMF'),
+    ([1.0], True, 'degenerate case of PMF'),
+    ([0.3, 0.7], True, 'PMF for two states'),
+    ([0.2, 0.0, 0.4, 0.4], True, 'valid PMF for four states'),
+    ([-0.1, 0.5, 0.6], False, 'no negative values in PMF allowed'),
+    ([0.2, 0.7], False, 'not PMF - sum is less then 1.0'),
+    ([0.2, 0.9], False, 'not PMF - sum is more then 1.0'),
+    ([[1.0]], False, 'only 1D array can be a PMF')
+])
+def test_is_pmf(mat, expected, comment):
+    mat = asarray(mat)
+    assert is_pmf(mat) == expected, comment
 
 
 @pytest.mark.parametrize('mat, expected, comment', [
@@ -531,46 +547,118 @@ def test_fix_markov_arrival__raise_error_if_matrices_have_different_shape():
     assert str(ex) == "D1 matrix shape error: expected (2, 2), but (3, 3) found"
 
 
-# class TestIsPDF(TestCase):
-#     def test_correct_list_matrices(self):
-#         a1 = [1.0]
-#         a2 = [0.5, 1.0]
-#         a23 = [[0.2, 0.7, 1.0], [0.1, 0.9, 1.0]]
-#         self.assertTrue(qumo.is_pdf(a1))
-#         self.assertTrue(qumo.is_pdf(a2))
-#         self.assertTrue(qumo.is_pdf(a23))
+# ############################################################################
+# TEST BLOCK MATRICES OPERATIONS
+# ############################################################################
+
 #
-#     def test_correct_ndarray_matrices(self):
-#         a1 = np.array([1.0])
-#         a2 = np.array([0.5, 1.0])
-#         a23 = np.array([[0.2, 0.7, 1.0], [0.1, 0.9, 1.0]])
-#         self.assertTrue(qumo.is_pdf(a1))
-#         self.assertTrue(qumo.is_pdf(a2))
-#         self.assertTrue(qumo.is_pdf(a23))
+# TEST cbmat
+# ----------------------------------------------------------------------------
+@pytest.mark.parametrize('blocks, expected, comment', [
+    (
+        [(0, 0, [[1.0]])],
+        [[1.0]],
+        'single 1x1 block at (0,0)'
+    ), (
+        [(1, 2, [[2.0]])],
+        [[0, 0, 0], [0, 0, 2.0]],
+        'single 1x1 block at (2,3)'
+    ), (
+        [(0, 0, [[1, 2]]), (1, 0, [[3, 4]]), (1, 2, [[5, 6]])],
+        [[1, 2, 0, 0, 0, 0], [3, 4, 0, 0, 5, 6]],
+        'three 1x2 blocks in (0, 0), (1, 0) and (1, 2)'
+    ), (
+        [(0, 0, [[1, 1], [1, 1]]), (0, 1, [[2, 2], [2, 2]]),
+         (1, 0, [[3, 3], [3, 3]]), (1, 1, [[4, 4], [4, 4]])],
+        [[1, 1, 2, 2], [1, 1, 2, 2], [3, 3, 4, 4], [3, 3, 4, 4]],
+        'four 2x2 blocks in (0, 0), (0, 1), (1, 0), (1, 1)'
+    )
+])
+def test_cbmat__valid_blocks(blocks, expected, comment):
+    blocks = [(row, col, asarray(block)) for (row, col, block) in blocks]
+    mat = cbmat(blocks)
+    assert_allclose(mat, expected, err_msg=comment)
+
+
+def test_cbmat__raise_error_when_block_shapes_are_different():
+    """
+    Validate cbmat() raises MatrixShapeError when blocks have different shape.
+    """
+    with pytest.raises(MatrixShapeError) as excinfo:
+        cbmat([(0, 0, asarray([[10]])), (1, 1, asarray([[20, 30]]))])
+    ex = excinfo.value
+    assert str(ex) == 'B[1] matrix shape error: expected (1, 1), ' \
+                      'but (1, 2) found'
+
+
+def test_cbmat__raise_error_when_first_block_is_not_2D_matrix():
+    """
+    Validate cbmat() raises MatrixShapeError when the first block is not a 2D
+    matrix.
+    """
+    with pytest.raises(MatrixShapeError) as excinfo:
+        cbmat([(0, 0, asarray([42]))])
+    ex = excinfo.value
+    assert str(ex) == 'B[0] matrix shape error: expected (N, M), ' \
+                      'but (1,) found'
+
+
 #
-#     def test_returns_false_when_some_elements_are_negative(self):
-#         a2 = [-0.1, 0.2, 1.0]
-#         a23 = [[0.0, 0.5, 1.0], [-0.2, 0.4, 1.0]]
-#         self.assertFalse(qumo.is_pdf(a2))
-#         self.assertTrue(qumo.is_pdf(a2, atol=0.11))
-#         self.assertFalse(qumo.is_pdf(a23))
-#         self.assertTrue(qumo.is_pdf(a23, atol=0.21))
-#
-#     def test_returns_false_when_not_ascending(self):
-#         a = [0.5, 0.4, 1.0]
-#         self.assertFalse(qumo.is_pdf(a))
-#         self.assertTrue(qumo.is_pdf(a, atol=0.11))
-#
-#     def test_returns_false_when_rightmost_element_less_than_one(self):
-#         a = [0.5, 0.6, 0.95]
-#         self.assertFalse(qumo.is_pdf(a))
-#         self.assertTrue(qumo.is_pdf(a, atol=0.1))
-#
-#     def test_returns_false_when_rightmost_element_greater_than_one(self):
-#         a = [0.5, 0.6, 1.05]
-#         self.assertFalse(qumo.is_pdf(a))
-#         self.assertTrue(qumo.is_pdf(a, atol=0.1))
-#
+# TEST cbmat
+# ----------------------------------------------------------------------------
+@pytest.mark.parametrize('blocks, size, expected, comment', [
+    ([(0, [[42]])], 1, [[42]], 'one diagonal block in 1x1 block matrix'),
+    ([(-1, [[42]])], 2, [[0, 0], [42, 0]], 'one subdiagonal in 2x2 matrix'),
+    (
+        [(0, [[1]]), (1, [[2]]), (2, [[3]]), (-1, [[4]]), (-2, [[5]])],
+        5,
+        [[1, 2, 3, 0, 0],
+         [4, 1, 2, 3, 0],
+         [5, 4, 1, 2, 3],
+         [0, 5, 4, 1, 2],
+         [0, 0, 5, 4, 1]],
+        'six-diagonal 5x5 block matrix with 1x1 blocks'
+    ), (
+        [(0, [[1, 1]]), (1, [[2, 2]]), (-1, [[3, 3]])],
+        4,
+        [[1, 1, 2, 2, 0, 0, 0, 0],
+         [3, 3, 1, 1, 2, 2, 0, 0],
+         [0, 0, 3, 3, 1, 1, 2, 2],
+         [0, 0, 0, 0, 3, 3, 1, 1]],
+        'three-diagonal 4x4 block matrix with 1x2 blocks'
+    )
+])
+def test_cbdiag__valid_blocks(blocks, size, expected, comment):
+    """
+    Validate cbdiag() routine with valid blocks.
+    """
+    blocks = [(offset, asarray(block)) for (offset, block) in blocks]
+    mat = cbdiag(size, blocks)
+    assert_allclose(mat, expected, err_msg=comment)
+
+
+def test_cbdiag__raise_error_when_block_shapes_are_different():
+    """
+    Validate cbdiag() raises MatrixShapeError when blocks have different shape.
+    """
+    with pytest.raises(MatrixShapeError) as excinfo:
+        cbdiag(2, [(0, asarray([[10]])), (1, asarray([[20, 30]]))])
+    ex = excinfo.value
+    assert str(ex) == 'B[1] matrix shape error: expected (1, 1), ' \
+                      'but (1, 2) found'
+
+
+def test_cbdiag__raise_error_when_first_block_is_not_2D_matrix():
+    """
+    Validate cbdiag() raises MatrixShapeError when the first block is not a 2D
+    matrix.
+    """
+    with pytest.raises(MatrixShapeError) as excinfo:
+        cbdiag(1, [(0, asarray([42]))])
+    ex = excinfo.value
+    assert str(ex) == 'B[0] matrix shape error: expected (N, M), ' \
+                      'but (1,) found'
+
 #
 # class TestPmfPdfConverters(TestCase):
 #     def test_pmf2pdf_list_matrices(self):
@@ -620,97 +708,3 @@ def test_fix_markov_arrival__raise_error_if_matrices_have_different_shape():
 #                                           [0.4, 0.0, 0.3, 0.3]))
 #         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p23),
 #                                           [[0.2, 0.1, 0.7], [0.4, 0.0, 0.6]]))
-#
-#
-#
-# class TestBlockMatrixBuilders(TestCase):
-#
-#     def test_cbmat_1x1(self):
-#         b0 = [[0.0]]
-#         b1 = [[1.0]]
-#         b2 = [[2.0]]
-#         b3 = [[3.0]]
-#         b4 = [[4.0]]
-#         blocks1 = [(0, 0, b0), (0, 1, b1), (1, 0, b2), (1, 1, b3)]
-#         blocks2 = [(0, 0, b3), (0, 1, b2), (1, 0, b1), (1, 1, b0)]
-#         blocks3 = [(0, 0, b1), (0, 2, b2), (3, 0, b3), (4, 2, b4)]
-#
-#         m1 = qumo.cbmat(blocks1)
-#         m2 = qumo.cbmat(blocks2)
-#         m3 = qumo.cbmat(blocks3)
-#
-#         np.testing.assert_allclose(m1, [[0., 1.], [2., 3.]])
-#         np.testing.assert_allclose(m2, [[3., 2.], [1., 0.]])
-#         np.testing.assert_allclose(m3, [[1, 0, 2], [0, 0, 0],
-#                                         [0, 0, 0], [3, 0, 0],
-#                                         [0, 0, 4]])
-#
-#     def test_cbmat_2x2(self):
-#         b1 = [[1, 1], [1, 1]]
-#         b2 = [[2, 2], [2, 2]]
-#         b3 = [[3, 3], [3, 3]]
-#         b4 = [[4, 4], [4, 4]]
-#         blocks1 = [(0, 0, b1), (0, 1, b2), (1, 0, b3), (1, 1, b4)]
-#         blocks2 = [(0, 0, b4), (0, 1, b3), (1, 0, b2), (1, 1, b1)]
-#         blocks3 = [(0, 0, b1), (0, 3, b2), (2, 0, b3), (2, 1, b4)]
-#
-#         m1 = qumo.cbmat(blocks1)
-#         m2 = qumo.cbmat(blocks2)
-#         m3 = qumo.cbmat(blocks3)
-#
-#         np.testing.assert_allclose(
-#             m1, [[1, 1, 2, 2], [1, 1, 2, 2], [3, 3, 4, 4], [3, 3, 4, 4]])
-#         np.testing.assert_allclose(
-#             m2, [[4, 4, 3, 3], [4, 4, 3, 3], [2, 2, 1, 1], [2, 2, 1, 1]])
-#         np.testing.assert_allclose(
-#             m3, [[1, 1, 0, 0, 0, 0, 2, 2],
-#                  [1, 1, 0, 0, 0, 0, 2, 2],
-#                  [0, 0, 0, 0, 0, 0, 0, 0],
-#                  [0, 0, 0, 0, 0, 0, 0, 0],
-#                  [3, 3, 4, 4, 0, 0, 0, 0],
-#                  [3, 3, 4, 4, 0, 0, 0, 0]])
-#
-#     def test_cbdiag_1x2(self):
-#         b1 = [[1, 1]]
-#         b2 = [[2, 2]]
-#         b3 = [[3, 3]]
-#
-#         m1 = qumo.cbdiag(1, [(0, b1), (1, b2), (-1, b3)])
-#         m2 = qumo.cbdiag(2, [(0, b1), (1, b2), (-1, b3)])
-#         m3 = qumo.cbdiag(3, [(0, b1), (1, b2), (-1, b3)])
-#         m4 = qumo.cbdiag(3, [(-2, b2), (1, b3), (2, b1)])
-#
-#         np.testing.assert_allclose(m1, [[1, 1]])
-#         np.testing.assert_allclose(m2, [[1, 1, 2, 2], [3, 3, 1, 1]])
-#         np.testing.assert_allclose(m3, [[1, 1, 2, 2, 0, 0],
-#                                         [3, 3, 1, 1, 2, 2],
-#                                         [0, 0, 3, 3, 1, 1]])
-#         np.testing.assert_allclose(m4, [[0, 0, 3, 3, 1, 1],
-#                                         [0, 0, 0, 0, 3, 3],
-#                                         [2, 2, 0, 0, 0, 0]])
-#
-#     def test_cbdiag_2x2(self):
-#         b1 = [[1, 1], [1, 1]]
-#         b2 = [[2, 2], [2, 2]]
-#         b3 = [[3, 3], [3, 3]]
-#
-#         m1 = qumo.cbdiag(1, [(0, b1), (1, b2), (-1, b3)])
-#         m2 = qumo.cbdiag(2, [(0, b1), (1, b2), (-1, b3)])
-#         m3 = qumo.cbdiag(3, [(0, b1), (1, b2), (-1, b3)])
-#         m4 = qumo.cbdiag(3, [(0, b2), (1, b3), (2, b1)])
-#
-#         np.testing.assert_allclose(m1, [[1, 1], [1, 1]])
-#         np.testing.assert_allclose(m2, [[1, 1, 2, 2], [1, 1, 2, 2],
-#                                         [3, 3, 1, 1], [3, 3, 1, 1]])
-#         np.testing.assert_allclose(m3, [[1, 1, 2, 2, 0, 0],
-#                                         [1, 1, 2, 2, 0, 0],
-#                                         [3, 3, 1, 1, 2, 2],
-#                                         [3, 3, 1, 1, 2, 2],
-#                                         [0, 0, 3, 3, 1, 1],
-#                                         [0, 0, 3, 3, 1, 1]])
-#         np.testing.assert_allclose(m4, [[2, 2, 3, 3, 1, 1],
-#                                         [2, 2, 3, 3, 1, 1],
-#                                         [0, 0, 2, 2, 3, 3],
-#                                         [0, 0, 2, 2, 3, 3],
-#                                         [0, 0, 0, 0, 2, 2],
-#                                         [0, 0, 0, 0, 2, 2]])
