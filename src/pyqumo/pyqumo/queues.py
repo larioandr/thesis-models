@@ -1,7 +1,7 @@
 import numpy as np
 
 from pyqumo.matrix import cached_method, cbdiag
-from pyqumo.distributions import Exp
+from pyqumo.random import Exp
 from pyqumo.arrivals import PoissonProcess, MAP
 from pyqumo.chains import CTMC
 

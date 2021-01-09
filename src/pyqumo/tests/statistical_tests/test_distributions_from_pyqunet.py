@@ -1,4 +1,4 @@
-import pyqumo.distributions as cd
+import pyqumo.random as cd
 
 import unittest
 import numpy

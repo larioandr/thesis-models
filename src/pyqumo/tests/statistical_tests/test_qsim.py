@@ -2,7 +2,7 @@ import pytest
 from numpy.testing import assert_allclose
 from pydesim import simulate
 
-from pyqumo.distributions import Exponential, PhaseType
+from pyqumo.random import Exponential, PhaseType
 from pyqumo.qsim import QueueingSystem, QueueingTandemNetwork, \
     tandem_queue_network, tandem_queue_network_with_fixed_service
 

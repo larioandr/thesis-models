@@ -4,7 +4,7 @@ from numpy.testing import assert_almost_equal
 
 from pyqumo.queues import MM1, MM1N, MapPh1N
 from pyqumo.arrivals import PoissonProcess, MAP
-from pyqumo.distributions import Exp, PhaseType
+from pyqumo.random import Exp, PhaseType
 
 
 class TestMM1(ut.TestCase):

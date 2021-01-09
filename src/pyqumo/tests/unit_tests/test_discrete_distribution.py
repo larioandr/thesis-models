@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from pyqumo.distributions import Discrete
+from pyqumo.random import Discrete
 
 
 #

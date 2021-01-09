@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 from pyqumo import arrivals as ar
-from pyqumo.distributions import Erlang
+from pyqumo.random import Erlang
 from pyqumo import stats
 from pyqumo.arrivals import MAP as MarkovArrival
 

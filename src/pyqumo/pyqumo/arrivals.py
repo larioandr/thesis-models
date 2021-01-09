@@ -4,7 +4,7 @@ import numpy as np
 
 from pyqumo import chains
 from pyqumo.matrix import is_infinitesimal, cached_method, cbdiag, order_of
-from pyqumo.distributions import Exp
+from pyqumo.random import Exp
 from pyqumo.stochastic import Rnd
 
 

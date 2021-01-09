@@ -10,7 +10,7 @@ from pyqumo.arrivals import MAP
 from pyqumo.chains import DTMC
 from pyqumo.matrix import cbdiag
 from pyqumo import stats
-from pyqumo.distributions import PhaseType
+from pyqumo.random import PhaseType
 
 
 def fit_ph(source, order, method='opt', verbose=False, options=None):
