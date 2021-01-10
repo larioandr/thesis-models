@@ -1,5 +1,5 @@
 from functools import lru_cache, cached_property
-from typing import Union, Sequence, Callable
+from typing import Union, Sequence, Callable, Any, Mapping, Tuple, Iterator
 
 import numpy as np
 from scipy import linalg, integrate
@@ -82,20 +82,6 @@ class Distribution:
         """
         raise NotImplementedError
 
-    @property
-    def pdf(self) -> Callable[[float], float]:
-        """
-        Get probability density function (PDF).
-        """
-        raise NotImplementedError
-
-    @property
-    def cdf(self) -> Callable[[float], float]:
-        """
-        Get cumulative distribution function (CDF).
-        """
-        raise NotImplementedError
-
     def __call__(self, size: int = 1) -> Union[float, np.ndarray]:
         """
         Generate random samples of the random variable with this distribution.
@@ -122,12 +108,56 @@ class Distribution:
         raise NotImplementedError
 
 
-class Const(Distribution):
+class AbstractCdfMixin:
+    """
+    Mixin that adds cumulative distribution function property prototype.
+    """
+    @property
+    def cdf(self) -> Callable[[float], float]:
+        """
+        Get cumulative distribution function (CDF).
+        """
+        raise NotImplementedError
+
+
+class ContinuousDistributionMixin:
+    """
+    Base mixin for continuous distributions, provides `pdf` property.
+    """
+    @property
+    def pdf(self) -> Callable[[float], float]:
+        """
+        Get probability density function (PDF).
+        """
+        raise NotImplementedError
+
+
+class DiscreteDistributionMixin:
+    """
+    Base mixin for discrete distributions, provides `pmf` prop and iterator.
+    """
+    @property
+    def pmf(self) -> Callable[[float], float]:
+        """
+        Get probability mass function (PMF).
+        """
+        raise NotImplementedError
+
+    def __iter__(self) -> Iterator[Tuple[float, float]]:
+        """
+        Iterate over (value, prob) pairs.
+        """
+        raise NotImplementedError
+
+
+class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
+            AbstractCdfMixin, Distribution):
     """
     Constant distribution that always results in a given constant value.
     """
     def __init__(self, value: float):
         self._value = value
+        self._next = None
 
     @cached_property
     def pdf(self) -> Callable[[float], float]:
@@ -136,6 +166,13 @@ class Const(Distribution):
     @cached_property
     def cdf(self) -> Callable[[float], float]:
         return lambda x: 0 if x < self._value else 1
+
+    @cached_property
+    def pmf(self) -> Callable[[float], float]:
+        return lambda x: 1 if x == self._value else 0
+
+    def __iter__(self) -> Iterator[Tuple[float, float]]:
+        yield self._value, 1.0
 
     @lru_cache
     def _moment(self, n: int) -> float:
@@ -148,7 +185,7 @@ class Const(Distribution):
         return f'(Const: value={self._value:g})'
 
 
-class Uniform(Distribution):
+class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Uniform random distribution.
 
@@ -201,7 +238,7 @@ class Uniform(Distribution):
         return f'(Uniform: a={self.min:g}, b={self.max:g})'
 
 
-class Normal(Distribution):
+class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Normal random distribution.
     """
@@ -256,7 +293,7 @@ class Normal(Distribution):
         return f'(Normal: mean={self._mean:.3g}, std={self._std:.3g})'
 
 
-class Exponential(Distribution):
+class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Exponential random distribution.
     """
@@ -294,7 +331,7 @@ class Exponential(Distribution):
         return f"(Exp: rate={self.rate:g})"
 
 
-class Erlang(Distribution):
+class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Erlang random distribution.
 
@@ -364,7 +401,8 @@ class Erlang(Distribution):
         return f"(Erlang: shape={self.shape:.3g}, rate={self.rate:.3g})"
 
 
-class HyperExponential(Distribution):
+class HyperExponential(ContinuousDistributionMixin, AbstractCdfMixin,
+                       Distribution):
     """Hyper-exponential distribution.
 
     Hyper-exponential distribution is defined by:
@@ -425,7 +463,19 @@ class HyperExponential(Distribution):
                f"rates={self._rates.tolist()})"
 
 
-class PhaseType(Distribution):
+class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
+    """
+    Phase-type (PH) distribution.
+
+    This distribution is specified with a subinfinitesimal matrix and
+    initial states probability distribution.
+
+    PH distribution is a generalization of exponential, Erlang,
+    hyperexponential, hypoexponential and hypererlang distributions, so
+    they can be defined using PH distribution means. However, PH distribution
+    operates with matrices, incl. matrix-exponential operations, so it is
+    less efficient then custom implementations.
+    """
     def __init__(self, sub: np.ndarray, p: np.ndarray, safe: bool = False):
         # Validate and fix data:
         # ----------------------
@@ -553,92 +603,167 @@ class PhaseType(Distribution):
         return f"(PhaseType: s={self.s.tolist()}, p={self.pmf0.tolist()})"
 
 
+class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
+    """
+    Discrete distribution of values with given non-negative weights.
+    """
+    def __init__(self, values: Sequence[float],
+                 weights: Union[Mapping[float, float], Sequence[float]] = None):
+        """
+        Discrete distribution constructor.
 
-# class Discrete:
-#     def __init__(self, values, weights=None):
-#         if not values:
-#             raise ValueError('expected non-empty values')
-#         _weights, _values = [], []
-#         try:
-#             # First we assume that values is dictionary. In this case we
-#             # expect that it stores values in pairs like `value: weight` and
-#             # iterate through it using `items()` method to fill value and
-#             # weights arrays:
-#             for key, weight in values.items():
-#                 _values.append(key)
-#                 _weights.append(weight)
-#             _weights = np.asarray(_weights)
-#         except AttributeError:
-#             # If `values` doesn't have `items()` attribute, we treat as an
-#             # iterable holding values only. Then we check whether its size
-#             # matches weights (if provided), and fill weights it they were
-#             # not provided:
-#             _values = values
-#             if weights:
-#                 if len(values) != len(weights):
-#                     raise ValueError('values and weights size mismatch')
-#             else:
-#                 weights = (1. / len(values),) * len(values)
-#             _weights = np.asarray(weights)
-#
-#         # Check that all weights are non-negative and their sum is positive:
-#         if np.any(_weights < 0):
-#             raise ValueError('weights must be non-negative')
-#         ws = sum(_weights)
-#         if np.allclose(ws, 0):
-#             raise ValueError('weights sum must be positive')
-#
-#         # Normalize weights to get probabilities:
-#         _probs = tuple(x / ws for x in _weights)
-#
-#         # Store values and probabilities
-#         self._values = tuple(_values)
-#         self._probs = _probs
-#
-#     def __call__(self):
-#         return np.random.choice(self._values, p=self.prob)
-#
-#     @property
-#     def values(self):
-#         return self._values
-#
-#     @property
-#     def prob(self):
-#         return self._probs
-#
-#     def getp(self, value):
-#         try:
-#             index = self._values.index(value)
-#             return self._probs[index]
-#         except ValueError:
-#             return 0
-#
-#     def mean(self):
-#         return sum(v * p for v, p in zip(self._values, self._probs))
-#
-#     def moment(self, k):
-#         if k <= 0 or np.abs(k - np.round(k)) > 0:
-#             raise ValueError('positive integer expected')
-#         return sum((v**k) * p for v, p in zip(self._values, self._probs))
-#
-#     def std(self):
-#         return self.var() ** 0.5
-#
-#     def var(self):
-#         return self.moment(2) - self.mean() ** 2
-#
-#     def generate(self, size=1):
-#         return np.random.choice(self._values, p=self.prob, size=size)
-#
-#     def __str__(self):
-#         s = '{' + ', '.join(
-#             [f'{value}: {self.getp(value)}' for value in sorted(self._values)]
-#         ) + '}'
-#         return s
-#
-#     def __repr__(self):
-#         return str(self)
-#
+        Different values probabilities are computed based on weights as
+        :math:`p_i = w_i / (w_1 + w_2 + ... + w_N)`.
+
+        Parameters
+        ----------
+        values : sequence of values
+        weights : mapping of values to weights or a sequence of weights, opt.
+            if provided as a sequence, then weights length should be equal
+            to values length; if not provided, all values are expected to
+            have the same weight.
+        """
+        if not values:
+            raise ValueError('expected non-empty values')
+        weights_, values_ = [], []
+        try:
+            # First we assume that values is dictionary. In this case we
+            # expect that it stores values in pairs like `value: weight` and
+            # iterate through it using `items()` method to fill value and
+            # weights arrays:
+            # noinspection PyUnresolvedReferences
+            for key, weight in values.items():
+                values_.append(key)
+                weights_.append(weight)
+            weights_ = np.asarray(weights_)
+        except AttributeError:
+            # If `values` doesn't have `items()` attribute, we treat as an
+            # iterable holding values only. Then we check whether its size
+            # matches weights (if provided), and fill weights it they were
+            # not provided:
+            values_.extend(values)
+            if weights:
+                if len(values) != len(weights):
+                    raise ValueError('values and weights size mismatch')
+            else:
+                weights = (1. / len(values),) * len(values)
+            weights_ = np.asarray(weights)
+
+        # Check that all weights are non-negative and their sum is positive:
+        if np.any(weights_ < 0):
+            raise ValueError('weights must be non-negative')
+        total_weight = sum(weights_)
+        if np.allclose(total_weight, 0):
+            raise ValueError('weights sum must be positive')
+
+        # Store values and probabilities
+        probs_ = weights_ / total_weight
+        self._data = [(v, p) for v, p in zip(values_, probs_)]
+        self._data.sort(key=lambda item: item[0])
+
+    @cached_property
+    def values(self) -> np.ndarray:
+        return np.asarray([item[0] for item in self._data])
+
+    @cached_property
+    def probs(self) -> np.ndarray:
+        return np.asarray([item[1] for item in self._data])
+
+    @lru_cache()
+    def __len__(self):
+        return len(self._data)
+
+    def find_left(self, value: float) -> int:
+        """
+        Searches for the value and returns the closest left side index.
+
+        Examples
+        --------
+        >>> choices = Choice([1, 3, 5], [0.2, 0.5, 0.3])
+        >>> choices.find_left(1)
+        >>> 0
+        >>> choices.find_left(2)  # not in values, return leftmost value index
+        >>> 0
+        >>> choices.find_left(5)
+        >>> 2
+        >>> choices.find_left(-1)  # for too small values return -1
+        >>> -1
+
+        Parameters
+        ----------
+        value : float
+            value to search for
+
+        Returns
+        -------
+        index : int
+            if `value` is found, return its index; if not, but there is value
+            `x < value` and there are no other values `y: x < y < value` in
+            data, return index of `x`. If for any `x` in data `x > value`,
+            return `-1`.
+        """
+        def _find(start: int, end: int) -> int:
+            delta = end - start
+            if delta < 1:
+                return -1
+            if delta == 1:
+                return start if value >= self.values[start] else -1
+            middle = start + delta // 2
+            middle_value = self.values[middle]
+            if np.allclose(value, middle_value):
+                return middle
+            if value < middle_value:
+                return _find(start, middle)
+            return _find(middle, end)
+        return _find(0, len(self))
+
+    def get_prob(self, value: float) -> float:
+        """
+        Get probability of a given value.
+
+        Parameters
+        ----------
+        value : float
+
+        Returns
+        -------
+        prob : float
+        """
+        index = self.find_left(value)
+        stored_value = self.values[index]
+        if index >= 0 and np.allclose(value, stored_value):
+            return self.probs[index]
+        return 0.0
+
+    @lru_cache
+    def _moment(self, n: int) -> float:
+        return (self.values**n).dot(self.probs).sum()
+
+    def _eval(self, size: int) -> np.ndarray:
+        return np.random.choice(self.values, p=self.probs, size=size)
+
+    @cached_property
+    def cdf(self) -> Callable[[float], float]:
+        cum_probs = np.cumsum(self.probs)
+
+        def fn(x):
+            index = self.find_left(x)
+            return cum_probs[index] if index >= 0 else 0.0
+
+        return fn
+
+    @cached_property
+    def pmf(self) -> Callable[[float], float]:
+        return lambda x: self.get_prob(x)
+
+    def __iter__(self) -> Iterator[Tuple[float, float]]:
+        for value, prob in self._data:
+            yield value, prob
+
+    def __repr__(self):
+        return f"(Choice: values={self.values.tolist()}, " \
+               f"p={self.probs.tolist()})"
+
 #
 # class LinComb:
 #     def __init__(self, dists, w=None):

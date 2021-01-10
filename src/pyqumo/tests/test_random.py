@@ -3,7 +3,7 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
-    HyperExponential, PhaseType
+    HyperExponential, PhaseType, Choice
 
 
 #
@@ -30,100 +30,51 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
 # parametrization and define only one common test with a large number of
 # parameters.
 #
+# Some properties are specific to continuous or discrete distributions,
+# e.g. PMF or PMF. To test them, we define separate tests.
+#
 # Each parameters tuple specify one test: distribution, expected moments
-# (four values), a grid for PDF, a grid for CDF and expected string form
+# (four values), a grid for CDF and expected string form
 # of the distribution.
-@pytest.mark.parametrize('dist, m1, m2, m3, m4, xy_pdf, xy_cdf, string', [
+@pytest.mark.parametrize('dist, m1, m2, m3, m4, string', [
     # Constant distribution:
-    (
-        Const(2), 2, 4, 8, 16,
-        [(1.9, 0), (2.0, np.inf), (2.1, 0)], [(1.9, 0), (2.0, 1), (2.1, 1)],
-        '(Const: value=2)'
-    ), (
-        Const(3), 3, 9, 27, 81,
-        [(2, 0), (3, np.inf), (3.1, 0)], [(2, 0), (3.0, 1), (3.1, 1)],
-        '(Const: value=3)'
-    ),
+    (Const(2), 2, 4, 8, 16, '(Const: value=2)'),
+    (Const(3), 3, 9, 27, 81, '(Const: value=3)'),
     # Uniform distribution:
-    (
-        Uniform(0, 1), 0.5, 1/3, 1/4, 1/5,
-        [(-1, 0), (0, 1), (0.5, 1), (1, 1), (2, 0)],
-        [(-1, 0), (0, 0), (0.5, 0.5), (1, 1), (2, 1)],
-        '(Uniform: a=0, b=1)'
-    ), (
-        Uniform(2, 10), 6, 124/3, 312, 2499.2,
-        [(1, 0), (2, 0.125), (6, 0.125), (10, 0.125), (11, 0)],
-        [(1, 0), (2, 0), (6, 0.5), (10, 1), (11, 1)],
-        '(Uniform: a=2, b=10)'
-    ),
+    (Uniform(0, 1), 0.5, 1/3, 1/4, 1/5, '(Uniform: a=0, b=1)'),
+    (Uniform(2, 10), 6, 124/3, 312, 2499.2, '(Uniform: a=2, b=10)'),
     # Normal distribution:
-    (
-        Normal(0, 1), 0, 1, 0, 3,
-        [(-2, 0.054), (-1, 0.242), (0, 0.399), (1, 0.242), (2, 0.054)],  # PDF
-        [(-2, 0.023), (-1, 0.159), (0, 0.500), (1, 0.841), (2, 0.977)],  # CDF
-        '(Normal: mean=0, std=1)'
-    ), (
-        Normal(1, 0.5), 1, 1.25, 1.75, 2.6875,
-        [(0, 0.108), (1, 0.798), (1.25, 0.704), (1.5, 0.484), (2, 0.108)],
-        [(0, 0.023), (1, 0.500), (1.25, 0.691), (1.5, 0.841), (2, 0.977)],
-        '(Normal: mean=1, std=0.5)'
-    ),
+    (Normal(0, 1), 0, 1, 0, 3, '(Normal: mean=0, std=1)'),
+    (Normal(1, 0.5), 1, 1.25, 1.75, 2.6875, '(Normal: mean=1, std=0.5)'),
     # Exponential distribution:
-    (
-        Exponential(1.0), 1, 2, 6, 24,
-        [(0, 1.0), (1, 1/np.e), (2, 0.135)],      # PDF
-        [(0, 0.0), (1, 1 - 1/np.e), (2, 0.865)],  # CDF
-        '(Exp: rate=1)'
-    ), (
-        Exponential(2.0), 1/2, 1/2, 6/8, 24/16,
-        [(0, 2.0), (1, 0.271), (2, 0.037)],  # PDF
-        [(0, 0.0), (1, 0.865), (2, 0.982)],  # CDF
-        '(Exp: rate=2)'
-    ),
+    (Exponential(1.0), 1, 2, 6, 24, '(Exp: rate=1)'),
+    (Exponential(2.0), 1/2, 1/2, 6/8, 24/16, '(Exp: rate=2)'),
     # Erlang distribution:
-    (
-        Erlang(1, 1), 1, 2, 6, 24,
-        [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)],  # PDF
-        [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)],  # CDF
-        '(Erlang: shape=1, rate=1)'
-    ), (
-        Erlang(shape=5, rate=2.5), 2.0, 4.8, 13.44, 43.008,
-        [(0, 0.000), (1, 0.334), (2, 0.439), (3, 0.182)],  # PDF
-        [(0, 0.000), (1, 0.109), (2, 0.559), (3, 0.868)],  # CDF
-        '(Erlang: shape=5, rate=2.5)'
-    ),
+    (Erlang(1, 1), 1, 2, 6, 24, '(Erlang: shape=1, rate=1)'),
+    (Erlang(5, rate=2.5), 2, 4.8, 13.44, 43.008, '(Erlang: shape=5, rate=2.5)'),
     # Hyperexponential distribution
     (
         HyperExponential([1], [1]), 1, 2, 6, 24,
-        [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)],  # PDF
-        [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)],  # CDF
         '(HyperExponential: probs=[1], rates=[1])'
     ), (
-        HyperExponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
+        HyperExponential([2, 3, 4], probs=[0.5, 0.2, 0.3]),
         0.39167, 0.33194, 0.4475694, 0.837384,
-        [(0, 2.800), (0.25, 1.331), (0.5, 0.664), (1, 0.187)],
-        [(0, 0.000), (0.25, 0.492), (0.5, 0.731), (1, 0.917)],
         '(HyperExponential: probs=[0.5, 0.2, 0.3], rates=[2, 3, 4])'
     ),
     # Phase-type distribution
     (
-        PhaseType.exponential(1.0), 1, 2, 6, 24,
-        [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)],  # PDF
-        [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)],  # CDF
+        PhaseType.exponential(1.0),
+        1, 2, 6, 24,
         '(PhaseType: s=[[-1.0]], p=[1.0])'
     ), (
         PhaseType.erlang(shape=3, rate=4.2),
         0.714286, 0.680272, 0.809848, 1.15693,
-        [(0, 0.00), (0.5, 1.134), (1, 0.555), (1.5, 0.153)],  # PDF
-        [(0, 0.00), (0.5, 0.350), (1, 0.790), (1.5, 0.950)],  # CDF
         '(PhaseType: '
         's=[[-4.2, 4.2, 0.0], [0.0, -4.2, 4.2], [0.0, 0.0, -4.2]], '
         'p=[1.0, 0.0, 0.0])'
     ), (
         PhaseType.hyperexponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
         0.39167, 0.33194, 0.4475694, 0.837384,
-        [(0, 2.800), (0.25, 1.331), (0.5, 0.664), (1, 0.187)],  # PDF
-        [(0, 0.000), (0.25, 0.492), (0.5, 0.731), (1, 0.917)],  # CDF
         '(PhaseType: '
         's=[[-2.0, 0.0, 0.0], [0.0, -3.0, 0.0], [0.0, 0.0, -4.0]], '
         'p=[0.5, 0.2, 0.3])'
@@ -131,16 +82,21 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
         PhaseType(np.asarray([[-2, 1, 0.2], [0.5, -3, 1], [0.5, 0.5, -4]]),
                   np.asarray([0.5, 0.4, 0.1])),
         0.718362, 1.01114, 2.12112, 5.92064,
-        [(0, 1.30), (0.5, 0.710), (1, 0.355), (1.5, 0.174)],  # PDF
-        [(0, 0.00), (0.5, 0.495), (1, 0.752), (1.5, 0.879)],  # CDF
         '(PhaseType: '
         's=[[-2.0, 1.0, 0.2], [0.5, -3.0, 1.0], [0.5, 0.5, -4.0]], '
         'p=[0.5, 0.4, 0.1])'
     ),
+    # Choice (discrete) distribution
+    (Choice([2]), 2, 4, 8, 16, '(Choice: values=[2], p=[1.0])'),
+    (
+        Choice([3, 7, 5], weights=[1, 4, 5]),
+        5.6, 33.0, 202.4, 1281.0,
+        '(Choice: values=[3, 5, 7], p=[0.1, 0.5, 0.4])'
+    )
 ])
-def test_distributions_props(dist, m1, m2, m3, m4, xy_pdf, xy_cdf, string):
+def test_common_props(dist, m1, m2, m3, m4, string):
     """
-    Validate Uniform distribution.
+    Validate common distributions properties: first four moments and repr.
     """
     var = m2 - m1**2
     std = var**0.5
@@ -154,16 +110,6 @@ def test_distributions_props(dist, m1, m2, m3, m4, xy_pdf, xy_cdf, string):
     assert_allclose(dist.moment(3), m3, atol=1e-3, err_msg=string)
     assert_allclose(dist.moment(4), m4, atol=1e-3, err_msg=string)
 
-    # Validate PDF on the given grid:
-    pdf = dist.pdf
-    for x, y in xy_pdf:
-        assert_allclose(pdf(x), y, atol=1e-3, err_msg=f'{string} PDF, x={x}')
-
-    # Validate CDF on the given grid:
-    cdf = dist.cdf
-    for x, y in xy_cdf:
-        assert_allclose(cdf(x), y, atol=1e-3, err_msg=f'{string} CDF, x={x}')
-
     # Validate that random generated sequence have expected mean and std:
     samples = dist(100000)
     assert_allclose(samples.mean(), m1, atol=0.01, rtol=5e-2, err_msg=string)
@@ -173,6 +119,165 @@ def test_distributions_props(dist, m1, m2, m3, m4, xy_pdf, xy_cdf, string):
     assert str(dist) == string
 
 
+#
+# VALIDATE CUMULATIVE DISTRIBUTION FUNCTIONS
+# ------------------------------------------
+@pytest.mark.parametrize('dist, grid', [
+    # Constant distribution:
+    (Const(2), [(1.9, 0), (2.0, 1), (2.1, 1)]),
+    (Const(3), [(2, 0), (3, 1), (3.1, 1)]),
+    # Uniform distribution:
+    (Uniform(0, 1), [(-1, 0), (0, 0), (0.5, 0.5), (1, 1), (2, 1)]),
+    (Uniform(2, 10), [(1, 0), (2, 0), (6, 0.5), (10, 1), (11, 1)]),
+    # Normal distribution:
+    (
+        Normal(0, 1),
+        [(-2, 0.023), (-1, 0.159), (0, 0.500), (1, 0.841), (2, 0.977)],
+    ), (
+        Normal(1, 0.5),
+        [(0, 0.023), (1, 0.500), (1.25, 0.691), (1.5, 0.841), (2, 0.977)],
+    ),
+    # Exponential distribution:
+    (Exponential(1.0), [(0, 0.0), (1, 1 - 1/np.e), (2, 0.865)]),
+    (Exponential(2.0), [(0, 0.0), (1, 0.865), (2, 0.982)]),
+    # Erlang distribution:
+    (Erlang(1, 1), [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)]),
+    (Erlang(5, rate=2.5), [(0, 0.000), (1, 0.109), (2, 0.559), (3, 0.868)]),
+    # Hyperexponential distribution
+    (
+        HyperExponential([1], [1]),
+        [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)]
+    ), (
+        HyperExponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
+        [(0, 0.000), (0.25, 0.492), (0.5, 0.731), (1, 0.917)]
+    ),
+    # Phase-type distribution
+    (
+        PhaseType.exponential(1.0),
+        [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)]
+    ), (
+        PhaseType.erlang(shape=3, rate=4.2),
+        [(0, 0.00), (0.5, 0.350), (1, 0.790), (1.5, 0.950)]
+    ), (
+        PhaseType.hyperexponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
+        [(0, 0.000), (0.25, 0.492), (0.5, 0.731), (1, 0.917)]
+    ), (
+        PhaseType(np.asarray([[-2, 1, 0.2], [0.5, -3, 1], [0.5, 0.5, -4]]),
+                  np.asarray([0.5, 0.4, 0.1])),
+        [(0, 0.00), (0.5, 0.495), (1, 0.752), (1.5, 0.879)]
+    ),
+    # Choice (discrete) distribution
+    (Choice([5]), [(4.9, 0), (5.0, 1), (5.1, 1)]),
+    (
+        Choice([3, 5, 7], weights=[1, 5, 4]),
+        [(2, 0), (3, 0.1), (4.9, 0.1), (5, 0.6), (6.9, 0.6), (7, 1), (8, 1)]
+    ),
+])
+def test_cdf(dist, grid):
+    """
+    Validate cumulative distribution function.
+    """
+    cdf = dist.cdf
+    for x, y in grid:
+        assert_allclose(cdf(x), y, atol=1e-3, err_msg=f'{dist} PDF, x={x}')
+
+
+#
+# VALIDATE PROBABILITY DENSITY FUNCTIONS (CONT. DIST.)
+# ----------------------------------------------------
+@pytest.mark.parametrize('dist, grid', [
+    # Constant distribution:
+    (Const(2), [(1.9, 0), (2.0, np.inf), (2.1, 0)]),
+    (Const(3), [(2, 0), (3, np.inf), (3.1, 0)]),
+    # Uniform distribution:
+    (Uniform(0, 1), [(-1, 0), (0, 1), (0.5, 1), (1, 1), (2, 0)]),
+    (Uniform(2, 10), [(1, 0), (2, 0.125), (6, 0.125), (10, 0.125), (11, 0)]),
+    # Normal distribution:
+    (Normal(0, 1), [(-2, 0.054), (-1, 0.242), (0, 0.399), (1, 0.242)]),
+    (Normal(1, 0.5), [(0, 0.108), (1, 0.798), (1.25, 0.704), (2, 0.108)]),
+    # Exponential distribution:
+    (Exponential(1.0), [(0, 1.0), (1, 1/np.e), (2, 0.135)]),
+    (Exponential(2.0), [(0, 2.0), (1, 0.271), (2, 0.037)]),
+    # Erlang distribution:
+    (Erlang(1, 1), [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)]),
+    (Erlang(5, rate=2.5), [(0, 0.000), (1, 0.334), (2, 0.439), (3, 0.182)]),
+    # Hyperexponential distribution
+    (
+        HyperExponential([1], [1]),
+        [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)]
+    ), (
+        HyperExponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
+        [(0, 2.800), (0.25, 1.331), (0.5, 0.664), (1, 0.187)]
+    ),
+    # Phase-type distribution
+    (
+        PhaseType.exponential(1.0),
+        [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)]
+    ), (
+        PhaseType.erlang(shape=3, rate=4.2),
+        [(0, 0.00), (0.5, 1.134), (1, 0.555), (1.5, 0.153)]
+    ), (
+        PhaseType.hyperexponential(rates=[2, 3, 4], probs=[0.5, 0.2, 0.3]),
+        [(0, 2.800), (0.25, 1.331), (0.5, 0.664), (1, 0.187)],  # PDF
+    ), (
+        PhaseType(np.asarray([[-2, 1, 0.2], [0.5, -3, 1], [0.5, 0.5, -4]]),
+                  np.asarray([0.5, 0.4, 0.1])),
+        [(0, 1.30), (0.5, 0.710), (1, 0.355), (1.5, 0.174)]
+    ),
+])
+def test_pdf(dist, grid):
+    """
+    Validate continuous distribution probability density function.
+    """
+    pdf = dist.pdf
+    for x, y in grid:
+        assert_allclose(pdf(x), y, atol=1e-3, err_msg=f'{dist} PDF, x={x}')
+
+
+#
+# VALIDATE PROBABILITY MASS FUNCTIONS AND ITERATORS (DISCRETE DIST.)
+# ------------------------------------------------------------------
+@pytest.mark.parametrize('dist, grid', [
+    # Constant distribution:
+    (Const(2), [(2, 1.0)]),
+    (Const(3), [(3, 1.0)]),
+    # Choice (discrete) distribution:
+    (Choice([10]), [(10, 1.0)]),
+    (Choice([5, 7, 9], weights=[1, 5, 4]), [(5, 0.1), (7, 0.5), (9, 0.4)]),
+])
+def test_pmf_and_iterators(dist, grid):
+    """
+    Validate discrete distribution probability mass function and iterator.
+    """
+    pmf = dist.pmf
+    for x, y in grid:
+        assert_allclose(pmf(x), y, atol=1e-3, err_msg=f'{dist} PMF, x={x}')
+    for i, (desired, actual) in enumerate(zip(grid, dist)):
+        assert_allclose(actual[0], desired[0],
+                        err_msg=f'{i}-th values mismatch, dist: {dist}')
+        assert_allclose(actual[1], desired[1],
+                        err_msg=f'{i}-th probability mismatch, dist: {dist}')
+
+
+#
+# CUSTOM PROPERTIES OF DISTRIBUTIONS
+# ----------------------------------------------------------------------------
+@pytest.mark.parametrize('choice, value, expected_index, comment', [
+    (Choice([1]), 1, 0, 'choice of length 1, search for existing value'),
+    (Choice([1]), 0, -1, 'choice of length 1, search for too small value'),
+    (Choice([1]), 2, 0, 'choice of length 1, search for large value'),
+    (Choice([1, 2]), 2, 1, 'choice of length 2, search for existing value'),
+    (Choice([1, 2]), 0, -1, 'choice of length 2, search for too small value'),
+    (Choice([1, 2]), 1.5, 0, 'choice of length 2, s.f. value in the middle'),
+    (Choice([10, 20, 30, 40, 50]), 10, 0, 'choice len. 5, existing value #1'),
+    (Choice([10, 20, 30, 40, 50]), 30, 2, 'choice len. 5, existing value #2'),
+    (Choice([10, 20, 30, 40, 50]), 40, 3, 'choice len. 5, existing value #3'),
+    (Choice([10, 20, 30, 40, 50]), 9, -1, 'choice len. 5, too small value'),
+    (Choice([10, 20, 30, 40, 50]), 51, 4, 'choice len. 5, too large value'),
+    (Choice([10, 20, 30, 40, 50]), 22, 1, 'choice len. 5, val inside'),
+])
+def test_choice_find_left(choice, value, expected_index, comment):
+    assert choice.find_left(value) == expected_index, comment
 #
 #
 # def test_semi_markov_absorb():
