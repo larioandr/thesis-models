@@ -597,7 +597,7 @@ def fit_map_horvath(ph, lags):
     N = ph.order
     D0 = ph.subgenerator
     En = np.ones((N, 1))
-    pi = ph.pmf0
+    pi = ph.init_probs
 
     num_lags = len(lags)
     if num_lags == 0:

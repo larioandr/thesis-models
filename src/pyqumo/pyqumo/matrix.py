@@ -189,6 +189,35 @@ def is_stochastic(mat: ndarray) -> bool:
     return (mat.sum(axis=1) == ones(mat.shape[0])).all()
 
 
+def is_substochastic(mat: ndarray) -> bool:
+    """
+    Check all elements are in [0, 1] interval, row sums are less or equal one.
+
+    Sums of elements of each row should be less or equal to one, and at
+    least one row sum should be strictly less than one.
+
+    Note, that this routine doesn't require the matrix to be square,
+    so it can be used for checking vectors as well.
+
+    Parameters
+    ----------
+    mat : ndarray
+
+    Returns
+    -------
+    flag : bool
+        True iff all elements are between 0 and 1, or close to them,
+        and each row sum is 1.
+    """
+    if (mat.size == 0) or (mat < 0).any() or (mat > 1).any():
+        return False
+    if is_vector(mat):
+        return mat.sum() < 1.0
+    order = mat.shape[0]
+    delta = ones((order, 1)) - mat.sum(axis=1)
+    return (delta >= 0).all() and (delta > 0).any()
+
+
 def is_pmf(mat: ndarray) -> bool:
     """
     Check that 1D array is a probability mass function - a stochastic row.

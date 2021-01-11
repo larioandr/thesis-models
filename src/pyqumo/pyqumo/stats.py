@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def moment(source, maxn=1):
+def moment(source, maxn=1, minn=1):
     """Computes moments from a given source.
 
     Args:
@@ -9,18 +9,18 @@ def moment(source, maxn=1):
             data to compute moments for. Treated as a set of samples
             if an array-like, otherwise is expected to have a `moment(k)`
             method (e.g. distribution or arrival process)
-        maxn (int): a number of moments to compute.
+        maxn (int): maximum number of moment to compute.
+        minn (int): minimum number of moment to compute
 
     Returns:
         ndarray containing computed moments
     """
     if hasattr(source, 'moment'):
         return np.asarray([source.moment(k) for k in range(1, maxn + 1)])
-    else:
-        n = len(list(source))
-        ret = [1./n * sum([pow(x, k) for x in source])
-               for k in range(1, maxn + 1)]
-        return np.asarray(ret)
+    if not isinstance(source, np.ndarray):
+        source = np.asarray(source)
+    ret = [np.power(source, k).mean() for k in range(minn, maxn + 1)]
+    return np.asarray(ret)
 
 
 def lag(source, maxn=1):

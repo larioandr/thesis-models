@@ -8,7 +8,7 @@ from pyqumo.matrix import fix_stochastic, CellValueError, \
     parse_array, is_square, is_vector, MatrixShapeError, order_of, \
     is_stochastic, is_infinitesimal, is_subinfinitesimal, \
     check_markovian_arrival, fix_infinitesimal, fix_markovian_arrival, cbmat, \
-    is_pmf, cbdiag
+    is_pmf, cbdiag, is_substochastic
 
 
 # ############################################################################
@@ -127,6 +127,20 @@ def test_order_of(mat, expected, error_string, comment):
 def test_is_stochastic(mat, expected, comment):
     mat = asarray(mat)
     assert is_stochastic(mat) == expected, comment
+
+
+@pytest.mark.parametrize('mat, expected, comment', [
+    ([[]], False, 'empty matrix (1x0) is NOT substochastic'),
+    ([[1]], False, 'no row with sum of elements < 1 (1x1 matrix)'),
+    ([[0]], True, 'single element < 1'),
+    ([0.2, 0.6], True, 'vector with sum < 1 is substochastic'),
+    ([0.2, 0.8], False, 'vector with sum = 1 is NOT substochastic'),
+    ([[0.2, 0.8], [0.5, 0.4]], True, 'substochastic 2x2 matrix'),
+    ([[0.2, 0.8], [0.5, 0.5]], False, 'not substochastic: all rows sum = 1')
+])
+def test_is_substochastic(mat, expected, comment):
+    mat = asarray(mat)
+    assert is_substochastic(mat) == expected, comment
 
 
 @pytest.mark.parametrize('mat, expected, comment', [

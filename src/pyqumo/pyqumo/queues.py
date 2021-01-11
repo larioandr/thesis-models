@@ -287,7 +287,7 @@ class MapPh1N(QueueingSystem):
         W = self.arrival.order
         Iw = np.eye(W)
         S = self.service.subgenerator
-        tau = self.service.pmf0
+        tau = self.service.init_probs
         V = self.service.order
         Iv = np.eye(V)
         Ev = np.ones((V, 1))

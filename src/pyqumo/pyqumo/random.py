@@ -1,12 +1,16 @@
 from functools import lru_cache, cached_property
-from typing import Union, Sequence, Callable, Any, Mapping, Tuple, Iterator
+from typing import Union, Sequence, Callable, Any, Mapping, Tuple, Iterator, \
+    Optional, Iterable
 
 import numpy as np
 from scipy import linalg, integrate
+import scipy.stats
+from scipy.special import ndtr
 
+from pyqumo import stats
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
-    is_subinfinitesimal, fix_infinitesimal
+    is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic
 
 
 class Rnd:
@@ -27,6 +31,15 @@ class Rnd:
 
     def __repr__(self):
         return f"<Rnd: '{self.label}'>"
+
+
+def _str_array(array: np.ndarray):
+    num_axis = len(array.shape)
+    if num_axis == 1:
+        return "[" + ", ".join([f"{x:.3g}" for x in array]) + "]"
+    return "[" + ", ".join(
+        [_str_array(array[i]) for i in range(array.shape[0])]
+    ) + "]"
 
 
 class Distribution:
@@ -463,7 +476,100 @@ class HyperExponential(ContinuousDistributionMixin, AbstractCdfMixin,
                f"rates={self._rates.tolist()})"
 
 
-class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
+# noinspection PyUnresolvedReferences
+class AbsorbMarkovPhasedEvalMixin:
+    """
+    Mixin for _eval() for phased distributions with Markovian transitions.
+
+    To use this mixin, distribution need to implement:
+
+    - `states` (property): returns an iterable. Calling an item should
+    return a sample value of the time spent in the state, size `N`. Signature
+    of each item `__call__()` method should support `size` parameter.
+
+    - `init_probs` (property): initial probability distribution, should have
+    the same dimension as `time` sequence (`N`).
+
+    - `trans_probs` (property): matrix of transitions probabilities, should
+    have shape `(N+1)x(N+1)`, last state - absorbing.
+
+    - `order` (property): should return the number of transient states (`N`)
+    """
+    @property
+    def order(self) -> int:
+        raise NotImplementedError
+
+    @property
+    def states(self) -> Sequence[Callable[[Optional[int]], np.ndarray]]:
+        raise NotImplementedError
+
+    @property
+    def init_probs(self) -> np.ndarray:
+        raise NotImplementedError
+
+    @property
+    def trans_probs(self) -> np.ndarray:
+        raise NotImplementedError
+
+    def _init_eval(self):
+        """
+        Initialize random values generators
+        """
+        assert hasattr(self, 'order')
+        assert hasattr(self, 'states')
+        assert hasattr(self, 'init_probs')
+        assert hasattr(self, 'trans_probs')
+
+        # Random generator for initial state:
+        self.__init_rnd = Rnd(
+            lambda n: np.random.choice(
+                all_states[:-1],
+                p=self.init_probs,
+                size=n
+            ))
+
+        # Random generators for time in each state:
+        self.__time_rnd = [
+            Rnd(lambda n, fn=state: fn(n))
+            for state in self.states
+        ]
+
+        # Random generators of state transitions:
+        all_states = np.arange(self.order + 1)
+        self.__trans_rnd = [
+            Rnd(lambda n, p=row: np.random.choice(all_states, p=p, size=n))
+            for row in self.trans_probs
+        ]
+
+    def is_absorbing_state(self, state_index: int) -> bool:
+        """
+        Check whether the state is absorbing.
+        """
+        return state_index >= self.order
+
+    def _eval(self, size: int) -> np.ndarray:
+        # Initialize random generators if they were not inited earlier
+        if not hasattr(self, '__init_rnd'):
+            self._init_eval()
+
+        # Generate required number of items:
+        samples_array = np.zeros(size)
+        for i in range(size):
+            # Select random initial state and jump over the chain
+            # till getting into absorbing state:
+            sample = 0.0
+            j = self.__init_rnd()
+            while not self.is_absorbing_state(j):
+                sample += self.__time_rnd[j]()
+                j = self.__trans_rnd[j]()
+            samples_array[i] = sample
+        return samples_array
+
+
+class PhaseType(ContinuousDistributionMixin,
+                AbstractCdfMixin,
+                AbsorbMarkovPhasedEvalMixin,
+                Distribution):
     """
     Phase-type (PH) distribution.
 
@@ -497,28 +603,11 @@ class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         # --------------------------------------------------------------
         self._order = order_of(self._pmf0)
         self._rates = -self._subgenerator.diagonal()
-        self._trans_pmf = np.hstack((
+        self._trans_probs = np.hstack((
             self._subgenerator + np.diag(self._rates),
             -self._subgenerator.sum(axis=1)[:, None]
         )) / self._rates[:, None]
-
-        # Create rnd caches:
-        # ------------------
-        all_states = np.arange(self._order + 1)
-        # - random generator for initial state:
-        self.__init_rnd = Rnd(
-            lambda n: np.random.choice(
-                all_states[:-1], p=self._pmf0, size=n))
-        # - random generators for time in each state:
-        self.__rate_rnd = [Rnd(
-            lambda n, r=r: np.random.exponential(1/r, size=n),
-            label=f"exp({1/r:.3f})"
-        ) for r in self._rates]
-        # - random generators of state transitions:
-        self.__trans_rnd = [Rnd(
-            lambda n, p0=p: np.random.choice(all_states, p=p0, size=n),
-            label=f"choose({len(all_states)}, p={p})"
-        ) for p in self._trans_pmf]
+        self._states = [Exponential(r) for r in self._rates]
 
     @staticmethod
     def exponential(rate: float) -> 'PhaseType':
@@ -556,8 +645,16 @@ class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return self._subgenerator
 
     @property
-    def pmf0(self):
+    def init_probs(self):
         return self._pmf0
+
+    @property
+    def trans_probs(self):
+        return self._trans_probs
+
+    @property
+    def states(self):
+        return self._states
 
     @property
     def sni(self) -> np.ndarray:
@@ -571,7 +668,7 @@ class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def _moment(self, n: int) -> float:
         sni_powered = np.linalg.matrix_power(self.sni, n)
         ones = np.ones(shape=(self.order, 1))
-        x = np.math.factorial(n) * self.pmf0.dot(sni_powered).dot(ones)
+        x = np.math.factorial(n) * self.init_probs.dot(sni_powered).dot(ones)
         return x.item()
 
     @cached_property
@@ -588,19 +685,8 @@ class PhaseType(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         s = np.asarray(self._subgenerator)
         return lambda x: 0 if x < 0 else 1 - p.dot(linalg.expm(x * s)).dot(ones)
 
-    def _eval(self, size: int) -> np.ndarray:
-        intervals = np.zeros(size)
-        for i in range(size):
-            interval = 0.0
-            j = self.__init_rnd()
-            while j < self._order:
-                interval += self.__rate_rnd[j]()
-                j = self.__trans_rnd[j]()
-            intervals[i] = interval
-        return intervals
-
     def __repr__(self):
-        return f"(PhaseType: s={self.s.tolist()}, p={self.pmf0.tolist()})"
+        return f"(PhaseType: s={self.s.tolist()}, p={self.init_probs.tolist()})"
 
 
 class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
@@ -764,6 +850,223 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
         return f"(Choice: values={self.values.tolist()}, " \
                f"p={self.probs.tolist()})"
 
+
+# noinspection PyUnresolvedReferences
+class EstStatsMixin:
+    """
+    Mixin for distributions without analytic form for moments computation.
+
+    This mixin estimates moments, variance and standard deviation based on
+    sampled data. It expects that the derived class provides:
+
+    - `num_stats_samples` property: number of samples should to be used
+    in moments estimation.
+    - `_eval()` implementation.
+    """
+    @property
+    def num_stats_samples(self) -> int:
+        raise NotImplementedError
+
+    @cached_property
+    def _stats_samples(self) -> np.ndarray:
+        """
+        Get samples cache to estimate moments and/or other properties.
+
+        If cache doesn't exist, it will be created`.
+        """
+        if not hasattr(self, '__stats_samples'):
+            self.__stats_samples = self._eval(self.num_stats_samples)
+        return self.__stats_samples
+
+    @lru_cache
+    def _moment(self, n: int) -> float:
+        return stats.moment(self._stats_samples, minn=n, maxn=n)[0]
+
+
+# noinspection PyUnresolvedReferences
+class KdePdfMixin:
+    """
+    Mixin for distributions without analytic form for PDF and CDF computation.
+
+    This mixin estimates PDF and CDF functions using Gaussian KDE from scipy.
+    It requires:
+
+    - `num_kde_samples` property: number of samples should to be used
+    in KDE building. Should not be too large since KDE will work VERY slowly.
+    - `_eval()` implementation.
+    """
+    @property
+    def num_kde_samples(self) -> int:
+        raise NotImplementedError
+
+    @cached_property
+    def _kde(self) -> scipy.stats.gaussian_kde:
+        if not hasattr(self, '__kde'):
+            kde_samples = self._eval(self.num_kde_samples)
+            self.__kde = scipy.stats.gaussian_kde(kde_samples)
+        return self.__kde
+
+    @property
+    def pdf(self):
+        return lambda x: self._kde.pdf(x)[0]
+
+    @property
+    def cdf(self):
+        dataset = self._kde.dataset
+        factor = self._kde.factor
+        return lambda x: ndtr(np.ravel(x - dataset) / factor).mean()
+
+
+class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
+                       EstStatsMixin,
+                       KdePdfMixin,
+                       Distribution):
+    """
+    Semi-Markov process with absorbing states.
+
+    Process with `N` states is specified with three parameters:
+
+    - random distribution of time in each state `T[i], i = 0, 1, ..., N-1`
+    - transition strictly sub-stochastic matrix `P` of shape `(N, N)`
+    - initial probability distribution `p0` of shape `(N,)`
+
+    Process starts in one of its states as defined with `p0`. It spends time
+    in each state as defined by the corresponding distribution `T[i]` and
+    after that move to another state selected with probabilities `P'[i]`.
+    Here `P'` = `[[P; I - P*1], [0, 1]]` - a stochastic matrix built from
+    sub-stochastic matrix `P` by appending a column to the right with missing
+    probabilities of transiting to absorbing state:
+    `P'[i,N] = 1 - (P[i,0] + P[i,1] + ... + P[i,N-1])`. We require P
+    to be strictly sub-stochastic, so at least at one row this value should
+    be non-zero.
+
+    To generate random samples, we model the behavior of this process
+    multiple times. We don't analyze reachability, so loops are possible.
+
+    Note: this method doesn't try to fix sub-stochastic transition matrix if
+    it is not valid, in contrast to phase-type distributions or MAP processes.
+    """
+    def __init__(self, trans: Union[np.ndarray, Sequence[Sequence[float]]],
+                 time_dist: Sequence[Distribution],
+                 probs: Union[np.ndarray, Sequence[float], int] = 0,
+                 num_samples: int = 10000,
+                 num_kde_samples: int = 1000):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        trans : array_like
+            sub-stochastic transition matrix between non-absorbing states
+            with shape `(N, N)`.
+        time_dist : sequence of distributions
+            distribution of time spent in state, should have length `N`.
+        probs : array_like or int
+            initial distribution of length `N`, or the number of the first
+            state. If the state number is provided (int), then process will
+            start from this state with probability 1.0.
+        num_samples : int, optional
+            number of samples that is used for moments estimation.
+            As a rule of thumb, should be large enough, especially if
+            high order moments needed.
+            By default: 10'000
+        num_kde_samples : int, optional
+            number of samples that is used for Gaussian KDE building
+            for PDF and CDF estimation.
+            As a rule of thumb, should NOT be too large, since using PDF
+            of KDE built from too large number of samples is very slow.
+            By default: 1'000
+        """
+        # Convert to ndarray and validate transitions matrix:
+        if not isinstance(trans, np.ndarray):
+            trans = np.asarray(trans)
+        else:
+            trans = trans.copy()  # copy to avoid changes from outside
+
+        if not is_square(trans):
+            raise MatrixShapeError("(N, N)", trans.shape, "transitions matrix")
+        order = order_of(trans)
+        if not is_substochastic(trans):
+            raise ValueError(f"expected sub-stochastic matrix, "
+                             f"but {trans} found")
+
+        # Validate time_dist and p0, convert p0 to ndarray if needed:
+        if len(time_dist) != order:
+            raise ValueError(f"need {order} time distributions, "
+                             f"{len(time_dist)} found")
+
+        if isinstance(probs, Iterable):
+            if not isinstance(probs, np.ndarray):
+                probs = np.asarray(probs)
+            else:
+                probs = probs.copy()  # copy to avoid changes from outside
+            if not is_pmf(probs):
+                raise ValueError(f"PMF expected, but {probs} found")
+            if (p0_order := order_of(probs)) != order:
+                raise ValueError(f"expected P0 vector with order {order}, "
+                                 f"but {p0_order} found")
+        else:
+            # If here, assume p0 is an integer - number of state. Build
+            # initial PMF with 1.0 set for this state.
+            if not (0 <= probs < order):
+                raise ValueError(f"semi-Markov process of order {order} "
+                                 f"doesn't have transient state {probs}")
+            p0_ = np.zeros(order)
+            p0_[probs] = 1.0
+            probs = p0_
+
+        # Store matrices and parameters:
+        self._order = order
+        self._states = tuple(time_dist)  # copy to avoid changes
+        self._init_probs = probs
+        self._num_samples = num_samples
+        self._num_kde_samples = num_kde_samples
+
+        # Build full transitions stochastic matrix:
+        self._trans_probs = np.vstack((
+            np.hstack((
+                trans,
+                np.ones((order, 1)) - trans.sum(axis=1).reshape((order, 1))
+            )),
+            np.asarray([[0] * order + [1]]),
+        ))
+
+        # Define cache that is used for moments estimations:
+        # --------------------------------------------------
+        self.__samples = None
+        self.__kde = None
+
+    @property
+    def init_probs(self):
+        return self._init_probs
+
+    @property
+    def trans_probs(self):
+        return self._trans_probs
+
+    @property
+    def order(self):
+        return self._order
+
+    @property
+    def states(self):
+        return self._states
+
+    @property
+    def num_stats_samples(self):
+        return self._num_samples
+
+    @property
+    def num_kde_samples(self) -> int:
+        return self._num_kde_samples
+
+    def __repr__(self):
+        trans = _str_array(self._trans_probs)
+        time_ = "[" + ', '.join([str(td) for td in self._states]) + "]"
+        probs = _str_array(self._init_probs)
+        return f"(SemiMarkovAbsorb: trans={trans}, time={time_}, p0={probs})"
+
+
 #
 # class LinComb:
 #     def __init__(self, dists, w=None):
@@ -888,72 +1191,6 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
 #
 #     def __repr__(self):
 #         return str(self)
-#
-#
-# class SemiMarkovAbsorb:
-#     MAX_ITER = 100000
-#
-#     def __init__(self, mat, time, p0=None):
-#         mat = np.asarray(mat)
-#         order = mat.shape[0]
-#         p0 = np.asarray(p0 if p0 else ([1] + [0] * (order - 1)))
-#
-#         # Validate initial probabilities and time shapes:
-#         assert mat.shape == (order, order)
-#         assert len(p0) == order
-#         assert len(time) == order
-#
-#         # Build transitional matrix:
-#         self._trans_matrix = np.vstack((
-#             np.hstack((
-#                 mat,
-#                 np.ones((order, 1)) - mat.sum(axis=1).reshape((order, 1))
-#             )),
-#             np.asarray([[0] * order + [1]]),
-#         ))
-#         assert np.all(self._trans_matrix >= 0)
-#
-#         # Store values:
-#         self._mat = np.asarray(mat)
-#         self._time = time
-#         self._order = order
-#         self._p0 = p0
-#
-#     @property
-#     def trans_matrix(self):
-#         return self._trans_matrix
-#
-#     @property
-#     def order(self):
-#         return self._order
-#
-#     @property
-#     def absorbing_state(self):
-#         return self.order
-#
-#     @property
-#     def p0(self):
-#         return self._p0
-#
-#     def __call__(self):
-#         order = self._order
-#         state = np.random.choice(order, p=self._p0)
-#         it = 0
-#         time_acc = 0
-#         while state != self.absorbing_state and it < self.MAX_ITER:
-#             time_acc += self._time[state]()
-#             state = np.random.choice(order + 1, p=self._trans_matrix[state])
-#             it += 1
-#
-#         if state != self.absorbing_state:
-#             raise RuntimeError('loop inside semi-markov chain')
-#
-#         return time_acc
-#
-#     def generate(self, size=None):
-#         if size is not None:
-#             return np.asarray([self() for _ in range(size)])
-#         return self()
 #
 #
 # class LinearTransform(Distribution):
