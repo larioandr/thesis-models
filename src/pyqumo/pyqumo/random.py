@@ -85,8 +85,10 @@ class Distribution:
         ValueError
             raised if n is not an integer or is non-positive
         """
-        if n <= 0 or (n - np.floor(n)) > 0:
+        if n < 0 or (n - np.floor(n)) > 0:
             raise ValueError(f'positive integer expected, but {n} found')
+        if n == 0:
+            return 1
         return self._moment(n)
 
     def _moment(self, n: int) -> float:
@@ -414,8 +416,81 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return f"(Erlang: shape={self.shape:.3g}, rate={self.rate:.3g})"
 
 
-class HyperExponential(ContinuousDistributionMixin, AbstractCdfMixin,
-                       Distribution):
+# noinspection PyUnresolvedReferences
+class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
+                          Distribution):
+    """
+    Mixture of continuous distributions.
+
+    This is defined by:
+
+    - a sequence of distributions `xi_0, xi_1, ..., xi_{N-1}`
+    - a sequence of weights `w_0, w_1, ..., w_{N-1}`
+
+    The resulting probability is a weighted sum of the given distributions:
+
+    :math:`f(x) = w_0 f_{xi_0}(x) + ... + w_{N-1} f_{xi_{N-1}}(x)`
+    """
+    def __init__(self, states: Sequence[Distribution],
+                 weights: Optional[Sequence[float]] = None):
+        order = len(states)
+        if order == 0:
+            raise ValueError("no distributions provided")
+        if weights is not None:
+            if len(states) != len(weights):
+                raise ValueError(
+                    f"expected equal number of states and weights, "
+                    f"but {len(states)} and {weights} found")
+            weights = np.asarray(weights)
+            if (weights < 0).any():
+                raise ValueError(f"negative weights disallowed: {weights}")
+            self._probs = weights / weights.sum()
+        else:
+            weights = np.ones(order)
+            self._probs = 1/order * weights
+        # Store distributions as a new tuple:
+        self._states = tuple(states)
+        self._order = order
+
+    @property
+    def states(self) -> Sequence[Distribution]:
+        return self._states
+
+    @property
+    def probs(self) -> np.ndarray:
+        return self._probs
+
+    @property
+    def order(self) -> int:
+        return self._order
+
+    @lru_cache
+    def _moment(self, n: int) -> float:
+        moments = np.asarray([st.moment(n) for st in self._states])
+        return self._probs.dot(moments)
+
+    @cached_property
+    def pdf(self) -> Callable[[float], float]:
+        fns = [state.pdf for state in self._states]
+        return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
+
+    @cached_property
+    def cdf(self) -> Callable[[float], float]:
+        fns = [state.cdf for state in self._states]
+        return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
+
+    def _eval(self, size: int) -> np.ndarray:
+        state_indexes = np.random.choice(self.order, size, p=self._probs)
+        values = [self.states[si]() for si in state_indexes]
+        return np.asarray(values)
+
+    def __repr__(self):
+        states_str = "[" + ", ".join(str(state) for state in self.states) + "]"
+        probs_str = _str_array(self._probs)
+        return f"(Mixture: states={states_str}, probs={probs_str})"
+
+
+class HyperExponential(MixtureDistribution):
     """Hyper-exponential distribution.
 
     Hyper-exponential distribution is defined by:
@@ -429,51 +504,18 @@ class HyperExponential(ContinuousDistributionMixin, AbstractCdfMixin,
     $X = \\sum_{i=1}^{N}{p_i X_i}$, where $X_i ~ Exp(ai)$
     """
     def __init__(self, rates: Sequence[float], probs: Sequence[float]):
-        rates, probs = np.asarray(rates), np.asarray(probs)
-        if len(rates) != len(probs):
-            raise ValueError("rates and probs vectors order mismatch")
-        if not is_pmf(probs):
-            probs = fix_stochastic(probs)
-        if not (np.all(rates >= 0.0)):
-            raise ValueError("rates must be non-negative")
-        self._rates, self._probs = rates, probs
-        self._exponents = [Exponential(rate) for rate in rates]
+        exponents = [Exponential(rate) for rate in rates]
+        super().__init__(exponents, probs)
 
-    @property
+    # noinspection PyUnresolvedReferences
+    @cached_property
     def rates(self) -> np.ndarray:
-        return self._rates
-
-    @property
-    def probs(self) -> np.ndarray:
-        return self._probs
-
-    @property
-    def order(self):
-        return len(self._rates)
-
-    @lru_cache
-    def _moment(self, n: int) -> float:
-        return np.math.factorial(n) * (self.probs / (self.rates ** n)).sum()
-
-    @cached_property
-    def pdf(self) -> Callable[[float], float]:
-        fns = [exp.pdf for exp in self._exponents]
-        return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
-
-    @cached_property
-    def cdf(self) -> Callable[[float], float]:
-        fns = [exp.cdf for exp in self._exponents]
-        return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
-
-    def _eval(self, size: int) -> np.ndarray:
-        states = np.random.choice(self.order, size, p=self._probs)
-        values = [self._exponents[state]() for state in states]
-        return np.asarray(values)
+        return np.asarray([state.rate for state in self.states])
 
     def __repr__(self):
         return f"(HyperExponential: " \
-               f"probs={self._probs.tolist()}, " \
-               f"rates={self._rates.tolist()})"
+               f"probs={_str_array(self.probs)}, " \
+               f"rates={_str_array(self.rates)})"
 
 
 # noinspection PyUnresolvedReferences
@@ -1065,185 +1107,3 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
         time_ = "[" + ', '.join([str(td) for td in self._states]) + "]"
         probs = _str_array(self._init_probs)
         return f"(SemiMarkovAbsorb: trans={trans}, time={time_}, p0={probs})"
-
-
-#
-# class LinComb:
-#     def __init__(self, dists, w=None):
-#         self._dists = dists
-#         self._w = w if w is not None else np.ones(len(dists))
-#         assert len(self._w) == len(dists)
-#
-#     def mean(self):
-#         acc = 0
-#         for w, d in zip(self._w, self._dists):
-#             try:
-#                 x = w * d.mean()
-#             except AttributeError:
-#                 x = w * d
-#             acc += x
-#         return acc
-#
-#     def var(self):
-#         acc = 0
-#         for w, d in zip(self._w, self._dists):
-#             try:
-#                 x = (w ** 2) * d.var()
-#             except AttributeError:
-#                 x = 0
-#             acc += x
-#         return acc
-#
-#     def std(self):
-#         return self.var() ** 0.5
-#
-#     def __call__(self):
-#         acc = 0
-#         for w, d in zip(self._w, self._dists):
-#             try:
-#                 x = w * d()
-#             except TypeError:
-#                 x = w * d
-#             acc += x
-#         return acc
-#
-#     def generate(self, size=None):
-#         if size is None:
-#             return self()
-#         acc = np.zeros(size)
-#         for w, d in zip(self._w, self._dists):
-#             try:
-#                 row = d.generate(size)
-#             except AttributeError:
-#                 row = d * np.ones(size)
-#             acc += w * row
-#         return acc
-#
-#     def __str__(self):
-#         return ' + '.join(f'{w}*{d}' for w, d in zip(self._w, self._dists))
-#
-#     def __repr__(self):
-#         return str(self)
-#
-#
-# class VarChoice:
-#     def __init__(self, dists, w=None):
-#         assert w is None or len(w) == len(dists)
-#         if w is not None:
-#             w = np.asarray([round(wi, 5) for wi in w])
-#             if not np.all(np.asarray(w) >= 0):
-#                 print(w)
-#                 assert False
-#             assert np.all(np.asarray(w) >= 0)
-#             assert sum(w) > 0
-#
-#         self._dists = dists
-#         self._w = np.asarray(w) if w is not None else np.ones(len(dists))
-#         self._p = self._w / sum(self._w)
-#
-#     @property
-#     def order(self):
-#         return len(self._dists)
-#
-#     def mean(self):
-#         acc = 0
-#         for p, d in zip(self._p, self._dists):
-#             try:
-#                 x = p * d.mean()
-#             except AttributeError:
-#                 x = p * d
-#             acc += x
-#         return acc
-#
-#     def var(self):
-#         return self.moment(2) - self.mean() ** 2
-#
-#     def std(self):
-#         return self.var() ** 0.5
-#
-#     def moment(self, k):
-#         acc = 0
-#         for p, d in zip(self._p, self._dists):
-#             try:
-#                 x = p * d.moment(k)
-#             except AttributeError:
-#                 x = p * (d ** k)
-#             acc += x
-#         return acc
-#
-#     def __call__(self):
-#         index = np.random.choice(self.order, p=self._p)
-#         try:
-#             return self._dists[index]()
-#         except TypeError:
-#             return self._dists[index]
-#
-#     def generate(self, size=None):
-#         if size is None:
-#             return self()
-#         return np.asarray([self() for _ in range(size)])
-#
-#     def __str__(self):
-#         return (
-#                 '{{' +
-#                 ', '.join(f'{w}: {d}' for w, d in zip(self._p, self._dists)) +
-#                 '}}')
-#
-#     def __repr__(self):
-#         return str(self)
-#
-#
-# class LinearTransform(Distribution):
-#     def __init__(self, xi, k, b):
-#         super().__init__()
-#         self.__xi = xi
-#         self.__k = k
-#         self.__b = b
-#
-#     @property
-#     def xi(self):
-#         return self.__xi
-#
-#     @property
-#     def k(self):
-#         return self.__k
-#
-#     @property
-#     def b(self):
-#         return self.__b
-#
-#     def mean(self):
-#         return self.k * self.xi.mean() + self.b
-#
-#     def var(self):
-#         return (self.k ** 2) * self.xi.var()
-#
-#     def std(self):
-#         return self.k * self.xi.std()
-#
-#     def moment(self, n: int):
-#         if n <= 0 or np.abs(n - np.round(n)) > 0:
-#             raise ValueError('positive integer expected')
-#         if n == 1:
-#             return self.mean()
-#         elif n == 2:
-#             return self.mean() ** 2 + self.var()
-#         else:
-#             raise ValueError('two moments supported')
-#
-#     def generate(self, num):
-#         for i in range(num):
-#             yield self.xi() * self.k + self.b
-#
-#     def pdf(self, x):
-#         return self.xi.pdf((x - self.b) / self.k) / self.k
-#
-#     def cdf(self, x):
-#         return self.xi.cdf((x - self.b) / self.k)
-#
-#     def __call__(self) -> float:
-#         return self.xi() * self.k + self.b
-#
-#     def sample(self, shape):
-#         size = np.prod(shape)
-#         return np.asarray(list(self.generate(size))).reshape(shape)

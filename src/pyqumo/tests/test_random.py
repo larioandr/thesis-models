@@ -3,7 +3,7 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
-    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb
+    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb, MixtureDistribution
 
 
 #
@@ -138,6 +138,18 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
         '], time=[(Exp: rate=2), (Exp: rate=3), (Exp: rate=4)], '
         'p0=[0.5, 0.4, 0.1])',
         1e-1, 1e-1
+    ),
+    # Mixture of constant distributions (choice):
+    (
+        MixtureDistribution(
+            states=[Const(3), Const(7), Const(5)],
+            weights=[1, 4, 5]
+        ),
+        5.6, 33.0, 202.4, 1281.0,
+        '(Mixture: '
+        'states=[(Const: value=3), (Const: value=7), (Const: value=5)], '
+        'probs=[0.1, 0.4, 0.5])',
+        1e-2, 2e-2,
     )
 ])
 def test_common_props(dist, m1, m2, m3, m4, string, atol, rtol):
