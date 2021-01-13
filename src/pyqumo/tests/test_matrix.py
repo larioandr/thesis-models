@@ -2,13 +2,13 @@ import pytest
 from numpy import float64, asarray, ndarray, int64, inf
 from numpy.testing import assert_allclose
 
-from pyqumo.errors import RowSumsError
+from pyqumo.errors import RowsSumsError
 from pyqumo.matrix import fix_stochastic, CellValueError, \
     RowSumError, row2string, matrix2string, array2string, \
     parse_array, is_square, is_vector, MatrixShapeError, order_of, \
     is_stochastic, is_infinitesimal, is_subinfinitesimal, \
     check_markovian_arrival, fix_infinitesimal, fix_markovian_arrival, cbmat, \
-    is_pmf, cbdiag, is_substochastic
+    is_pmf, cbdiag, is_substochastic, identity
 
 
 # ############################################################################
@@ -421,7 +421,7 @@ def test_fix_infinitesimal__raise_error_when_row_sums_is_zero_and_sub_true():
     """
     # This matrix becomes infinitesimal after fixing:
     mat = [[-1, 1.1, 0], [-0.1, -2, 2], [0, 0, 0]]
-    with pytest.raises(RowSumsError) as excinfo:
+    with pytest.raises(RowsSumsError) as excinfo:
         fix_infinitesimal(asarray(mat), tol=0.2, sub=True)
     assert str(excinfo.value) == 'all rows sums are zero: [0. 0. 0.]'
 
@@ -673,52 +673,15 @@ def test_cbdiag__raise_error_when_first_block_is_not_2D_matrix():
     assert str(ex) == 'B[0] matrix shape error: expected (N, M), ' \
                       'but (1,) found'
 
-#
-# class TestPmfPdfConverters(TestCase):
-#     def test_pmf2pdf_list_matrices(self):
-#         p1 = [1.0]
-#         p2 = [0.1, 0.9]
-#         p3 = [0.4, 0.0, 0.3, 0.3]
-#         p23 = [[0.2, 0.1, 0.7], [0.4, 0.0, 0.6]]
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p1), [1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p2), [0.1, 1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p3),
-#                                           [0.4, 0.4, 0.7, 1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p23),
-#                                           [[0.2, 0.3, 1.0], [0.4, 0.4, 1.0]]))
-#
-#     def test_pmf2pdf_ndarray_matrices(self):
-#         p1 = np.array([1.0])
-#         p2 = np.array([0.1, 0.9])
-#         p3 = np.array([0.4, 0.0, 0.3, 0.3])
-#         p23 = np.array([[0.2, 0.1, 0.7], [0.4, 0.0, 0.6]])
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p1), [1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p2), [0.1, 1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p3),
-#                                           [0.4, 0.4, 0.7, 1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pmf2pdf(p23),
-#                                           [[0.2, 0.3, 1.0], [0.4, 0.4, 1.0]]))
-#
-#     def test_pdf2pmf_list_matrices(self):
-#         p1 = [1.0]
-#         p2 = [0.1, 1.0]
-#         p3 = [0.4, 0.4, 0.7, 1.0]
-#         p23 = [[0.2, 0.3, 1.0], [0.4, 0.4, 1.0]]
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p1), [1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p2), [0.1, 0.9]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p3),
-#                                           [0.4, 0.0, 0.3, 0.3]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p23),
-#                                           [[0.2, 0.1, 0.7], [0.4, 0.0, 0.6]]))
-#
-#     def test_pdf2pmf_ndarray_matrices(self):
-#         p1 = np.array([1.0])
-#         p2 = np.array([0.1, 1.0])
-#         p3 = np.array([0.4, 0.4, 0.7, 1.0])
-#         p23 = np.array([[0.2, 0.3, 1.0], [0.4, 0.4, 1.0]])
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p1), [1.0]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p2), [0.1, 0.9]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p3),
-#                                           [0.4, 0.0, 0.3, 0.3]))
-#         self.assertTrue(qumo.almost_equal(qumo.pdf2pmf(p23),
-#                                           [[0.2, 0.1, 0.7], [0.4, 0.0, 0.6]]))
+
+# ############################################################################
+# TEST SPECIAL MATRICES
+# ############################################################################
+
+@pytest.mark.parametrize('length, k, axis, expected', [
+    (1, 0, None, [1]), (1, 0, 0, [[1]]), (1, 0, 1, [[1]]),
+    (2, 0, None, [1, 0]), (2, 0, 1, [[1, 0]]), (2, 0, 0, [[1], [0]]),
+    (5, 3, None, [0, 0, 0, 1, 0]), (5, 3, 0, [[0], [0], [0], [1], [0]])
+])
+def test_identity_row(length, k, axis, expected):
+    assert_allclose(identity(length, k, axis), expected)

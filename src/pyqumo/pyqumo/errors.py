@@ -117,7 +117,7 @@ class RowSumError(MatrixError):
         super().__init__(self.message)
 
 
-class RowSumsError(MatrixError):
+class RowsSumsError(MatrixError):
     """
     An error indicate that all rows sums are zero, while at least one negative
     or positive row expected.

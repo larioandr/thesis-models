@@ -1,9 +1,9 @@
-from typing import Union, Tuple, Iterable, Sequence
+from typing import Union, Tuple, Iterable, Sequence, Optional
 
-from numpy import ndarray, asarray, float64, ones, diag, zeros
+from numpy import ndarray, asarray, float64, ones, diag, zeros, eye
 
 from pyqumo.errors import MatrixShapeError, CellValueError, \
-    RowSumError, RowSumsError
+    RowSumError, RowsSumsError
 
 
 # ############################################################################
@@ -74,6 +74,34 @@ def array2string(
         return matrix2string(array, col_sep, row_sep)
     except TypeError:
         return row2string(array, col_sep)
+
+
+def str_array(array: ndarray):
+    """
+    Returns array representation as list of lists using .3g cell formatter.
+    In contrast to array2string and matrix2string, this routine keeps
+    square brackets and behaves much like str(list(...)).
+
+    Examples
+    --------
+    >>> str_array(asarray([[1, 2.5], [0.125, 2]]))
+    >>> [[1, 2.5], [0.125, 2]]
+
+    Parameters
+    ----------
+    array : ndarray
+        A matrix to print
+
+    Returns
+    -------
+    string : str
+    """
+    num_axis = len(array.shape)
+    if num_axis == 1:
+        return "[" + ", ".join([f"{x:.3g}" for x in array]) + "]"
+    return "[" + ", ".join(
+        [str_array(array[i]) for i in range(array.shape[0])]
+    ) + "]"
 
 
 def parse_array(
@@ -512,7 +540,7 @@ def fix_infinitesimal(
     # row sum is less then zero:
     row_sums: ndarray = new_mat.sum(axis=1)
     if sub and not (row_sums < 0).any():
-        raise RowSumsError(row_sums, 'all rows sums are zero')
+        raise RowsSumsError(row_sums, 'all rows sums are zero')
 
     return new_mat, max(cell_err[-1], row_err[-1])
 
@@ -788,6 +816,41 @@ def cbdiag(size: int, blocks: Iterable[Tuple[int, ndarray]]) -> ndarray:
                 mat_col_1 = mat_col_0 + block_shape[1]
                 mat[mat_row_0:mat_row_1, mat_col_0:mat_col_1] = block
     return mat
+
+
+# ############################################################################
+# SPECIAL MATRICES
+# ############################################################################
+def identity(length: int, k: int, axis: Optional[int] = None) -> ndarray:
+    """
+    Get a vector of given length L with one 1 at position K.
+
+    Parameters
+    ----------
+    length : int
+        order of the row vector
+    k : int
+        position of 1
+    axis : int or None, optional
+        Direction. If given, a 2D row or column matrix will be returned:
+        0 - column, 1 - row. If not provided (None, default), a 1D vector
+        will be returned.
+
+    Returns
+    -------
+    vector : np.ndarray
+    """
+    if axis is None:
+        ret = zeros(length)
+        ret[k] = 1
+        return ret
+    if axis == 0:
+        return eye(length, 1, -k)
+    if axis == 1:
+        return eye(1, length, k)
+    raise ValueError(f'axis should be None, 0 or 1, but {axis} found')
+
+
 
 
 # def pmf2pdf(pmf):

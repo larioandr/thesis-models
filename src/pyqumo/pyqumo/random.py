@@ -1,5 +1,5 @@
 from functools import lru_cache, cached_property
-from typing import Union, Sequence, Callable, Any, Mapping, Tuple, Iterator, \
+from typing import Union, Sequence, Callable, Mapping, Tuple, Iterator, \
     Optional, Iterable
 
 import numpy as np
@@ -10,7 +10,8 @@ from scipy.special import ndtr
 from pyqumo import stats
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
-    is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic
+    is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
+    str_array
 
 
 class Rnd:
@@ -31,15 +32,6 @@ class Rnd:
 
     def __repr__(self):
         return f"<Rnd: '{self.label}'>"
-
-
-def _str_array(array: np.ndarray):
-    num_axis = len(array.shape)
-    if num_axis == 1:
-        return "[" + ", ".join([f"{x:.3g}" for x in array]) + "]"
-    return "[" + ", ".join(
-        [_str_array(array[i]) for i in range(array.shape[0])]
-    ) + "]"
 
 
 class Distribution:
@@ -514,8 +506,8 @@ class HyperExponential(MixtureDistribution):
 
     def __repr__(self):
         return f"(HyperExponential: " \
-               f"probs={_str_array(self.probs)}, " \
-               f"rates={_str_array(self.rates)})"
+               f"probs={str_array(self.probs)}, " \
+               f"rates={str_array(self.rates)})"
 
 
 # noinspection PyUnresolvedReferences
@@ -1103,7 +1095,7 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
         return self._num_kde_samples
 
     def __repr__(self):
-        trans = _str_array(self._trans_probs)
+        trans = str_array(self._trans_probs)
         time_ = "[" + ', '.join([str(td) for td in self._states]) + "]"
-        probs = _str_array(self._init_probs)
+        probs = str_array(self._init_probs)
         return f"(SemiMarkovAbsorb: trans={trans}, time={time_}, p0={probs})"
