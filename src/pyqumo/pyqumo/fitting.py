@@ -610,7 +610,7 @@ def fit_map_horvath(ph, lags):
 
     D0ni = np.linalg.inv(-D0) / mu
     D0ni2 = D0ni.dot(D0ni)
-    rate = ph.rate * mu
+    rate = ph.param * mu
     lag1 = lags[0]
 
     d = (-D0 * mu).dot(En).reshape((N, 1))

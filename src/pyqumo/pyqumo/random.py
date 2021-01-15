@@ -46,6 +46,13 @@ class Distribution:
         return self._moment(1)
 
     @cached_property
+    def rate(self) -> float:
+        """
+        Get rate (1/mean)
+        """
+        return 1 / self.mean
+
+    @cached_property
     def var(self) -> float:
         """
         Get variance (dispersion) of the random variable.
@@ -58,6 +65,13 @@ class Distribution:
         Get standard deviation of the random variable.
         """
         return self.var ** 0.5
+
+    @cached_property
+    def cv(self):
+        """
+        Get coefficient of variation (relation of std.dev. to mean value)
+        """
+        return self.std / self.mean
 
     def moment(self, n: int) -> float:
         """
@@ -264,7 +278,7 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def var(self):
         return self._std**2
 
-    @lru_cache()
+    @lru_cache
     def _moment(self, n: int) -> float:
         m, s = self._mean, self._std
 
@@ -308,16 +322,15 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         super().__init__()
         if rate <= 0.0:
             raise ValueError("exponential parameter must be positive")
-        self._rate = rate
+        self._param = rate
 
     @property
-    def rate(self) -> float:
-        """Distribution parameter"""
-        return self._rate
+    def param(self):
+        return self._param
 
     @lru_cache
     def _moment(self, n: int) -> float:
-        return np.math.factorial(n) / (self.rate**n)
+        return np.math.factorial(n) / (self.param**n)
 
     @cached_property
     def pdf(self) -> Callable[[float], float]:
@@ -350,22 +363,22 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         f(x; k, l) = l^k x^(k-1) e^(-l * x) / (k-1)!
     """
 
-    def __init__(self, shape: int, rate):
+    def __init__(self, shape: int, param: float):
         super().__init__()
         if (shape <= 0 or shape == np.inf or
                 np.abs(np.round(shape) - shape) > 0):
             raise ValueError("shape must be positive integer")
-        if rate <= 0.0:
+        if param <= 0.0:
             raise ValueError("rate must be positive")
-        self._shape, self._rate = int(np.round(shape)), rate
+        self._shape, self._param = int(np.round(shape)), param
 
     @property
     def shape(self) -> int:
         return self._shape
 
     @property
-    def rate(self) -> float:
-        return self._rate
+    def param(self) -> float:
+        return self._param
 
     @lru_cache
     def _moment(self, n: int) -> float:
@@ -375,12 +388,12 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         N-th moment of Erlang distribution with shape `K` and rate `R` is
         computed as: :math:`k (k+1) ... (k + n - 1) / r^n`
         """
-        k, r = self.shape, self.rate
+        k, r = self.shape, self.param
         return k / r if n == 1 else (k + n - 1) / r * self._moment(n - 1)
 
     @cached_property
     def pdf(self) -> Callable[[float], float]:
-        r, k = self.rate, self.shape
+        r, k = self.param, self.shape
         koef = r**k / np.math.factorial(k - 1)
         base = np.e**(-r)
         return lambda x: 0 if x < 0 else koef * x**(k - 1) * base**x
@@ -388,7 +401,7 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     @cached_property
     def cdf(self) -> Callable[[float], float]:
         # Prepare data
-        r, k = self.rate, self.shape
+        r, k = self.param, self.shape
         factorials = np.cumprod(np.concatenate(([1], np.arange(1, k))))
         # Summation coefficients are: r^0 / 0!, r^1 / 1!, ... r^k / k!:
         koefs = np.power(r, np.arange(self.shape)) / factorials
@@ -400,12 +413,12 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
             1 - base**x * koefs.dot(np.power(x, np.arange(k)))
 
     def _eval(self, size: int) -> np.ndarray:
-        return np.random.exponential(1 / self.rate, size=(size * self.shape))\
+        return np.random.exponential(1 / self.param, size=(size * self.shape))\
             .reshape((self.shape, size))\
             .sum(axis=0)
 
     def __repr__(self):
-        return f"(Erlang: shape={self.shape:.3g}, rate={self.rate:.3g})"
+        return f"(Erlang: shape={self.shape:.3g}, rate={self.param:.3g})"
 
 
 # noinspection PyUnresolvedReferences
@@ -478,7 +491,7 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
 
     def __repr__(self):
         states_str = "[" + ", ".join(str(state) for state in self.states) + "]"
-        probs_str = _str_array(self._probs)
+        probs_str = str_array(self._probs)
         return f"(Mixture: states={states_str}, probs={probs_str})"
 
 
@@ -694,10 +707,6 @@ class PhaseType(ContinuousDistributionMixin,
     def sni(self) -> np.ndarray:
         return self._sni
 
-    @property
-    def rate(self) -> float:
-        return 1 / self.mean
-
     @lru_cache
     def _moment(self, n: int) -> float:
         sni_powered = np.linalg.matrix_power(self.sni, n)
@@ -743,7 +752,7 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
             to values length; if not provided, all values are expected to
             have the same weight.
         """
-        if not values:
+        if len(values) == 0:
             raise ValueError('expected non-empty values')
         weights_, values_ = [], []
         try:
@@ -762,7 +771,7 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
             # matches weights (if provided), and fill weights it they were
             # not provided:
             values_.extend(values)
-            if weights:
+            if weights is not None and len(weights) > 0:
                 if len(values) != len(weights):
                     raise ValueError('values and weights size mismatch')
             else:
@@ -883,6 +892,222 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     def __repr__(self):
         return f"(Choice: values={self.values.tolist()}, " \
                f"p={self.probs.tolist()})"
+
+
+class CountableDistribution(DiscreteDistributionMixin,
+                            AbstractCdfMixin,
+                            Distribution):
+    """
+    Distribution with set of values {0, 1, 2, ...} - all non-negative numbers.
+
+    An example of this kind of distributions is geometric distribution.
+    Since a set of values is infinite, we specify this distribution with
+    a probability function that takes value = 0, 1, ..., and returns its
+    probability.
+
+    To compute properties we will need to find sum of infinite series.
+    We specify precision as maximum tail probability, and use only first
+    values (till this tail) when estimating sums.
+    """
+    def __init__(self, prob: Callable[[int], float],
+                 precision: float = 1e-9,
+                 moments: Sequence[float] = ()):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        prob : callable, (int) -> float
+            Probability function. Should accept arguments 0, 1, 2, ...
+            and return their probability.
+        precision : float, optional
+            Maximum tail probability. If this tail starts at value X=N,
+            properties will be estimated over values 0, 1, ..., N only,
+            without respect to the tail. Note, that when estimating
+            moments of high order the error will grow due to the growth
+            of tail weight (for n > N > 1, n**K > n for K > 1).
+            By default, 1e-9.
+        moments : sequence of floats, optional
+            Optional explicit moments values. If given, they will be
+            used instead of estimating over first 0, 1, ..., N values.
+            By default, empty tuple.
+        """
+        self._prob = prob
+        self._precision = precision
+        self._moments = moments
+
+        # Find number I, such that P[X > I] < precision:
+        trunc_pmf = []
+        head_prob = 0.0
+        max_value = -1
+        while head_prob < 1 - precision:
+            max_value += 1
+            p = prob(max_value)
+            trunc_pmf.append(p)
+            head_prob += p
+        self._max_value = max_value
+
+        values = np.arange(self._max_value + 1)
+        self._trunc_pmf = np.asarray(trunc_pmf)
+        self._trunc_cdf = np.cumsum(self._trunc_pmf)
+        self._trunc_choice = Choice(tuple(values), self._trunc_pmf)
+
+    @lru_cache
+    def get_prob_at(self, x: int) -> float:
+        """
+        Get probability of a given value.
+
+        This method is cached, so only first access at a given value may
+        be long. For the values 0, 1, ..., `truncated_at` this method is
+        fast even at the first run, since these values are computed in
+        constructor when computing `truncated_at` value itself.
+        For greater values access to `prob(x)` may take time.
+
+        Returns 0.0 for negative arguments, no matter of `prob(x)`.
+
+        Parameters
+        ----------
+        x : int, non-negative
+
+        Returns
+        -------
+        probability : float
+        """
+        return self._trunc_pmf[x] if 0 <= x <= self._max_value else \
+            (self._prob(x) if x > self._max_value else 0.0)
+
+    @property
+    def prob(self) -> Callable[[int], float]:
+        """
+        Returns probability function.
+        """
+        return self._prob
+
+    @property
+    def precision(self) -> float:
+        """
+        Returns precision of this distribution.
+        """
+        return self._precision
+
+    @property
+    def truncated_at(self) -> int:
+        """
+        Returns a value, such that tail probability is less then precision.
+
+        If `truncated_at = N`, then total probability of values
+        N+1, N+2, ... is less then `precision`.
+        """
+        return self._max_value
+
+    @lru_cache
+    def _moment(self, n: int) -> float:
+        """
+        Computes n-th moment.
+
+        If moments were provided in the constructor, use them. Otherwise
+        estimate moment as the weighted sum of the first N elements, where
+        `truncated_at = N`. Note, that for large `n` error may be large,
+        and, if needed, distribution should be built with high precision.
+
+        Parameters
+        ----------
+        n : int
+            Order of the moment.
+
+        Returns
+        -------
+        value : float
+        """
+        if n <= len(self._moments) and self._moments[n-1] is not None:
+            return self._moments[n-1]
+        values = np.arange(self._max_value + 1)
+        degrees = np.power(values, n)
+        probs = np.asarray([self.get_prob_at(x) for x in values])
+        return probs.dot(degrees)
+
+    @cached_property
+    def pmf(self) -> Callable[[float], float]:
+        """
+        This function returns probability mass function.
+
+        For values, those are NOT non-negative integers, returns 0.0
+        Works very fast for values between 0 and `truncated_at` (incl.),
+        but requires call to `prob(x)` for greater values.
+
+        Returns
+        -------
+        pmf : callable (float) -> float
+        """
+        def fn(x: float) -> float:
+            fl, num = np.math.modf(x)
+            if abs(fl) > 1e-12:
+                return 0
+            num = int(num)
+            if num < 0:
+                return 0.0
+            return self.get_prob_at(num)
+
+        return fn
+
+    @cached_property
+    def cdf(self) -> Callable[[float], float]:
+        """
+        This function returns cumulative distribution function.
+
+        For values, those are NOT non-negative integers, returns 0.0
+        Works very fast for values between 0 and `truncated_at` (incl.),
+        but requires call to `prob(x)` for greater values.
+
+        Returns
+        -------
+        pmf : callable (float) -> float
+        """
+        def fn(x: float) -> float:
+            _, num = np.math.modf(x)
+            num = int(num)
+            if num < 0:
+                return 0.0
+            if num <= self._max_value:
+                return self._trunc_cdf[num]
+            p = self._trunc_cdf[self._max_value]
+            for i in range(self._max_value + 1, num + 1):
+                p += self.get_prob_at(i)
+            return p
+
+        return fn
+
+    def __iter__(self) -> Iterator[Tuple[float, float]]:
+        # To avoid infinite loops, we iterate over 10-times max value.
+        total_prob = 0.0
+        for i in range(10 * (self._max_value + 1)):
+            if total_prob >= 1 - 1e-12:
+                return
+            p = self.get_prob_at(i)
+            total_prob += p
+            yield i, p
+
+    def _eval(self, size: int) -> np.ndarray:
+        """
+        Generate a random array of the given size.
+
+        When generating random values, use `Choice` distribution with values
+        0, 1, ..., `truncated_at`. Thus, no values from tail (which prob. is
+        less then precision) will be generated.
+
+        Parameters
+        ----------
+        size : array size
+
+        Returns
+        -------
+        array : np.ndarray
+        """
+        return self._trunc_choice(size)
+
+    def __repr__(self):
+        values = ', '.join([f"{self.get_prob_at(x):.3g}" for x in range(5)])
+        return f"(Countable: p=[{values}, ...], precision={self.precision})"
 
 
 # noinspection PyUnresolvedReferences

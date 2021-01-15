@@ -3,7 +3,8 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
-    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb, MixtureDistribution
+    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb, MixtureDistribution, \
+    CountableDistribution
 
 
 #
@@ -57,7 +58,7 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
     # Erlang distribution:
     (Erlang(1, 1), 1, 2, 6, 24, '(Erlang: shape=1, rate=1)', 1e-2, 2e-2),
     (
-        Erlang(5, rate=2.5),
+        Erlang(5, param=2.5),
         2, 4.8, 13.44, 43.008,
         '(Erlang: shape=5, rate=2.5)',
         1e-2, 2e-2
@@ -150,6 +151,27 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
         'states=[(Const: value=3), (Const: value=7), (Const: value=5)], '
         'probs=[0.1, 0.4, 0.5])',
         1e-2, 2e-2,
+    ),
+    # Countable discrete distributions:
+    (
+        # Geom(0.25) (number of attempts to get 1 success),
+        CountableDistribution(
+            lambda k: 0.25 * 0.75**(k-1) if k > 0 else 0,
+            precision=1e-9  # to get 1e-2 precision for m4: 1e-2^4 = 1e-8
+        ),
+        4, 28, 292, 4060,
+        '(Countable: p=[0, 0.25, 0.188, 0.141, 0.105, ...], precision=1e-09)',
+        0.01, 0.01
+    ), (
+        # Geom(0.25) (number of attempts to get 1 success), explicit moments
+        CountableDistribution(
+            lambda k: 0.25 * 0.75 ** (k - 1) if k > 0 else 0,
+            precision=0.001,
+            moments=[4, 28, 292, 4060]
+        ),
+        4, 28, 292, 4060,
+        '(Countable: p=[0, 0.25, 0.188, 0.141, 0.105, ...], precision=0.001)',
+        0.05, 0.05
     )
 ])
 def test_common_props(dist, m1, m2, m3, m4, string, atol, rtol):
@@ -200,7 +222,7 @@ def test_common_props(dist, m1, m2, m3, m4, string, atol, rtol):
     (Exponential(2.0), [(0, 0.0), (1, 0.865), (2, 0.982)]),
     # Erlang distribution:
     (Erlang(1, 1), [(0, 0.000), (1, 0.632), (2, 0.865), (3, 0.950)]),
-    (Erlang(5, rate=2.5), [(0, 0.000), (1, 0.109), (2, 0.559), (3, 0.868)]),
+    (Erlang(5, param=2.5), [(0, 0.000), (1, 0.109), (2, 0.559), (3, 0.868)]),
     # Hyperexponential distribution
     (
         HyperExponential([1], [1]),
@@ -229,6 +251,15 @@ def test_common_props(dist, m1, m2, m3, m4, string, atol, rtol):
     (
         Choice([3, 5, 7], weights=[1, 5, 4]),
         [(2, 0), (3, 0.1), (4.9, 0.1), (5, 0.6), (6.9, 0.6), (7, 1), (8, 1)]
+    ),
+    # Countable discrete distributions:
+    (
+        # Geom(0.25) (number of attempts to get 1 success),
+        CountableDistribution(
+            lambda k: 0.25 * 0.75 ** (k - 1) if k > 0 else 0,
+            precision=1e-1  # to get 1e-2 precision for m4: 1e-2^4 = 1e-8
+        ),
+        [(0, 0), (1, 0.25), (2, 0.437), (3, 0.578), (4, 0.684), (5, 0.763)]
     ),
 ])
 def test_cdf(dist, grid):
@@ -275,7 +306,7 @@ def test_gaussian_kde_cdf(dist, grid):
     (Exponential(2.0), [(0, 2.0), (1, 0.271), (2, 0.037)]),
     # Erlang distribution:
     (Erlang(1, 1), [(0, 1.000), (1, 0.368), (2, 0.135), (3, 0.050)]),
-    (Erlang(5, rate=2.5), [(0, 0.000), (1, 0.334), (2, 0.439), (3, 0.182)]),
+    (Erlang(5, param=2.5), [(0, 0.000), (1, 0.334), (2, 0.439), (3, 0.182)]),
     # Hyperexponential distribution
     (
         HyperExponential([1], [1]),
@@ -323,7 +354,7 @@ def test_gaussian_kde_pdf(dist, grid):
     """
     pdf = dist.pdf
     for x, y in grid:
-        assert_allclose(pdf(x), y, rtol=0.1, err_msg=f'{dist} PDF, x={x}')
+        assert_allclose(pdf(x), y, rtol=0.15, err_msg=f'{dist} PDF, x={x}')
 
 
 #
@@ -336,6 +367,15 @@ def test_gaussian_kde_pdf(dist, grid):
     # Choice (discrete) distribution:
     (Choice([10]), [(10, 1.0)]),
     (Choice([5, 7, 9], weights=[1, 5, 4]), [(5, 0.1), (7, 0.5), (9, 0.4)]),
+    # Countable discrete distributions:
+    (
+        # Geom(0.25) (number of attempts to get 1 success),
+        CountableDistribution(
+            lambda k: 0.25 * 0.75 ** (k - 1) if k > 0 else 0,
+            precision=1e-1  # to get 1e-2 precision for m4: 1e-2^4 = 1e-8
+        ),
+        [(0, 0), (1, 0.25), (2, 0.1875), (3, 0.1406), (4, 0.1055), (5, 0.0791)]
+    ),
 ])
 def test_pmf_and_iterators(dist, grid):
     """
@@ -347,7 +387,7 @@ def test_pmf_and_iterators(dist, grid):
     for i, (desired, actual) in enumerate(zip(grid, dist)):
         assert_allclose(actual[0], desired[0],
                         err_msg=f'{i}-th values mismatch, dist: {dist}')
-        assert_allclose(actual[1], desired[1],
+        assert_allclose(actual[1], desired[1], rtol=1e-3,
                         err_msg=f'{i}-th probability mismatch, dist: {dist}')
 
 
@@ -370,6 +410,19 @@ def test_pmf_and_iterators(dist, grid):
 ])
 def test_choice_find_left(choice, value, expected_index, comment):
     assert choice.find_left(value) == expected_index, comment
+
+
+@pytest.mark.parametrize('fn, precision, truncated_at', [
+    (lambda k: 0.25 * 0.75**(k-1) if k > 0 else 0, 0.01, 17),
+    (lambda k: 0.1 * 0.9**k, 0.1, 21),
+])
+def test_countable_distribution_props(fn, precision, truncated_at):
+    """
+    Validate that CountableDistribution stops when tail probability is less
+    then precision.
+    """
+    dist = CountableDistribution(fn, precision=precision)
+    assert dist.truncated_at == truncated_at, str(dist)
 
 
 #
