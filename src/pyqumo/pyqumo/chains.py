@@ -37,9 +37,7 @@ class DiscreteTimeMarkovChain:
         if not is_square(matrix):
             raise MatrixShapeError('(N, N)', matrix.shape, 'transition matrix')
         if not safe and not is_stochastic(matrix):
-            print('yo-yo-yo')
             matrix = fix_stochastic(matrix, tol=tol)[0]
-            print('bla-bla-lba')
         self._matrix = matrix
         self._order = order_of(matrix)
 

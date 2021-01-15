@@ -729,7 +729,7 @@ class PhaseType(ContinuousDistributionMixin,
         return lambda x: 0 if x < 0 else 1 - p.dot(linalg.expm(x * s)).dot(ones)
 
     def __repr__(self):
-        return f"(PhaseType: s={self.s.tolist()}, p={self.init_probs.tolist()})"
+        return f"(PH: s={str_array(self.s)}, p={str_array(self.init_probs)})"
 
 
 class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):

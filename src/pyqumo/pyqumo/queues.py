@@ -38,12 +38,28 @@ class BasicQueueingSystem:
         return self._service
 
     @property
+    def lambda_(self):
+        return self.arrival.rate
+
+    @property
+    def mu(self):
+        return self.service.rate
+
+    @property
     def queue_capacity(self) -> int:
         return self._queue_capacity
 
     @cached_property
     def capacity(self):
         return self._queue_capacity + 1
+
+    @property
+    def utilization(self) -> float:
+        return 1 - self.get_system_size_prob(0)
+
+    @cached_property
+    def bandwidth(self) -> float:
+        return (1 - self.loss_prob) * self.lambda_
 
     @cached_property
     def system_size(self) -> CountableDistribution:
@@ -105,15 +121,15 @@ class BasicQueueingSystem:
         raise NotImplementedError
 
     @property
-    def utilization(self) -> float:
-        raise NotImplementedError
-
-    @property
     def get_system_size_prob(self) -> Callable[[int], float]:
         raise NotImplementedError
 
     @property
     def response_time(self) -> float:
+        raise NotImplementedError
+
+    @property
+    def loss_prob(self) -> float:
         raise NotImplementedError
 
 
@@ -126,21 +142,17 @@ class MM1Queue(BasicQueueingSystem):
 
     @cached_property
     def departure(self):
-        return PoissonProcess(self.arrival.rate)
-
-    @cached_property
-    def utilization(self):
-        return self.arrival.rate / self.service.rate
+        return PoissonProcess(self.lambda_)
 
     @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
-        rho = self.utilization
+        rho = self.lambda_ / self.mu
         if 0 <= rho <= 1:
             return lambda size: (1 - rho) * pow(rho, size) if size >= 0 else 0
         raise ValueError(f"no system size distribution, utilization = {rho}")
 
     def _get_system_size_props(self) -> Mapping[str, float]:
-        rho = self.utilization
+        rho = self.lambda_ / self.mu
         if rho >= 1:
             return {'avg': np.inf, 'var': np.inf}
         avg = rho / (1 - rho)
@@ -148,7 +160,7 @@ class MM1Queue(BasicQueueingSystem):
         return {'avg': avg, 'var': var}
 
     def _get_queue_size_props(self) -> Mapping[str, float]:
-        rho = self.utilization
+        rho = self.lambda_ / self.mu
         if rho >= 1:
             return {'avg': np.inf, 'var': np.inf}
         avg = rho**2 / (1 - rho)
@@ -163,9 +175,15 @@ class MM1Queue(BasicQueueingSystem):
             return np.inf
         return 1 / service_rate_diff
 
+    @cached_property
+    def loss_prob(self) -> float:
+        return 0.0
+
     def __repr__(self):
-        return f"(MM1Queue: arrival={self.arrival.rate:.3g}, " \
-               f"service={self.service.rate:.3g})"
+        return f"(MM1Queue: " \
+               f"arrival_rate={self.lambda_:.3g}, " \
+               f"service_rate={self.mu:.3g}" \
+               f")"
 
 
 class MM1NQueue(BasicQueueingSystem):
@@ -199,39 +217,45 @@ class MM1NQueue(BasicQueueingSystem):
     def utilization(self):
         return 1 - self.system_size.pmf(0)
 
-    @lru_cache
+    @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
         rho = self.arrival.rate / self.service.rate
-        if rho >= 1:
-            return lambda x: 1 if x == self.capacity else 0
         p0 = (1 - rho) / (1 - rho**(self.capacity + 1))
         return lambda x: rho**x * p0 if 0 <= x <= self.capacity else 0.0
 
     def _get_system_size_props(self) -> Mapping[str, float]:
+        """
+        Compute system size average and variance for M/M/1/N.
+
+        Average: :math:`m_1 = [1 - (N+1) r^N + N r^{N+1}] / (1 - r)^2`
+
+        M2: :math:`m_2 = (1+r)/(1-r) m_1 - N(N+1) r^{N+1} / (1 - r^{N+1})`
+
+        Variance: :math:`Var(N_s) = m_2 - m_1^2`
+
+        Here `r = arrival.rate / service.rate` (usually written as rho).
+
+        Returns
+        -------
+        values : dict
+            Contains 'avg', 'm2' and 'var'
+        """
         rho = self.arrival.rate / self.service.rate
         n = self.capacity
-
-        if rho >= 1:
-            return {}
-
-        p0 = self.system_size.pmf(0)
-        rho_n = pow(rho, n)    # rho^n
-        rho_np1 = rho_n * rho  # rho^{n+1}
-        k = rho / (1 - rho)    # helper: \frac{\rho}{1 - \rho}
-        avg = k - (n + 1) * rho_np1 / (1 - rho_np1)
-        m2 = k * n * (n + 1) * p0 * rho_n + (1 + rho) / (1 - rho) * avg
+        p0 = self.get_system_size_prob(0)
+        rho_n = pow(rho, n)    # r^n
+        rho_np1 = rho_n * rho  # r^{n+1}
+        avg = p0 * rho * (1 - (n + 1) * rho**n + n * rho**(n+1)) / (1 - rho)**2
+        m2 = ((1 + rho) / (1 - rho) * avg -
+              n * (n + 1) * rho**(n + 1) / (1 - rho**(n + 1)))
         var = m2 - avg**2
         return {'avg': avg, 'm2': m2, 'var': var}
 
     def _get_queue_size_props(self) -> Mapping[str, float]:
         rho = self.arrival.rate / self.service.rate
         n = self.capacity
-
-        if rho >= 1:
-            return {}
-
         ns = self._get_system_size_props()
-        p0 = self.system_size.pmf(0)
+        p0 = self.get_system_size_prob(0)
         avg = ns['avg'] - (1 - p0)
         m2 = ns['m2'] - 2 * ns['avg'] + (1 - p0)
         var = ns['var'] - 2 * p0 * ns['avg'] + p0 * (1 - p0)
@@ -250,6 +274,17 @@ class MM1NQueue(BasicQueueingSystem):
         numerator = 1 / mu * (1 - (n + 1) * rho_n + n * rho_n * rho)
         denominator = (1 - rho) * (1 - rho_n * rho)
         return numerator / denominator
+
+    @cached_property
+    def loss_prob(self) -> float:
+        return self.get_system_size_prob(self.capacity)
+
+    def __repr__(self):
+        return f"(MM1NQueue: " \
+               f"arrival_rate={self.lambda_:.3g}, " \
+               f"service_rate={self.mu:.3g}, " \
+               f"capacity={self.capacity}" \
+               f")"
 
 
 class MapPh1NQueue(BasicQueueingSystem):
@@ -321,10 +356,7 @@ class MapPh1NQueue(BasicQueueingSystem):
 
         return MarkovArrivalProcess(d0_dep, D1_dep)
 
-    @property
-    def utilization(self):
-        return self.arrival.rate / self.service.rate
-
+    @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
         arrival, service = self._get_casted_arrival_and_service()
         departure = self.departure
@@ -338,4 +370,53 @@ class MapPh1NQueue(BasicQueueingSystem):
 
     @cached_property
     def response_time(self):
-        return self.system_size.mean / self.arrival.rate
+        return self.system_size.mean / self.bandwidth
+    
+    @cached_property
+    def arrival_pmf_regarding_system_size(self):
+        """
+        Build (N, W) matrix where K-th row is arrival MAP PMF for system size K.
+
+        Let arrival MAP has W states and PH - V states. Let
+        :math:`Psi_k = [p_0, p_1, ..., p_{W-1}]` - distribution of arrival MAP
+        when there are k packets in the system.
+
+        States in (departure) CTMC are arranged as :math:`N = kVW + iV + j`,
+        where `i` - MAP state number (0-based) and `j` - PH state
+        (also 0-based)
+
+        To compute :math:`Psi_{k,i}` we need to find sum:
+        :math:`Theta[kVW+iV] + Theta[kVW+iV + 1] + ... + Theta[kVW+iV + V-1]`
+
+        Returns
+        -------
+        psi : np.ndarray
+            A 2D matrix with K-th row representing PMF of arrival MAP when
+            there are K packets in the system
+        """
+        arrival, service = self._get_casted_arrival_and_service()
+        v, w = service.order, arrival.order
+        theta = self.departure.ctmc.steady_pmf
+        psi = []
+
+        for k in range(self.capacity + 1):
+            pmf = np.zeros(w)
+            for i in range(w):
+                base = k * v * w + i * v
+                pmf[i] = theta[base:(base + v)].sum()
+            psi.append(pmf)
+
+        return np.asarray(psi)
+
+    @cached_property
+    def loss_prob(self) -> float:
+        arrival, _ = self._get_casted_arrival_and_service()
+        psi = self.arrival_pmf_regarding_system_size
+        return psi[self.capacity].dot(arrival.d1).sum() / self.arrival.rate
+
+    def __repr__(self):
+        return f"(MapPh1NQueue: " \
+               f"arrival={self.arrival}, " \
+               f"service={self.service}, " \
+               f"capacity={self.capacity}" \
+               f")"
