@@ -54,9 +54,9 @@ class Results:
 
         items = [
             ('System size PMF', str_array(system_size_pmf)),
-            ('System size average', str_array(queue_size_pmf)),
+            ('System size average', self.system_size.mean),
             ('System size std.dev.', self.system_size.std),
-            ('Queue size PMF', [f'{x:.3g}' for x in queue_size_pmf]),
+            ('Queue size PMF', str_array(queue_size_pmf)),
             ('Queue size average', self.queue_size.mean),
             ('Queue size std.dev.', self.queue_size.std),
             ('Utilization', self.utilization),

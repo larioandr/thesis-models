@@ -214,10 +214,6 @@ class MM1NQueue(BasicQueueingSystem):
         return MarkovArrivalProcess(d0, d1)
 
     @cached_property
-    def utilization(self):
-        return 1 - self.system_size.pmf(0)
-
-    @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
         rho = self.arrival.rate / self.service.rate
         p0 = (1 - rho) / (1 - rho**(self.capacity + 1))
@@ -263,17 +259,16 @@ class MM1NQueue(BasicQueueingSystem):
         return {'avg': avg, 'm2': m2, 'var': var}
 
     @cached_property
-    def response_time(self):
-        rho = self.arrival.rate / self.service.rate
-        if rho >= 1:
-            return np.inf
+    def response_time(self) -> float:
+        p1 = self.get_system_size_prob(1)
+        r = self.queue_capacity
+        lambda_, mu = self.lambda_, self.mu
+        rho = lambda_ / mu
 
-        mu = self.service.rate
-        n = self.capacity
-        rho_n = pow(rho, n)
-        numerator = 1 / mu * (1 - (n + 1) * rho_n + n * rho_n * rho)
-        denominator = (1 - rho) * (1 - rho_n * rho)
-        return numerator / denominator
+        k1 = (mu - rho**r * ((r + 1) * mu - r * lambda_)) / (mu - lambda_)**2
+        k2 = p1 / (1 - self.loss_prob)
+
+        return k1 * k2 + self.service.mean
 
     @cached_property
     def loss_prob(self) -> float:

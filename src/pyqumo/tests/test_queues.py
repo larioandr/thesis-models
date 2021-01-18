@@ -34,6 +34,9 @@ class QueueProps:
     # Loss probability and bandwidth
     loss_prob: Optional[float] = None
     bandwidth: Optional[float] = None
+    # Response and wait time
+    response_time: Optional[float] = None
+    wait_time: Optional[float] = None
     # Tolerance
     tol: float = 1e-2
 
@@ -51,6 +54,7 @@ class QueueProps:
             queue_size_pmf=[0.84, 0.096, 0.0384, 0.0154],
             queue_size_avg=0.2667, queue_size_var=0.5511,
             utilization=0.4, loss_prob=0.0, bandwidth=2,
+            response_time=1/3, wait_time=2/15,
         ), '(MM1Queue: arrival_rate=2, service_rate=5)'
     ), (
         MM1Queue(1.0, 2.0), QueueProps(
@@ -60,6 +64,7 @@ class QueueProps:
             queue_size_pmf=[0.75, 0.125, 0.0625, 0.03125],
             queue_size_avg=0.5, queue_size_var=1.25,
             utilization=0.5, loss_prob=0.0, bandwidth=1,
+            response_time=1.0, wait_time=0.5,
         ), '(MM1Queue: arrival_rate=1, service_rate=2)'
     ),
     # M/M/1/N queues:
@@ -73,6 +78,7 @@ class QueueProps:
             queue_size_pmf=[0.8434, 0.0964, 0.0385, 0.0154, 0.0062],
             queue_size_avg=0.2444, queue_size_var=0.4284,
             utilization=0.3975, loss_prob=0.0062, bandwidth=1.9877,
+            response_time=0.323, wait_time=0.123,
         ), '(MM1NQueue: arrival_rate=2, service_rate=5, capacity=5)'
     ), (
         # Queue with arrival rate > service rate (valid for finite queue):
@@ -87,6 +93,7 @@ class QueueProps:
                 0.14673196, 0.18125713, 0.22390586
             ], queue_size_avg=4.3708, queue_size_var=5.2010,
             utilization=0.9587, loss_prob=0.2239, bandwidth=32.5959,
+            response_time=0.163, wait_time=0.134,
         ), '(MM1NQueue: arrival_rate=42, service_rate=34, capacity=8)'
     ),
     # MAP/PH/1/N representation of M/M/1/N queue:
@@ -102,6 +109,7 @@ class QueueProps:
             queue_size_pmf=[0.8434, 0.0964, 0.0385, 0.0154, 0.0062],
             queue_size_avg=0.2444, queue_size_var=0.4284,
             utilization=0.3975, loss_prob=0.0062, bandwidth=1.9877,
+            response_time=0.323, wait_time=0.123,
         ), "(MapPh1NQueue: arrival=(MAP: d0=[[-2]], d1=[[2]]), "
            "service=(GI: f=(PH: s=[[-5]], p=[1])), capacity=5)"
     ), (
@@ -120,6 +128,7 @@ class QueueProps:
                 0.14673196, 0.18125713, 0.22390586
             ], queue_size_avg=4.3708, queue_size_var=5.2010,
             utilization=0.9587, loss_prob=0.2239, bandwidth=32.5959,
+            response_time=0.163, wait_time=0.134,
         ), "(MapPh1NQueue: arrival=(MAP: d0=[[-42]], d1=[[42]]), "
            "service=(GI: f=(PH: s=[[-34]], p=[1])), capacity=8)"
     )
@@ -185,9 +194,13 @@ def test_basic_props(
         assert_allclose(queue.bandwidth, props.bandwidth, rtol=tol,
                         err_msg=f'bandwidth mismatch for {string}')
 
-    # TODO: uncomment this when ready:
-    # assert_allclose(queue.wait_time, wait_time)
-    # assert_allclose(queue.response_time, resp_time)
+    # 4) Validate response and waiting time:
+    if props.wait_time is not None:
+        assert_allclose(queue.wait_time, props.wait_time, rtol=tol,
+                        err_msg=f'waiting time mismatch for {string}')
+    if props.response_time is not None:
+        assert_allclose(queue.response_time, props.response_time, rtol=tol,
+                        err_msg=f'response time mismatch for {string}')
 
     # 4) Validate string representation:
     assert str(queue) == string
