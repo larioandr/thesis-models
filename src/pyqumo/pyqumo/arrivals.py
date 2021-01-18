@@ -128,7 +128,11 @@ class RandomProcess:
             if size > 1, then returns a 1D array, otherwise a float scalar
         """
         if size == 1:
-            return self._eval(1)[0]
+            x = self._eval(1)
+            try:
+                return x[0]
+            except IndexError:
+                return x
         return self._eval(size)
 
     def _eval(self, size: int) -> np.ndarray:

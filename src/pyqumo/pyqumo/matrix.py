@@ -76,7 +76,9 @@ def array2string(
         return row2string(array, col_sep)
 
 
-def str_array(array: ndarray):
+def str_array(
+        array: Union[ndarray, Sequence[float], Sequence[Sequence[float]]]
+) -> str:
     """
     Returns array representation as list of lists using .3g cell formatter.
     In contrast to array2string and matrix2string, this routine keeps
@@ -96,6 +98,8 @@ def str_array(array: ndarray):
     -------
     string : str
     """
+    if not isinstance(array, ndarray):
+        array = asarray(array)
     num_axis = len(array.shape)
     if num_axis == 1:
         return "[" + ", ".join([f"{x:.3g}" for x in array]) + "]"
