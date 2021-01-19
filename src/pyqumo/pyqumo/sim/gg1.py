@@ -1,17 +1,28 @@
-from collections import namedtuple
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, List, Generic, TypeVar, Tuple, Sequence
+from typing import Optional, List, Tuple
 import numpy as np
 from tabulate import tabulate
 
 from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
 from pyqumo.random import CountableDistribution
+from pyqumo.sim.helpers import TimeValue, Statistics, \
+    build_distribution_from_time_values, build_statistics, Queue
 
 
 @dataclass
 class Packet:
+    """
+    Packet representation for G/G/1/N model.
+
+    Stores timestamps: when the packet arrived (created_at), started
+    serving (service_started_at) and finished serving (departed_at).
+
+    Also stores flags, indicating whether the packet was dropped or was
+    completely served. Packets arrived in the end of the modeling, may not
+    be served, as well as dropped packets.
+    """
     created_at: float
     service_started_at: Optional[float] = None
     departed_at: Optional[float] = None
@@ -19,12 +30,11 @@ class Packet:
     served: bool = False
 
 
-TimeValue = namedtuple('TimeValue', ['time', 'value'])
-Statistics = namedtuple('Statistics', ['avg', 'var', 'std', 'count'])
-
-
 @dataclass
 class Records:
+    """
+    Records for G/G/1/N statistical analysis.
+    """
     packets: List[Packet] = field(default_factory=list)
     system_size: List[TimeValue] = field(default_factory=list)
     queue_size: List[TimeValue] = field(default_factory=list)
@@ -32,6 +42,19 @@ class Records:
 
 @dataclass
 class Results:
+    """
+    Results returned from G/G/1/N model simulation.
+
+    Discrete stochastic properties like system size, queue size and busy
+    periods are represented with `CountableDistribution`. Continuous properties
+    are not fitted into any kind of distribution, they are represented with
+    `Statistics` tuples.
+
+    Utilization coefficient, as well as loss probability, are just floating
+    point numbers.
+
+    To pretty print the results one can make use of `tabulate()` method.
+    """
     system_size: CountableDistribution
     queue_size: CountableDistribution
     busy: CountableDistribution
@@ -42,9 +65,15 @@ class Results:
 
     @property
     def utilization(self) -> float:
+        """
+        Get utilization coefficient, that is `Busy = 1` probability.
+        """
         return self.busy.pmf(1)
 
     def tabulate(self) -> str:
+        """
+        Build a pretty formatted table with all key properties.
+        """
         system_size_pmf = [
             self.system_size.pmf(x)
             for x in range(self.system_size.truncated_at + 1)]
@@ -71,52 +100,14 @@ class Results:
         return tabulate(items, headers=('Param', 'Value'))
 
 
-T = TypeVar('T')
-
-
-class Queue(Generic[T]):
-    def __init__(self, capacity: int = np.inf):
-        self._items: List[T] = []
-        self._capacity = capacity
-
-    @property
-    def capacity(self) -> int:
-        return self._capacity
-
-    def __len__(self) -> int:
-        return len(self._items)
-
-    @property
-    def size(self) -> int:
-        return len(self._items)
-    
-    @property
-    def empty(self) -> bool:
-        return len(self._items) == 0
-    
-    @property
-    def full(self) -> bool:
-        return len(self._items) >= self._capacity
-
-    def push(self, item: T) -> bool:
-        if len(self._items) < self._capacity:
-            self._items.append(item)
-            return True
-        return False
-
-    def pop(self) -> Optional[T]:
-        if not self._items:
-            return None
-        head = self._items[0]
-        self._items = self._items[1:]
-        return head
-
-
 @dataclass
 class Params:
+    """
+    Model parameters: arrival and service processes, queue capacity and limits.
+    """
     arrival: RandomProcess
     service: RandomProcess
-    queue_capacity: int = np.inf
+    queue_capacity: int
     max_packets: int = 1000000
     max_time: float = np.inf
 
@@ -128,7 +119,22 @@ class Event(Enum):
 
 
 class System:
+    """
+    System state representation.
+
+    This object takes care of the queue, current time, next arrival and
+    service end time, server status and any other kind of dynamic information,
+    except for internal state of arrival or service processes.
+    """
     def __init__(self, params: Params):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        params : Params
+            Model parameters
+        """
         self.queue: Queue[Packet] = Queue(params.queue_capacity)
         self.time: float = 0.0
         self.service_end: Optional[float] = None
@@ -138,10 +144,16 @@ class System:
 
     @property
     def empty(self) -> bool:
+        """
+        Return `True` if server is not serving any packet.
+        """
         return self.server is None
 
     @property
     def size(self):
+        """
+        Get system size, that is queue size plus one (busy) or zero (empty).
+        """
         return (1 if self.server is not None else 0) + self.queue.size
 
     def get_next_event(self) -> Tuple[Event, float]:
@@ -157,14 +169,111 @@ class System:
         return Event.SERVICE_END, self.service_end
 
 
-def init(system: System, params: Params, records: Records):
+def simulate(
+        arrival: RandomProcess,
+        service: RandomProcess,
+        queue_capacity: int,
+        max_time: float = np.inf,
+        max_packets: int = 1000000
+) -> Results:
+    """
+    Run simulation model of G/G/1/N system.
+
+    Simulation can be stopped in two ways: by reaching maximum simulation time,
+    or by reaching the maximum number of generated packets. By default,
+    simulation is limited with the maximum number of packets only (1 million).
+
+    Queue is expected to have finite capacity.
+
+    Arrival and service time processes can be of any kind, including Poisson
+    or MAP. To use a PH or normal distribution, a GenericIndependentProcess
+    model with the corresponding distribution may be used.
+
+    Parameters
+    ----------
+    arrival : RandomProcess
+        Arrival random process.
+    service : RandomProcess
+        Service time random process.
+    queue_capacity : int
+        Queue capacity.
+    max_time : float, optional
+        Maximum simulation time (default: infinity).
+    max_packets
+        Maximum number of simulated packets (default: 1'000'000)
+
+    Returns
+    -------
+    results : Results
+        Simulation results.
+    """
+    params = Params(
+        arrival=arrival, service=service, queue_capacity=queue_capacity,
+        max_packets=max_packets, max_time=max_time)
+    system = System(params)
+    records = Records()
+
+    _init(system, params, records)
+
+    max_time = params.max_time
+    while not system.stopped:
+        # Extract new event:
+        event, new_time = system.get_next_event()
+        assert (new_time - system.time) > -1e-11
+
+        # Check whether event is scheduled too late, and we need to stop:
+        if new_time > max_time:
+            system.stopped = True
+            continue
+
+        # Process event
+        system.time = new_time
+        if event == Event.ARRIVAL:
+            _handle_arrival(system, params, records)
+        elif event == Event.SERVICE_END:
+            _handle_service_end(system, params, records)
+
+    return _build_results(system, records)
+
+
+def _init(system: System, params: Params, records: Records):
+    """
+    Initialize the model: set time to true, init statistics, schedule arrival.
+
+    Parameters
+    ----------
+    system : System
+    params : Params
+    records : Records
+    """
     system.time = 0.0
     system.next_arrival = params.arrival()
     records.queue_size.append(TimeValue(0, 0))
     records.system_size.append(TimeValue(0, 0))
 
 
-def handle_arrival(system: System, params: Params, records: Records):
+def _handle_arrival(system: System, params: Params, records: Records):
+    """
+    Handle new packet arrival event.
+
+    First of all, a new packet is created. Then we check whether the
+    system is empty. If it is, this new packet starts serving immediately.
+    Otherwise, it is added to the queue.
+
+    If the queue was full, the packet is dropped. To mark this, we set
+    `dropped` flag in the packet to `True`.
+
+    In the end we schedule the next arrival. We also check whether the
+    we have already generated enough packets. If so, `system.stopped` flag
+    is set to `True`, so on the next main loop iteration the simulation
+    will be stopped.
+
+    Parameters
+    ----------
+    system : System
+    params : Params
+    records : Records
+    """
     num_packets_built = len(records.packets)
     if num_packets_built >= params.max_packets:
         # If too many packets were generated, ask to stop:
@@ -196,7 +305,21 @@ def handle_arrival(system: System, params: Params, records: Records):
     system.next_arrival = now + interval
 
 
-def handle_service_end(system: System, params: Params, records: Records):
+def _handle_service_end(system: System, params: Params, records: Records):
+    """
+    Handle end of the packet service.
+
+    If the queue is empty, the server becomes idle. Otherwise, it starts
+    serving the next packet from the queue.
+
+    The packet that left the server is marked as `served = True`.
+
+    Parameters
+    ----------
+    system : System
+    params : Params
+    records : Records
+    """
     now = system.time
     packet = system.server
     assert packet is not None
@@ -221,87 +344,21 @@ def handle_service_end(system: System, params: Params, records: Records):
     records.system_size.append(TimeValue(now, system.size))
 
 
-def run_main_loop(system: System, params: Params, records: Records):
-    max_time = params.max_time
-    while not system.stopped:
-        # Extract new event:
-        event, new_time = system.get_next_event()
-        assert (new_time - system.time) > -1e-11
-
-        # Check whether event is scheduled too late, and we need to stop:
-        if new_time > max_time:
-            system.stopped = True
-            continue
-
-        # Process event
-        system.time = new_time
-        if event == Event.ARRIVAL:
-            handle_arrival(system, params, records)
-        elif event == Event.SERVICE_END:
-            handle_service_end(system, params, records)
-
-
-def build_distribution_from_time_values(
-        time_values: Sequence[TimeValue],
-        end_time: Optional[float] = None
-) -> CountableDistribution:
+def _build_results(system: System, records: Records) -> Results:
     """
-    Build a choice distribution from a sequence of time-value pairs.
+    Build Results instance from the collected records.
+
+    This method is called after the main loop finished.
 
     Parameters
     ----------
-    time_values : sequence of TimeValue pairs.
-    end_time : float, optional
-        If provided, specifies time when the processes ended. The last value
-        from time_values sequence will be assumed to be kept till this time.
-        If omitted, time from the last TimeValue pair is assumed to be used.
+    system : System
+    records : Records
 
     Returns
     -------
-    distribution : CountableDistribution
 
-    Raises
-    ------
-    IndexError
-        raised when time_values sequence is empty, or when
-    ValueError
-        raised if time in time_values sequence is not ordered ascending.
     """
-    if not time_values:
-        raise IndexError('empty time_values sequence is not allowed')
-
-    if end_time is None:
-        end_time = time_values[-1].time
-
-    values = np.asarray([tv.value for tv in time_values])
-
-    timestamps = np.asarray([tv.time for tv in time_values] + [end_time])
-    intervals = timestamps[1:] - timestamps[:-1]
-    if (intervals < -1e-12).any():
-        raise ValueError("negative intervals disallowed")
-
-    max_value = values.max(initial=0)
-    pmf = np.zeros(max_value + 1)
-    for value, interval in zip(values, intervals):
-        value = int(value)
-        pmf[value] += interval
-
-    duration = timestamps[-1] - timestamps[0]
-    pmf = pmf / duration
-
-    return CountableDistribution(
-        lambda x: pmf[x] if 0 <= x <= max_value else 0.0,
-        precision=1e-12)
-
-
-def build_statistics(intervals: Sequence[float]) -> Statistics:
-    avg = np.mean(intervals)
-    var = np.var(intervals, ddof=1)  # unbiased estimate
-    std = var**0.5
-    return Statistics(avg=avg, var=var, std=std, count=len(intervals))
-
-
-def build_results(system: System, records: Records) -> Results:
     # 1) Extract queue and system size distributions:
     queue_size = build_distribution_from_time_values(records.queue_size)
     system_size = build_distribution_from_time_values(records.system_size)
@@ -338,35 +395,3 @@ def build_results(system: System, records: Records) -> Results:
         departures=build_statistics(departure_intervals),
         response_time=build_statistics(response_intervals),
         wait_time=build_statistics(wait_intervals))
-
-
-def simulate(
-        arrival: RandomProcess,
-        service: RandomProcess,
-        queue_capacity: int,
-        max_time: float = np.inf,
-        max_packets: int = 1000000):
-    """
-    Run simulation model of G/G/1/N system.
-
-    Parameters
-    ----------
-    arrival
-    service
-    queue_capacity
-    max_time
-    max_packets
-
-    Returns
-    -------
-
-    """
-    params = Params(
-        arrival=arrival, service=service, queue_capacity=queue_capacity,
-        max_packets=max_packets, max_time=max_time)
-    system = System(params)
-    records = Records()
-
-    init(system, params, records)
-    run_main_loop(system, params, records)
-    return build_results(system, records)

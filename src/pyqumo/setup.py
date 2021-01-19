@@ -28,6 +28,7 @@ setup(name='pyqumo',
       install_requires=[
           'numpy',
           'scipy',
+          'tabulate',
       ],
       include_package_data=True,
       zip_safe=False,

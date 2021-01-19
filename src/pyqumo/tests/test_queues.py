@@ -5,8 +5,7 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.queues import MM1Queue, BasicQueueingSystem, MM1NQueue, MapPh1NQueue
-from pyqumo.arrivals import PoissonProcess, GenericIndependentProcess, \
-    MarkovArrivalProcess
+from pyqumo.arrivals import PoissonProcess, MarkovArrivalProcess
 
 
 # TODO: add tests for wait_time and response_time
