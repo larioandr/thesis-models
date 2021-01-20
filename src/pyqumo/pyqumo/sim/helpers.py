@@ -253,3 +253,39 @@ class InfiniteFifoQueue(Queue[T]):
     def __repr__(self):
         items = ', '.join([str(item) for item in self.__items])
         return f"(InfiniteFifoQueue: q=[{items}], size={self.size})"
+
+
+class Server(Generic[T]):
+    """
+    Simple server model. Just stores a packet of type T and can be empty.
+    """
+    def __init__(self):
+        self._packet: Optional[T] = None
+
+    @property
+    def ready(self) -> bool:
+        return self._packet is None
+
+    @property
+    def busy(self) -> bool:
+        return self._packet is not None
+
+    @property
+    def size(self) -> int:
+        return 1 if self._packet is not None else 0
+
+    def pop(self) -> T:
+        if self._packet is None:
+            raise RuntimeError("attempted to pop from an empty server")
+        packet = self._packet
+        self._packet = None
+        return packet
+
+    def serve(self, packet: T) -> None:
+        if self._packet is not None:
+            raise RuntimeError("attempted to put a packet to a busy server")
+        self._packet = packet
+
+    def __str__(self):
+        suffix = "" if self._packet is None else f", packet={self._packet}"
+        return f"(Server: busy={self.busy}{suffix})"

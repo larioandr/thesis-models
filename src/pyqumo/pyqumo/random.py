@@ -785,14 +785,15 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
         """
         if len(values) == 0:
             raise ValueError('expected non-empty values')
-        weights_, values_ = [], []
+        values_ = []
         try:
-            # First we assume that values is dictionary. In this case we
+            # First we assume that weights is dictionary. In this case we
             # expect that it stores values in pairs like `value: weight` and
             # iterate through it using `items()` method to fill value and
             # weights arrays:
             # noinspection PyUnresolvedReferences
-            for key, weight in values.items():
+            weights_ = []
+            for key, weight in weights.items():
                 values_.append(key)
                 weights_.append(weight)
             weights_ = np.asarray(weights_)
@@ -986,7 +987,7 @@ class CountableDistribution(DiscreteDistributionMixin,
             # Treat `prob` as array_like defining a probability mass function:
             self._pmf = np.asarray(list(prob))
             if not is_pmf(self._pmf):
-                self._pmf = fix_stochastic(self._pmf, tol=precision)
+                self._pmf = fix_stochastic(self._pmf, tol=precision)[0]
             self._max_value = len(self._pmf) - 1
             self._truncated_at = self._max_value
             self._hard_max_value = True
@@ -1020,7 +1021,7 @@ class CountableDistribution(DiscreteDistributionMixin,
 
         self._trunc_cdf = np.cumsum(self._pmf)
         values = tuple(range(self._truncated_at + 1))
-        self._trunc_choice = Choice(values, self._pmf)
+        self._trunc_choice = Choice(values, weights=self._pmf)
 
     @lru_cache
     def get_prob_at(self, x: int) -> float:

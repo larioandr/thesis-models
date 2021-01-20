@@ -1,15 +1,14 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List, Tuple
+from typing import Optional, List, Sequence
 import numpy as np
 from tabulate import tabulate
 
 from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
 from pyqumo.random import CountableDistribution
-from pyqumo.sim.helpers import TimeValue, Statistics, \
-    build_distribution_from_time_values, build_statistics, FiniteFifoQueue, \
-    InfiniteFifoQueue
+from pyqumo.sim.helpers import build_statistics, FiniteFifoQueue, \
+    InfiniteFifoQueue, Server, Queue
 
 
 @dataclass
@@ -31,38 +30,121 @@ class Packet:
     served: bool = False
 
 
-@dataclass
 class Records:
     """
     Records for G/G/1/N statistical analysis.
     """
-    packets: List[Packet] = field(default_factory=list)
-    system_size: List[TimeValue] = field(default_factory=list)
-    queue_size: List[TimeValue] = field(default_factory=list)
+    def __init__(self):
+        self._packets: List[Packet] = []
+        self._system_size_time = [0.0]
+        self._system_size_updated_at: float = 0.0
+        self._curr_system_size: int = 0
+
+    def add_packet(self, packet: Packet):
+        self._packets.append(packet)
+
+    def add_system_size(self, time: float, system_size: int):
+        prev_system_size = self._curr_system_size
+        self._curr_system_size = system_size
+        num_cells = len(self._system_size_time)
+        if prev_system_size >= num_cells:
+            num_new_cells = prev_system_size - num_cells + 1
+            self._system_size_time.extend([0.0] * num_new_cells)
+        interval = time - self._system_size_updated_at
+        self._system_size_time[prev_system_size] += interval
+        self._system_size_updated_at = time
+
+    def get_system_size_pmf(self):
+        return np.asarray(self._system_size_time) / self._system_size_updated_at
+
+    @property
+    def packets(self):
+        return self._packets
 
 
 @dataclass
+class Params:
+    """
+    Model parameters: arrival and service processes, queue capacity and limits.
+    """
+    arrival: RandomProcess
+    service: RandomProcess
+    queue_capacity: int
+    max_packets: int = 1000000
+    max_time: float = np.inf
+
+
 class Results:
     """
     Results returned from G/G/1/N model simulation.
 
-    Discrete stochastic properties like system size, queue size and busy
-    periods are represented with `CountableDistribution`. Continuous properties
-    are not fitted into any kind of distribution, they are represented with
-    `Statistics` tuples.
+    Attributes
+    ----------
+    system_size : CountableDistribution
+    queue_size : CountableDistribution
+    busy : CountableDistribution
+    loss_prob : float
+    departures : Statistics
+    wait_time : Statistics
+    response_time : Statistics
 
-    Utilization coefficient, as well as loss probability, are just floating
-    point numbers.
-
-    To pretty print the results one can make use of `tabulate()` method.
+    Methods
+    -------
+    utilization : float
+        A synonym to busy.mean(), or, which is the same, busy.pmf(1).
+    tabulate : float
+        Represent results in a form of pretty formatted table.
     """
-    system_size: CountableDistribution
-    queue_size: CountableDistribution
-    busy: CountableDistribution
-    loss_prob: float
-    departures: Statistics
-    response_time: Statistics
-    wait_time: Statistics
+    def __init__(self, records: Records):
+        """
+        Create results from the records.
+
+        Parameters
+        ----------
+        records : Records
+        """
+        #
+        # 1) Build system size, queue size and busy (server size)
+        #    distributions. To do this, we need PMFs. Queue size
+        #    PMF and busy PMF can be computed from system size PMF.
+        #
+        system_size_pmf = list(records.get_system_size_pmf())
+        num_states = len(system_size_pmf)
+        p0 = system_size_pmf[0]
+        p1 = system_size_pmf[1] if num_states > 1 else 0.0
+
+        queue_size_pmf = [p0 + p1] + system_size_pmf[2:]
+        server_size_pmf = [p0, sum(system_size_pmf[1:])]
+
+        self.system_size = CountableDistribution(system_size_pmf)
+        self.queue_size = CountableDistribution(queue_size_pmf)
+        self.busy = CountableDistribution(server_size_pmf)
+
+        #
+        # 2) For future estimations, we need packets and some filters.
+        #    Group all of them here.
+        #
+        all_packets = records.packets
+        served_packets = [packet for packet in all_packets if packet.served]
+        dropped_packets = [packet for packet in all_packets if packet.dropped]
+
+        #
+        # 3) Build scalar statistics.
+        #
+        self.loss_prob = len(dropped_packets) / len(all_packets)
+
+        #
+        # 4) Build various intervals statistics: departures, waiting times,
+        #    response times.
+        #
+        departure_intervals = _get_departure_intervals(served_packets)
+        self.departures = build_statistics(np.asarray(departure_intervals))
+        self.response_time = build_statistics([
+            pkt.departed_at - pkt.created_at for pkt in served_packets
+        ])
+        self.wait_time = build_statistics([
+            pkt.service_started_at - pkt.created_at for pkt in served_packets
+        ])
 
     @property
     def utilization(self) -> float:
@@ -101,18 +183,6 @@ class Results:
         return tabulate(items, headers=('Param', 'Value'))
 
 
-@dataclass
-class Params:
-    """
-    Model parameters: arrival and service processes, queue capacity and limits.
-    """
-    arrival: RandomProcess
-    service: RandomProcess
-    queue_capacity: int
-    max_packets: int = 1000000
-    max_time: float = np.inf
-
-
 class Event(Enum):
     STOP = 0
     ARRIVAL = 1
@@ -137,41 +207,86 @@ class System:
             Model parameters
         """
         if params.queue_capacity < np.inf:
-            self.queue = FiniteFifoQueue(params.queue_capacity)
+            self._queue = FiniteFifoQueue(params.queue_capacity)
         else:
-            self.queue = InfiniteFifoQueue()
+            self._queue = InfiniteFifoQueue()
 
-        self.time: float = 0.0
-        self.service_end: Optional[float] = None
-        self.next_arrival: float = 0.0
-        self.server: Optional[Packet] = None
-        self.stopped: bool = False
-
-    @property
-    def empty(self) -> bool:
-        """
-        Return `True` if server is not serving any packet.
-        """
-        return self.server is None
+        self._time: float = 0.0
+        self._service_end: Optional[float] = None
+        self._next_arrival: Optional[float] = 0.0
+        self._server: Server[Packet] = Server()
+        self._stopped: bool = False
 
     @property
-    def size(self):
+    def server(self) -> Server[Packet]:
+        return self._server
+
+    @property
+    def queue(self) -> Queue[Packet]:
+        return self._queue
+
+    @property
+    def time(self) -> float:
+        return self._time
+
+    @property
+    def stopped(self):
+        return self._stopped
+
+    @property
+    def size(self) -> int:
         """
         Get system size, that is queue size plus one (busy) or zero (empty).
         """
-        return (1 if self.server is not None else 0) + self.queue.size
+        return self.server.size + self.queue.size
 
-    def get_next_event(self) -> Tuple[Event, float]:
+    def schedule(self, event: Event, interval: float) -> None:
         """
-        Get next event type and its firing time.
+        Schedule next event.
+
+        Parameters
+        ----------
+        event : Event
+        interval : float
+            Non-negative interval, after which the event will be fired.
+        """
+        if interval < 0:
+            raise ValueError(f"expected non-negative interval, but "
+                             f"{interval} found")
+        if event == Event.ARRIVAL:
+            self._next_arrival = self._time + interval
+        elif event == Event.SERVICE_END:
+            self._service_end = self._time + interval
+        else:
+            raise ValueError(f"unexpected event {event}")
+
+    def stop(self) -> None:
+        self._stopped = True
+
+    def next_event(self) -> Event:
+        """
+        Get next event type and move time to it.
 
         Returns
         -------
-        pair : tuple of event and time
+        event : Event
         """
-        if self.service_end is None or self.service_end > self.next_arrival:
-            return Event.ARRIVAL, self.next_arrival
-        return Event.SERVICE_END, self.service_end
+        ts = self._service_end
+        ta = self._next_arrival
+
+        if ts is None and ta is None:
+            return Event.STOP
+
+        if ts is not None and (ta is None or ta > ts):
+            self._time = ts
+            self._service_end = None
+            return Event.SERVICE_END
+
+        # If we are here, TS is None, or TS is not None and NOT (ta > ts):
+        # this means, that arrival happens
+        self._time = self._next_arrival
+        self._next_arrival = None
+        return Event.ARRIVAL
 
 
 def simulate(
@@ -218,43 +333,30 @@ def simulate(
     system = System(params)
     records = Records()
 
-    _init(system, params, records)
+    # Initialize model:
+    records.add_system_size(0.0, system.size)
+    system.schedule(Event.ARRIVAL, params.arrival())
 
+    # Run simulation:
     max_time = params.max_time
     while not system.stopped:
-        # Extract new event:
-        event, new_time = system.get_next_event()
-        assert (new_time - system.time) > -1e-11
+        event = system.next_event()
 
         # Check whether event is scheduled too late, and we need to stop:
-        if new_time > max_time:
-            system.stopped = True
+        if system.time > max_time:
+            system.stop()
             continue
 
         # Process event
-        system.time = new_time
+        # print(f"{system.time:.3f} [{event.name:5s}] "
+        #       f"server: {system.server.size}, "
+        #       f"queue: {system.queue.size}")
         if event == Event.ARRIVAL:
             _handle_arrival(system, params, records)
         elif event == Event.SERVICE_END:
             _handle_service_end(system, params, records)
 
-    return _build_results(system, records)
-
-
-def _init(system: System, params: Params, records: Records):
-    """
-    Initialize the model: set time to true, init statistics, schedule arrival.
-
-    Parameters
-    ----------
-    system : System
-    params : Params
-    records : Records
-    """
-    system.time = 0.0
-    system.next_arrival = params.arrival()
-    records.queue_size.append(TimeValue(0, 0))
-    records.system_size.append(TimeValue(0, 0))
+    return Results(records)
 
 
 def _handle_arrival(system: System, params: Params, records: Records):
@@ -280,34 +382,36 @@ def _handle_arrival(system: System, params: Params, records: Records):
     records : Records
     """
     num_packets_built = len(records.packets)
-    if num_packets_built >= params.max_packets:
-        # If too many packets were generated, ask to stop:
-        system.stopped = True
 
-    now = system.time
-    packet = Packet(created_at=now)
-    records.packets.append(packet)
+    # If too many packets were generated, ask to stop:
+    if num_packets_built >= params.max_packets:
+        system.stop()
+
+    time_now = system.time
+    packet = Packet(created_at=time_now)
+    records.add_packet(packet)
 
     # If server is ready, start serving. Otherwise, push the packet into
     # the queue. If the queue was full, mark the packet is being dropped
     # for further analysis.
-    if system.empty:
+    server = system.server
+    if server.ready:
         # start serving immediately
-        system.server = packet
-        system.service_end = now + params.service()
-        packet.service_started_at = now
-        records.system_size.append(TimeValue(now, system.size))
+        server.serve(packet)
+        system.schedule(Event.SERVICE_END, params.service())
+        packet.service_started_at = time_now
+        records.add_system_size(time_now, system.size)
+
     elif system.queue.push(packet):
         # packet was queued
-        records.system_size.append(TimeValue(now, system.size))
-        records.queue_size.append(TimeValue(now, system.queue.size))
+        records.add_system_size(time_now, system.size)
+
     else:
         # mark packet as being dropped
         packet.dropped = True
 
     # Schedule next arrival:
-    interval = params.arrival()
-    system.next_arrival = now + interval
+    system.schedule(Event.ARRIVAL, params.arrival())
 
 
 def _handle_service_end(system: System, params: Params, records: Records):
@@ -325,78 +429,41 @@ def _handle_service_end(system: System, params: Params, records: Records):
     params : Params
     records : Records
     """
-    now = system.time
-    packet = system.server
-    assert packet is not None
-    system.server = None  # to be sure that packet is not referenced anymore
-    packet.served = True
+    time_now = system.time
+    server = system.server
+    queue = system.queue
 
-    # Record packet service end:
-    packet.departed_at = now
+    packet = server.pop()
+    packet.served = True
+    packet.departed_at = time_now
 
     # Start serving next packet, if exists:
-    packet = system.queue.pop()
+    packet = queue.pop()
     if packet is not None:
-        system.server = packet
-        packet.service_started_at = now
-        system.service_end = now + params.service()
-        # Record updated queue size:
-        records.queue_size.append(TimeValue(now, system.queue.size))
-    else:
-        system.service_end = None
+        server.serve(packet)
+        packet.service_started_at = time_now
+        system.schedule(Event.SERVICE_END, params.service())
 
-    # Record new system size:
-    records.system_size.append(TimeValue(now, system.size))
+    # Anyway, system size has changed - record it!
+    records.add_system_size(time_now, system.size)
 
 
-def _build_results(system: System, records: Records) -> Results:
+def _get_departure_intervals(packets_list: Sequence[Packet]) -> List[float]:
     """
-    Build Results instance from the collected records.
-
-    This method is called after the main loop finished.
+    Build departures intervals sequence.
 
     Parameters
     ----------
-    system : System
-    records : Records
+    packets_list : sequence of Packet
 
     Returns
     -------
-
+    intervals : sequence of float
     """
-    # 1) Extract queue and system size distributions:
-    queue_size = build_distribution_from_time_values(records.queue_size)
-    system_size = build_distribution_from_time_values(records.system_size)
-
-    # 2) To build utilization, we use already built system_size distribution:
-    p0 = system_size.pmf(0)
-    busy = CountableDistribution(
-        lambda x: p0 if x == 0 else (1 - p0) if x == 1 else 0,
-        precision=1e-12)
-
-    # 3) Loss probability is just a ration of dropped packets:
-    num_dropped = len([pkt for pkt in records.packets if pkt.dropped])
-    loss_prob = num_dropped / len(records.packets)
-
-    # 4) To study departure intervals, response and wait times we need
-    #    to inspect packet timestamps. Let's extract the intervals.
-    served_packets = [pkt for pkt in records.packets if pkt.served]
-    wait_intervals = [
-        pkt.service_started_at - pkt.created_at for pkt in served_packets]
-    response_intervals = [
-        pkt.departed_at - pkt.created_at for pkt in served_packets]
-
-    departure_intervals, last_departure = [], 0.0
-    for packet in served_packets:
-        departure_intervals.append(packet.departed_at - last_departure)
-        last_departure = packet.departed_at
-
-    # 5) Build result:
-    return Results(
-        system_size=system_size,
-        queue_size=queue_size,
-        busy=busy,
-        loss_prob=loss_prob,
-        departures=build_statistics(departure_intervals),
-        response_time=build_statistics(response_intervals),
-        wait_time=build_statistics(wait_intervals))
+    prev_time = 0.0
+    intervals = []
+    for packet in packets_list:
+        if packet.served:
+            intervals.append(packet.departed_at - prev_time)
+            prev_time = packet.departed_at
+    return intervals

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from pyqumo.sim.helpers import FiniteFifoQueue, Queue, InfiniteFifoQueue
+from pyqumo.sim.helpers import FiniteFifoQueue, Queue, InfiniteFifoQueue, Server
 
 
 # ###########################################################################
@@ -110,3 +110,35 @@ def test_infinite_fifo_queue():
     assert queue.size == num_elements
     assert not queue.full
     assert queue.pop() == 420
+
+
+# ############################################################################
+# TEST Server
+# ############################################################################
+def test_server():
+    """
+    Validate Server operations.
+    """
+    server: Server[int] = Server()
+    assert str(server) == "(Server: busy=False)"
+    assert server.ready
+    assert not server.busy
+    assert server.size == 0
+
+    # Push a packet
+    server.serve(10)
+    assert not server.ready
+    assert server.busy
+    assert server.size == 1
+    assert str(server) == "(Server: busy=True, packet=10)"
+
+    # Check that pushing another packet raises error:
+    with pytest.raises(RuntimeError):
+        server.serve(20)
+
+    # Pop a packet:
+    assert server.pop() == 10
+    assert str(server) == "(Server: busy=False)"
+    assert server.ready
+    assert not server.busy
+    assert server.size == 0
