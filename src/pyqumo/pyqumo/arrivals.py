@@ -142,6 +142,9 @@ class RandomProcess:
         """
         raise NotImplementedError
 
+    def copy(self) -> 'RandomProcess':
+        raise NotImplementedError
+
 
 class GenericIndependentProcess(RandomProcess):
     """
@@ -193,6 +196,9 @@ class GenericIndependentProcess(RandomProcess):
 
     def _eval(self, size: int) -> np.ndarray:
         return self._dist(size)
+
+    def copy(self) -> 'GenericIndependentProcess':
+        return GenericIndependentProcess(self._dist.copy())
 
     def __repr__(self):
         return f'(GI: f={self.dist})'

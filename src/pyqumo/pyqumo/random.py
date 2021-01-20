@@ -132,6 +132,9 @@ class Distribution:
         """
         raise NotImplementedError
 
+    def copy(self) -> 'Distribution':
+        raise NotImplementedError
+
 
 class AbstractCdfMixin:
     """
@@ -209,6 +212,9 @@ class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
     def __repr__(self):
         return f'(Const: value={self._value:g})'
 
+    def copy(self) -> 'Const':
+        return Const(self._value)
+
 
 class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
@@ -262,12 +268,15 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def __repr__(self):
         return f'(Uniform: a={self.min:g}, b={self.max:g})'
 
+    def copy(self) -> 'Uniform':
+        return Uniform(self._a, self._b)
+
 
 class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Normal random distribution.
     """
-    def __init__(self, mean, std):
+    def __init__(self, mean: float, std: float):
         self._mean, self._std = mean, std
 
     @property
@@ -317,6 +326,9 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def __repr__(self):
         return f'(Normal: mean={self._mean:.3g}, std={self._std:.3g})'
 
+    def copy(self) -> 'Normal':
+        return Normal(self._mean, self._std)
+
 
 class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
@@ -353,6 +365,9 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     def __str__(self):
         return f"(Exp: rate={self.rate:g})"
+
+    def copy(self) -> 'Exponential':
+        return Exponential(self._param)
 
 
 class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
@@ -423,6 +438,9 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     def __repr__(self):
         return f"(Erlang: shape={self.shape:.3g}, rate={self.param:.3g})"
+
+    def copy(self) -> 'Erlang':
+        return Erlang(self._shape, self._param)
 
 
 # noinspection PyUnresolvedReferences
@@ -497,6 +515,12 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         states_str = "[" + ", ".join(str(state) for state in self.states) + "]"
         probs_str = str_array(self._probs)
         return f"(Mixture: states={states_str}, probs={probs_str})"
+
+    def copy(self) -> 'MixtureDistribution':
+        return MixtureDistribution(
+            [state.copy() for state in self._states],
+            self._probs
+        )
 
 
 class HyperExponential(MixtureDistribution):
@@ -735,6 +759,9 @@ class PhaseType(ContinuousDistributionMixin,
     def __repr__(self):
         return f"(PH: s={str_array(self.s)}, p={str_array(self.init_probs)})"
 
+    def copy(self) -> 'PhaseType':
+        return PhaseType(self._subgenerator, self._pmf0, safe=True)
+
 
 class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     """
@@ -896,6 +923,9 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     def __repr__(self):
         return f"(Choice: values={self.values.tolist()}, " \
                f"p={self.probs.tolist()})"
+
+    def copy(self) -> 'Choice':
+        return Choice(self.values, self.probs)
 
 
 class CountableDistribution(DiscreteDistributionMixin,
@@ -1113,6 +1143,9 @@ class CountableDistribution(DiscreteDistributionMixin,
         values = ', '.join([f"{self.get_prob_at(x):.3g}" for x in range(5)])
         return f"(Countable: p=[{values}, ...], precision={self.precision})"
 
+    def copy(self) -> 'CountableDistribution':
+        return CountableDistribution(self._prob, self._precision, self._moments)
+
 
 # noinspection PyUnresolvedReferences
 class EstStatsMixin:
@@ -1279,6 +1312,7 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
             probs = p0_
 
         # Store matrices and parameters:
+        self._trans = trans
         self._order = order
         self._states = tuple(time_dist)  # copy to avoid changes
         self._init_probs = probs
@@ -1328,3 +1362,12 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
         time_ = "[" + ', '.join([str(td) for td in self._states]) + "]"
         probs = str_array(self._init_probs)
         return f"(SemiMarkovAbsorb: trans={trans}, time={time_}, p0={probs})"
+
+    def copy(self) -> 'SemiMarkovAbsorb':
+        return SemiMarkovAbsorb(
+            self._trans,
+            [dist.copy() for dist in self._states],
+            self._init_probs,
+            num_samples=self._num_samples,
+            num_kde_samples=self._num_kde_samples
+        )
