@@ -943,24 +943,36 @@ class CountableDistribution(DiscreteDistributionMixin,
     We specify precision as maximum tail probability, and use only first
     values (till this tail) when estimating sums.
     """
-    def __init__(self, prob: Callable[[int], float],
+    def __init__(self,
+                 prob: Union[Callable[[int], float], Sequence[float]],
                  precision: float = 1e-9,
+                 max_value: int = np.inf,
                  moments: Sequence[float] = ()):
         """
         Constructor.
 
         Parameters
         ----------
-        prob : callable, (int) -> float
-            Probability function. Should accept arguments 0, 1, 2, ...
-            and return their probability.
+        prob : callable (int) -> float, or array_like
+            Probability function. If given in functional form,
+            should accept arguments 0, 1, 2, ... and return their probability.
+            If an array instance of length N, treated as probability mass
+            function of values 0, 1, 2, ... N. Length N + 1 is assumed to be
+            maximum value.
         precision : float, optional
             Maximum tail probability. If this tail starts at value X=N,
             properties will be estimated over values 0, 1, ..., N only,
             without respect to the tail. Note, that when estimating
             moments of high order the error will grow due to the growth
             of tail weight (for n > N > 1, n**K > n for K > 1).
-            By default, 1e-9.
+            If `max_value < np.inf` or `prob` is given in array form,
+            this argument is ignored. By default 1e-9.
+        max_value : int, optional
+            If provided, specifies the maximum possible value. Any value
+            above it will have zero probability. If this argument is provided,
+            `precision` is ignored. If `prob` is given in array form,
+             this argument is ignored, and max value is assigned to
+             the length of `prob` array minus one. By default `np.inf`.
         moments : sequence of floats, optional
             Optional explicit moments values. If given, they will be
             used instead of estimating over first 0, 1, ..., N values.
@@ -970,21 +982,45 @@ class CountableDistribution(DiscreteDistributionMixin,
         self._precision = precision
         self._moments = moments
 
-        # Find number I, such that P[X > I] < precision:
-        trunc_pmf = []
-        head_prob = 0.0
-        max_value = -1
-        while head_prob < 1 - precision:
-            max_value += 1
-            p = prob(max_value)
-            trunc_pmf.append(p)
-            head_prob += p
-        self._max_value = max_value
+        try:
+            # Treat `prob` as array_like defining a probability mass function:
+            self._pmf = np.asarray(list(prob))
+            if not is_pmf(self._pmf):
+                self._pmf = fix_stochastic(self._pmf, tol=precision)
+            self._max_value = len(self._pmf) - 1
+            self._truncated_at = self._max_value
+            self._hard_max_value = True
+        except TypeError:
+            # Not iterable - assume `prob` to be a callable [(x) -> pr.]:
+            pmf_ = []
+            if max_value >= np.inf:
+                # If max_value is not fixed, find number I, such that
+                # P[X > I] < precision:
+                head_prob = 0.0
+                self._hard_max_value = False
+                self._max_value = np.inf
+                self._truncated_at = -1
+                while head_prob < 1 - precision:
+                    self._truncated_at += 1
+                    p = prob(self._truncated_at)
+                    pmf_.append(p)
+                    head_prob += p
+                self._pmf = np.asarray(pmf_)
 
-        values = np.arange(self._max_value + 1)
-        self._trunc_pmf = np.asarray(trunc_pmf)
-        self._trunc_cdf = np.cumsum(self._trunc_pmf)
-        self._trunc_choice = Choice(tuple(values), self._trunc_pmf)
+            elif max_value >= 0:
+                # Max value is not infinite - use it as the truncation point:
+                self._pmf = np.asarray([prob(x) for x in range(max_value + 1)])
+                self._max_value = max_value
+                self._truncated_at = max_value
+                self._hard_max_value = True
+
+            else:
+                raise ValueError(f"non-negative max_value expected, "
+                                 f"but {max_value} found")
+
+        self._trunc_cdf = np.cumsum(self._pmf)
+        values = tuple(range(self._truncated_at + 1))
+        self._trunc_choice = Choice(values, self._pmf)
 
     @lru_cache
     def get_prob_at(self, x: int) -> float:
@@ -1007,8 +1043,11 @@ class CountableDistribution(DiscreteDistributionMixin,
         -------
         probability : float
         """
-        return self._trunc_pmf[x] if 0 <= x <= self._max_value else \
-            (self._prob(x) if x > self._max_value else 0.0)
+        if 0 <= x <= self._truncated_at:
+            return self._pmf[x]
+        if self._hard_max_value:
+            return 0.0
+        return self._prob(x) if x > self._truncated_at else 0.0
 
     @property
     def prob(self) -> Callable[[int], float]:
@@ -1031,6 +1070,13 @@ class CountableDistribution(DiscreteDistributionMixin,
 
         If `truncated_at = N`, then total probability of values
         N+1, N+2, ... is less then `precision`.
+        """
+        return self._truncated_at
+
+    @property
+    def max_value(self) -> int:
+        """
+        Returns maximum value the random value can take.
         """
         return self._max_value
 
@@ -1055,7 +1101,7 @@ class CountableDistribution(DiscreteDistributionMixin,
         """
         if n <= len(self._moments) and self._moments[n-1] is not None:
             return self._moments[n-1]
-        values = np.arange(self._max_value + 1)
+        values = np.arange(self._truncated_at + 1)
         degrees = np.power(values, n)
         probs = np.asarray([self.get_prob_at(x) for x in values])
         return probs.dot(degrees)
@@ -1073,16 +1119,21 @@ class CountableDistribution(DiscreteDistributionMixin,
         -------
         pmf : callable (float) -> float
         """
-        def fn(x: float) -> float:
-            fl, num = np.math.modf(x)
-            if abs(fl) > 1e-12:
-                return 0
-            num = int(num)
-            if num < 0:
+        if self._hard_max_value:
+            def hard_fn(x: float) -> float:
+                fl, num = np.math.modf(x)
+                if (abs(fl) <= 1e-12 and
+                        0 <= (num := int(num)) <= self._truncated_at):
+                    return self._pmf[num]
                 return 0.0
-            return self.get_prob_at(num)
+            return hard_fn
 
-        return fn
+        def soft_fn(x: float) -> float:
+            fl, num = np.math.modf(x)
+            if abs(fl) <= 1e-12 and (num := int(num)) >= 0:
+                return self.get_prob_at(num)
+            return 0.0
+        return soft_fn
 
     @cached_property
     def cdf(self) -> Callable[[float], float]:
@@ -1097,24 +1148,30 @@ class CountableDistribution(DiscreteDistributionMixin,
         -------
         pmf : callable (float) -> float
         """
-        def fn(x: float) -> float:
+        if self._hard_max_value:
+            def hard_fn(x: float) -> float:
+                num = min(int(np.math.modf(x)[1]), self._truncated_at)
+                return self._trunc_cdf[num] if num >= 0 else 0.0
+            return hard_fn
+
+        def soft_fn(x: float) -> float:
             _, num = np.math.modf(x)
             num = int(num)
             if num < 0:
                 return 0.0
-            if num <= self._max_value:
+            if num <= self._truncated_at:
                 return self._trunc_cdf[num]
-            p = self._trunc_cdf[self._max_value]
-            for i in range(self._max_value + 1, num + 1):
+            p = self._trunc_cdf[self._truncated_at]
+            for i in range(self._truncated_at + 1, num + 1):
                 p += self.get_prob_at(i)
             return p
 
-        return fn
+        return soft_fn
 
     def __iter__(self) -> Iterator[Tuple[float, float]]:
         # To avoid infinite loops, we iterate over 10-times max value.
         total_prob = 0.0
-        for i in range(10 * (self._max_value + 1)):
+        for i in range(10 * (self._truncated_at + 1)):
             if total_prob >= 1 - 1e-12:
                 return
             p = self.get_prob_at(i)
@@ -1140,11 +1197,18 @@ class CountableDistribution(DiscreteDistributionMixin,
         return self._trunc_choice(size)
 
     def __repr__(self):
-        values = ', '.join([f"{self.get_prob_at(x):.3g}" for x in range(5)])
-        return f"(Countable: p=[{values}, ...], precision={self.precision})"
+        if not self._hard_max_value:
+            values = ', '.join([f"{self.get_prob_at(x):.3g}" for x in range(5)])
+            return f"(Countable: p=[{values}, ...], precision={self.precision})"
+        return f"(Countable: p={str_array(self._pmf)})"
 
     def copy(self) -> 'CountableDistribution':
-        return CountableDistribution(self._prob, self._precision, self._moments)
+        if self._hard_max_value:
+            return CountableDistribution(
+                self._prob, self._truncated_at,
+                moments=self._moments)
+        return CountableDistribution(self._prob, self._precision,
+                                     moments=self._moments)
 
 
 # noinspection PyUnresolvedReferences
