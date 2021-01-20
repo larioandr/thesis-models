@@ -1,17 +1,18 @@
 import pytest
+import numpy as np
 
-from pyqumo.sim.helpers import Queue
+from pyqumo.sim.helpers import FiniteFifoQueue, Queue, InfiniteFifoQueue
 
 
 # ###########################################################################
-# TEST Queue
+# TEST FiniteFifoQueue
 # ###########################################################################
 @pytest.mark.parametrize('capacity', [0, 5])
-def test_finite_queue_props(capacity):
+def test_finite_fifo_queue_props(capacity):
     """
     Validate capacity, empty and full properties of a queue with finite cap.
     """
-    queue: Queue[int] = Queue(capacity)
+    queue: Queue[int] = FiniteFifoQueue(capacity)
     assert queue.capacity == capacity
     assert queue.size == 0
     assert queue.empty
@@ -36,12 +37,12 @@ def test_finite_queue_props(capacity):
     assert queue.full
 
 
-def test_queue_is_fifo():
+def test_finite_fifo_queue_push_pop_order():
     """
     Validate push() and pop() works in FIFO order.
     """
     # Put 10 [OK] => 20 [OK] => 30 [LOST]
-    queue: Queue[int] = Queue(2)
+    queue: Queue[int] = FiniteFifoQueue(2)
     assert queue.push(10)
     assert queue.push(20)
     assert not queue.push(30)
@@ -57,16 +58,55 @@ def test_queue_is_fifo():
     assert queue.empty
 
 
-def test_queue_str():
+def test_finite_fifo_queue_str():
     """
-    Validate __repr__() method of the Queue.
+    Validate __repr__() method of the FiniteFifoQueue.
     """
-    queue: Queue[int] = Queue(5)
-    assert str(queue) == "(Queue: q=[], capacity=5)"
+    queue: Queue[int] = FiniteFifoQueue(5)
+    assert str(queue) == "(FiniteFifoQueue: q=[], capacity=5, size=0)"
     queue.push(34)
     queue.push(42)
-    assert str(queue) == "(Queue: q=[34, 42], capacity=5)"
+    assert str(queue) == "(FiniteFifoQueue: q=[34, 42], capacity=5, size=2)"
     queue.push(1)
     queue.push(2)
     queue.push(3)
-    assert str(queue) == "(Queue: q=[34, 42, 1, 2, 3], capacity=5)"
+    assert str(queue) == "(FiniteFifoQueue: q=[34, 42, 1, 2, 3], " \
+                         "capacity=5, size=5)"
+
+
+# ###########################################################################
+# TEST InfiniteFifoQueue
+# ###########################################################################
+def test_infinite_fifo_queue():
+    """
+    Validate basic properties and push/pop to the infinite FIFO queue.
+    """
+    queue: Queue[int] = InfiniteFifoQueue()
+    assert queue.capacity == np.inf
+    assert queue.size == 0
+    assert queue.empty
+    assert not queue.full
+
+    # Add some elements:
+    queue.push(1)
+    queue.push(2)
+    assert queue.size == 2
+    assert not queue.full
+    assert not queue.empty
+    assert str(queue) == "(InfiniteFifoQueue: q=[1, 2], size=2)"
+
+    # Pop:
+    assert queue.pop() == 1
+    assert queue.pop() == 2
+    assert queue.pop() is None
+    assert queue.empty
+    assert str(queue) == "(InfiniteFifoQueue: q=[], size=0)"
+
+    # Push many elements:
+    num_elements = 1000
+    for i in range(num_elements):
+        item = (i + 42) * 10
+        queue.push(item)
+    assert queue.size == num_elements
+    assert not queue.full
+    assert queue.pop() == 420

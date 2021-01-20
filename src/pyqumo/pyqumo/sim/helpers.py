@@ -85,23 +85,88 @@ T = TypeVar('T')
 
 class Queue(Generic[T]):
     """
-    Queue represents a simple FIFO container. Inside it is a list.
+    Abstract base class for the queues used in simulation models.
 
-    Queue accepts two methods:
+    Queues accept two methods:
 
     - `push(value: T) -> bool`
     - `pop() -> [T]`
 
-    If queue is full, then `push()` returns `False` and queue is not updated.
-    If queue is empty, then `pop()` returns `None`. No exceptions are raised
-    in either case.
+    Push operation adds an item to the queue and returns true or false
+    depending on whether the item was actually queued.
 
-    Queue also has several properties to study its size:
+    Any queue will also implement four properties:
 
     - `capacity: int`
     - `size: int`
     - `empty: bool`
     - `full: bool`
+    """
+    @property
+    def size(self) -> int:
+        """
+        Get the number of items in the queue.
+        """
+        raise NotImplementedError
+
+    @property
+    def capacity(self) -> int:
+        """
+        Get the maximum number of items in the queue.
+        """
+        raise NotImplementedError
+
+    def push(self, item: T) -> bool:
+        """
+        Add an item to the queue.
+
+        Parameters
+        ----------
+        item : T
+            An item to add to the queue
+
+        Returns
+        -------
+        success : bool
+            True, if the item was really added.
+        """
+        raise NotImplementedError
+
+    def pop(self) -> Optional[T]:
+        """
+        Extract an item from the queue.
+
+        Returns
+        -------
+        item : T or None
+            If queue failed to extract an item, it should return None
+        """
+        raise NotImplementedError
+
+    def __len__(self):
+        """
+        Get the number of items in the queue (alias to size property).
+        """
+        return self.size
+
+    @property
+    def empty(self):
+        """
+        Check whether the queue is empty, i.e. number of items is zero.
+        """
+        return self.size == 0
+
+    @property
+    def full(self):
+        """
+        Check whether the queue is full, i.e. number of items equals capacity.
+        """
+        return self.size >= self.capacity
+
+
+class FiniteFifoQueue(Queue[T]):
+    """
+    Finite queue representing a simple FIFO container.
     """
 
     def __init__(self, capacity: int):
@@ -121,53 +186,13 @@ class Queue(Generic[T]):
 
     @property
     def capacity(self) -> int:
-        """
-        Get queue capacity.
-        """
         return self.__capacity
-
-    def __len__(self) -> int:
-        """
-        Get the number of items in the queue (alias to size property)
-        """
-        return self.__size
 
     @property
     def size(self) -> int:
-        """
-        Get the number of items in the queue (alias to len(queue))
-        """
         return self.__size
 
-    @property
-    def empty(self) -> bool:
-        """
-        Returns `True` if the queue has no items.
-        """
-        return self.__size == 0
-
-    @property
-    def full(self) -> bool:
-        """
-        Returns `True` if the queue size equals to its capacity.
-        """
-        return self.__size >= self.__capacity
-
     def push(self, item: T) -> bool:
-        """
-        Add an item to the queue, if it is not full.
-
-        Parameters
-        ----------
-        item : T
-            an item to add to the queue
-
-        Returns
-        -------
-        success : bool
-            True iff the queue wasn't full and the item was added.
-            Otherwise returns False.
-        """
         if self.full:
             return False
         self.__items[self.__end] = item
@@ -176,14 +201,6 @@ class Queue(Generic[T]):
         return True
 
     def pop(self) -> Optional[T]:
-        """
-        Get the first item from the queue. If empty, returns `None`.
-
-        Returns
-        -------
-        item : T, optional
-            The first item, if wasn't empty. Otherwise `None`.
-        """
         if self.empty:
             return None
         item = self.__items[self.__head]
@@ -203,5 +220,36 @@ class Queue(Generic[T]):
         else:
             items = []
         items_str = [str(item) for item in items]
-        return f"(Queue: q=[{', '.join(items_str)}], capacity={self.capacity})"
+        return f"(FiniteFifoQueue: q=[{', '.join(items_str)}], " \
+               f"capacity={self.capacity}, size={self.size})"
 
+
+class InfiniteFifoQueue(Queue[T]):
+    """
+    Infinite queue with FIFO order.
+    """
+    def __init__(self):
+        self.__items = []
+
+    @property
+    def capacity(self):
+        return np.inf
+
+    @property
+    def size(self):
+        return len(self.__items)
+
+    def push(self, item: T) -> bool:
+        self.__items.append(item)
+        return True
+
+    def pop(self) -> Optional[T]:
+        item: Optional[T] = None
+        if len(self.__items) > 0:
+            item = self.__items[0]
+            self.__items = self.__items[1:]
+        return item
+
+    def __repr__(self):
+        items = ', '.join([str(item) for item in self.__items])
+        return f"(InfiniteFifoQueue: q=[{items}], size={self.size})"

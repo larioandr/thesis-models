@@ -8,7 +8,6 @@ from pyqumo.queues import MM1Queue, BasicQueueingSystem, MM1NQueue, MapPh1NQueue
 from pyqumo.arrivals import PoissonProcess, MarkovArrivalProcess
 
 
-# TODO: add tests for wait_time and response_time
 from pyqumo.random import PhaseType
 
 

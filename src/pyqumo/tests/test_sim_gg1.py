@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import pytest
+import numpy as np
 from numpy.testing import assert_allclose
 
 from pyqumo.arrivals import PoissonProcess, RandomProcess
@@ -51,8 +52,16 @@ class GG1Props:
         response_time_avg=0.163, wait_time_avg=0.134,
         max_packets=int(1e5)
     ),
+    GG1Props(
+        arrival=PoissonProcess(1), service=PoissonProcess(2),
+        queue_capacity=np.inf,
+        system_size_avg=1, system_size_std=2.0**0.5,
+        queue_size_avg=0.5, queue_size_std=1.25**0.5,
+        loss_prob=0, utilization=0.5, departure_rate=1.0,
+        response_time_avg=1.0, wait_time_avg=0.5, max_packets=int(1e5)
+    )
 ])
-def test_gg1n(props):
+def test_gg1(props):
     tol = props.tol
     results = simulate(props.arrival, props.service, props.queue_capacity,
                        max_packets=props.max_packets)

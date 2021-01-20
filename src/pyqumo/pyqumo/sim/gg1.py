@@ -8,7 +8,8 @@ from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
 from pyqumo.random import CountableDistribution
 from pyqumo.sim.helpers import TimeValue, Statistics, \
-    build_distribution_from_time_values, build_statistics, Queue
+    build_distribution_from_time_values, build_statistics, FiniteFifoQueue, \
+    InfiniteFifoQueue
 
 
 @dataclass
@@ -135,7 +136,11 @@ class System:
         params : Params
             Model parameters
         """
-        self.queue: Queue[Packet] = Queue(params.queue_capacity)
+        if params.queue_capacity < np.inf:
+            self.queue = FiniteFifoQueue(params.queue_capacity)
+        else:
+            self.queue = InfiniteFifoQueue()
+
         self.time: float = 0.0
         self.service_end: Optional[float] = None
         self.next_arrival: float = 0.0
@@ -172,7 +177,7 @@ class System:
 def simulate(
         arrival: RandomProcess,
         service: RandomProcess,
-        queue_capacity: int,
+        queue_capacity: int = np.inf,
         max_time: float = np.inf,
         max_packets: int = 1000000
 ) -> Results:
