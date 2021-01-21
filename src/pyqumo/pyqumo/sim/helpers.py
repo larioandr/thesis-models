@@ -2,64 +2,72 @@ from collections import namedtuple
 from typing import Optional, Sequence, TypeVar, Generic, List
 import numpy as np
 
-from pyqumo.random import CountableDistribution
+from pyqumo.matrix import str_array
 
 
-TimeValue = namedtuple('TimeValue', ['time', 'value'])
 Statistics = namedtuple('Statistics', ['avg', 'var', 'std', 'count'])
 
 
-def build_distribution_from_time_values(
-        time_values: Sequence[TimeValue],
-        end_time: Optional[float] = None
-) -> CountableDistribution:
+class TimeSizeRecords:
     """
-    Build a choice distribution from a sequence of time-value pairs.
+    Recorder for time-size statistics.
 
-    Parameters
-    ----------
-    time_values : sequence of TimeValue pairs.
-    end_time : float, optional
-        If provided, specifies time when the processes ended. The last value
-        from time_values sequence will be assumed to be kept till this time.
-        If omitted, time from the last TimeValue pair is assumed to be used.
+    Key feature of time-size records is that size varies on a natural numbers
+    axis, so it is not float, negative, or something else. Thus, we
+    store durations of each size in an array. If new value is larger then
+    this array, the array is extended.
 
-    Returns
-    -------
-    distribution : CountableDistribution
+    Array of durations is easily converted into PMF just dividing it on the
+    total time. Assuming initial time is always zero, total time is
+    the time when the last update was recorded.
 
-    Raises
-    ------
-    IndexError
-        raised when time_values sequence is empty, or when
-    ValueError
-        raised if time in time_values sequence is not ordered ascending.
+    One more thing to mention is that when recording values, actually previous
+    value is recorded: when we call `add(ti, vi)`, it means that at `ti`
+    new value became `vi`. However, we store information that the _previous_
+    value `v{i-1}` was kept for `t{i} - t{i-1}` interval. Thus, we store
+    the previous value (by default, zero) and previous update time.
     """
-    if not time_values:
-        raise IndexError('empty time_values sequence is not allowed')
+    def __init__(self, init_value: int = 0, init_time: float = 0.0):
+        self._durations: List[float] = [0.0]
+        self._updated_at: float = init_time
+        self._curr_value: int = init_value
+        self._init_time = init_time
 
-    if end_time is None:
-        end_time = time_values[-1].time
+    def add(self, time: float, value: int):
+        """
+        Record new value at the given time.
 
-    values = np.asarray([tv.value for tv in time_values])
+        When called, duration of the _previous_ value is actually incremented:
+        if, say, system size at time `t2` became equal `v2`, then we need
+        to store information, that for interval `t2 - t1` value _was_ `v1`.
 
-    timestamps = np.asarray([tv.time for tv in time_values] + [end_time])
-    intervals = timestamps[1:] - timestamps[:-1]
-    if (intervals < -1e-12).any():
-        raise ValueError("negative intervals disallowed")
+        New value and update time are stored, so in the next `add()` call
+        they will be used to save interval of current value.
 
-    max_value = values.max(initial=0)
-    pmf = np.zeros(max_value + 1)
-    for value, interval in zip(values, intervals):
-        value = int(value)
-        pmf[value] += interval
+        Parameters
+        ----------
+        time : float
+        value : int
+        """
+        prev_value = self._curr_value
+        self._curr_value = value
+        num_cells = len(self._durations)
+        if prev_value >= num_cells:
+            num_new_cells = prev_value - num_cells + 1
+            self._durations.extend([0.0] * num_new_cells)
+        self._durations[prev_value] += time - self._updated_at
+        self._updated_at = time
 
-    duration = timestamps[-1] - timestamps[0]
-    pmf = pmf / duration
+    @property
+    def pmf(self) -> np.ndarray:
+        """
+        Normalize durations to get PMF.
+        """
+        return (np.asarray(self._durations) /
+                (self._updated_at - self._init_time))
 
-    return CountableDistribution(
-        lambda x: pmf[x] if 0 <= x <= max_value else 0.0,
-        precision=1e-12)
+    def __repr__(self):
+        return f"(TimeSizeRecords: durations={str_array(self._durations)})"
 
 
 def build_statistics(intervals: Sequence[float]) -> Statistics:
@@ -74,9 +82,14 @@ def build_statistics(intervals: Sequence[float]) -> Statistics:
     -------
     statistics : Statistics
     """
-    avg = np.mean(intervals)
-    var = np.var(intervals, ddof=1)  # unbiased estimate
-    std = var**0.5
+    if len(intervals) > 0:
+        avg = np.mean(intervals)
+        var = np.var(intervals, ddof=1)  # unbiased estimate
+        std = var**0.5
+    else:
+        avg = 0.0
+        var = 0.0
+        std = 0.0
     return Statistics(avg=avg, var=var, std=std, count=len(intervals))
 
 
@@ -264,17 +277,39 @@ class Server(Generic[T]):
 
     @property
     def ready(self) -> bool:
+        """
+        Check whether server is not serving any packet.
+        """
         return self._packet is None
 
     @property
     def busy(self) -> bool:
+        """
+        Check whether server is serving a packet.
+        """
         return self._packet is not None
 
     @property
     def size(self) -> int:
+        """
+        Get the number of packets being served (1 or 0)
+        """
         return 1 if self._packet is not None else 0
 
     def pop(self) -> T:
+        """
+        Move from the server the packet being served.
+
+        After this call busy server becomes ready, and the packet that was
+        served is returned in the result.
+
+        If the server was ready (empty), `RuntimeError` exception is thrown.
+
+        Returns
+        -------
+        packet : T
+            A packet that was served.
+        """
         if self._packet is None:
             raise RuntimeError("attempted to pop from an empty server")
         packet = self._packet
@@ -282,6 +317,19 @@ class Server(Generic[T]):
         return packet
 
     def serve(self, packet: T) -> None:
+        """
+        Serve a new packet.
+
+        If the server was ready, it starts serving the packet. That is,
+        this packet is stored, server becomes busy and its size becomes equal
+        one.
+
+        If the server was already busy, `RuntimeError` is raised.
+
+        Parameters
+        ----------
+        packet : T
+        """
         if self._packet is not None:
             raise RuntimeError("attempted to put a packet to a busy server")
         self._packet = packet

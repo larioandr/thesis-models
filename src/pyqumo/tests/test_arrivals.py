@@ -95,8 +95,8 @@ def test_map__props():
 
 
 def test_map__invalid_matrices_call_fix_markovian_process():
-    d0 = [[-0.9, -0.1], [0, -1]]
-    d1 = [[0, 1.1], [1., 0.]]
+    d0 = np.asarray([[-0.9, -0.1], [0, -1]])
+    d1 = np.asarray([[0, 1.1], [1., 0.]])
     with patch('pyqumo.arrivals.fix_markovian_arrival',
                return_value=((d0, d1), (0.1, 0.1))) as mock:
         _ = MarkovArrivalProcess(d0, d1, tol=0.2)

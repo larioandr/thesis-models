@@ -8,7 +8,7 @@ from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
 from pyqumo.random import CountableDistribution
 from pyqumo.sim.helpers import build_statistics, FiniteFifoQueue, \
-    InfiniteFifoQueue, Server, Queue
+    InfiniteFifoQueue, Server, Queue, TimeSizeRecords
 
 
 @dataclass
@@ -36,26 +36,14 @@ class Records:
     """
     def __init__(self):
         self._packets: List[Packet] = []
-        self._system_size_time = [0.0]
-        self._system_size_updated_at: float = 0.0
-        self._curr_system_size: int = 0
+        self._system_size = TimeSizeRecords()
 
     def add_packet(self, packet: Packet):
         self._packets.append(packet)
 
-    def add_system_size(self, time: float, system_size: int):
-        prev_system_size = self._curr_system_size
-        self._curr_system_size = system_size
-        num_cells = len(self._system_size_time)
-        if prev_system_size >= num_cells:
-            num_new_cells = prev_system_size - num_cells + 1
-            self._system_size_time.extend([0.0] * num_new_cells)
-        interval = time - self._system_size_updated_at
-        self._system_size_time[prev_system_size] += interval
-        self._system_size_updated_at = time
-
-    def get_system_size_pmf(self):
-        return np.asarray(self._system_size_time) / self._system_size_updated_at
+    @property
+    def system_size(self):
+        return self._system_size
 
     @property
     def packets(self):
@@ -108,7 +96,7 @@ class Results:
         #    distributions. To do this, we need PMFs. Queue size
         #    PMF and busy PMF can be computed from system size PMF.
         #
-        system_size_pmf = list(records.get_system_size_pmf())
+        system_size_pmf = list(records.system_size.pmf)
         num_states = len(system_size_pmf)
         p0 = system_size_pmf[0]
         p1 = system_size_pmf[1] if num_states > 1 else 0.0
@@ -334,7 +322,7 @@ def simulate(
     records = Records()
 
     # Initialize model:
-    records.add_system_size(0.0, system.size)
+    records.system_size.add(0.0, system.size)
     system.schedule(Event.ARRIVAL, params.arrival())
 
     # Run simulation:
@@ -355,6 +343,8 @@ def simulate(
             _handle_arrival(system, params, records)
         elif event == Event.SERVICE_END:
             _handle_service_end(system, params, records)
+        elif event == Event.STOP:
+            system.stop()
 
     return Results(records)
 
@@ -400,11 +390,11 @@ def _handle_arrival(system: System, params: Params, records: Records):
         server.serve(packet)
         system.schedule(Event.SERVICE_END, params.service())
         packet.service_started_at = time_now
-        records.add_system_size(time_now, system.size)
+        records.system_size.add(time_now, system.size)
 
     elif system.queue.push(packet):
         # packet was queued
-        records.add_system_size(time_now, system.size)
+        records.system_size.add(time_now, system.size)
 
     else:
         # mark packet as being dropped
@@ -445,7 +435,7 @@ def _handle_service_end(system: System, params: Params, records: Records):
         system.schedule(Event.SERVICE_END, params.service())
 
     # Anyway, system size has changed - record it!
-    records.add_system_size(time_now, system.size)
+    records.system_size.add(time_now, system.size)
 
 
 def _get_departure_intervals(packets_list: Sequence[Packet]) -> List[float]:
