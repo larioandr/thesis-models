@@ -369,6 +369,21 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def copy(self) -> 'Exponential':
         return Exponential(self._param)
 
+    @staticmethod
+    def fit(avg: float) -> 'Exponential':
+        """
+        Build a distribution for a given average.
+
+        Parameters
+        ----------
+        avg : float
+
+        Returns
+        -------
+
+        """
+        return Exponential(1 / avg)
+
 
 class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
@@ -441,6 +456,27 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     def copy(self) -> 'Erlang':
         return Erlang(self._shape, self._param)
+
+    @staticmethod
+    def fit(avg: float, std: float) -> 'Erlang':
+        """
+        Fit Erlang distribution for a given average and standard deviation.
+
+        Parameters
+        ----------
+        avg : float
+        std : float
+
+        Returns
+        -------
+        dist : Erlang distribution
+        """
+        cv = std / avg
+        if cv >= 1:
+            return Erlang(1, 1/avg)
+        rate = avg / std**2
+        shape = int(np.round(avg**2 / std**2))
+        return Erlang(shape, rate)
 
 
 # noinspection PyUnresolvedReferences
@@ -549,6 +585,36 @@ class HyperExponential(MixtureDistribution):
         return f"(HyperExponential: " \
                f"probs={str_array(self.probs)}, " \
                f"rates={str_array(self.rates)})"
+
+    @staticmethod
+    def fit(avg: float, std: float, skew: float) -> 'HyperExponential':
+        """
+        Fit hyperexponential distribution with average, std and skewness.
+
+        Parameters
+        ----------
+        avg
+        std
+        skew
+        """
+        # TODO: add support for skewness
+        cv = std / avg
+        if cv <= 1:
+            return HyperExponential([1/avg], [1.0])
+
+        a = avg
+        b = (std**2 + avg**2) / 2
+
+        r2 = 1/a + 1.0
+        r1 = (a*r2 - 1) / (b*r2 - a)
+        p1 = (a*r2 - 1)**2 / (b*r2**2 - 2*a*r2 + 1)
+        p2 = 1 - p1
+        if p1 < 0 or p1 > 1 or r1 < 0:
+            raise RuntimeError(f"failed to fit hyperexponential distribution:"
+                               f"avg = {avg}, std={std}; resulting p1 = {p1}, "
+                               f"r1 = {r1}; selected r2={r2}.")
+
+        return HyperExponential([r1, r2], [p1, p2])
 
 
 # noinspection PyUnresolvedReferences

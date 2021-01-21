@@ -485,3 +485,33 @@ def test_countable_distribution_with_pmf_props(pmf, string):
 
     # Validate converting to string:
     assert str(dist) == string
+
+
+@pytest.mark.parametrize('avg', [1.0, 2.0, 10.0, 0.3])
+def test_exponential_fit(avg):
+    dist = Exponential.fit(avg)
+    assert_allclose(dist.mean, avg)
+
+
+@pytest.mark.parametrize('avg, std, param, shape', [
+    (1, 1, 1, 1), (2, 2, 0.5, 1), (10, 5, 0.4, 4),
+    (5, 10, 0.2, 1)  # bad values - use Poisson (Erlang representation of)
+])
+def test_erlang_fit(avg, std, param, shape):
+    dist = Erlang.fit(avg, std)
+    assert dist.shape == shape
+    assert_allclose(dist.param, param)
+    assert_allclose(dist.mean, avg)
+
+
+@pytest.mark.parametrize('avg, std, skew, order', [
+    (1, 1, 0, 1),
+    (1, 5, 0, 2),
+    (8, 10, 0, 2),
+    (0.1, 0.3, 0, 2),
+])
+def test_hyperexponential_fit(avg, std, skew, order):
+    dist = HyperExponential.fit(avg, std, skew)
+    assert_allclose(dist.mean, avg)
+    assert_allclose(dist.std, std)
+    assert dist.order == order
