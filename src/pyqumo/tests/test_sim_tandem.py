@@ -5,16 +5,15 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose
 
-from pyqumo.arrivals import PoissonProcess, RandomProcess, MarkovArrivalProcess, \
-    GenericIndependentProcess
-from pyqumo.random import HyperExponential, PhaseType
+from pyqumo.arrivals import Poisson, MarkovArrival
+from pyqumo.random import HyperExponential, PhaseType, Distribution, Exponential
 from pyqumo.sim.tandem import simulate
 
 
 @dataclass
 class TandemProps:
-    arrival: Union[RandomProcess, Sequence[RandomProcess]]
-    service: Union[RandomProcess, Sequence[RandomProcess]]
+    arrival: Union[Distribution, Sequence[Distribution]]
+    service: Union[Distribution, Sequence[Distribution]]
     queue_capacity: int
     num_stations: int
 
@@ -46,7 +45,7 @@ class TandemProps:
 # noinspection DuplicatedCode
 @pytest.mark.parametrize('props', [
     TandemProps(
-        arrival=PoissonProcess(2), service=PoissonProcess(5),
+        arrival=Poisson(2), service=Poisson(5),
         queue_capacity=4, num_stations=1,
         # System and queue sizes:
         system_size_avg=[0.642], system_size_std=[0.981],
@@ -58,7 +57,7 @@ class TandemProps:
         departure_avg=[0.5031], arrival_avg=[0.5], response_time_avg=[0.323],
         wait_time_avg=[0.123], delivery_delay_avg=[0.323]),
     TandemProps(
-        arrival=PoissonProcess(1), service=PoissonProcess(2),
+        arrival=Poisson(1), service=Poisson(2),
         queue_capacity=np.inf, num_stations=3,
         # System and queue sizes:
         system_size_avg=[1, 1, 1], system_size_std=[1.414, 1.414, 1.414],
@@ -71,8 +70,8 @@ class TandemProps:
         response_time_avg=[1, 1, 1], wait_time_avg=[.5, .5, .5],
         delivery_delay_avg=[3, 0, 0]),
     TandemProps(
-        arrival=[PoissonProcess(1), PoissonProcess(2), PoissonProcess(7)],
-        service=[PoissonProcess(10), PoissonProcess(6), PoissonProcess(40)],
+        arrival=[Poisson(1), Poisson(2), Poisson(7)],
+        service=[Exponential(10), Exponential(6), Exponential(40)],
         queue_capacity=np.inf, num_stations=3,
         # System and queue sizes:
         system_size_avg=[1/9, 1, 1/3],
@@ -90,11 +89,11 @@ class TandemProps:
         wait_time_avg=[1/90, 1/6, 1/120],
         delivery_delay_avg=[43/90, 11/30, 1/30]),
     TandemProps(
-        arrival=[MarkovArrivalProcess.poisson(1),
+        arrival=[MarkovArrival.poisson(1),
                  None,
                  None,
-                 GenericIndependentProcess(HyperExponential([4.0], [1.0]))],
-        service=GenericIndependentProcess(PhaseType.exponential(10)),
+                 HyperExponential([4.0], [1.0])],
+        service=PhaseType.exponential(10),
         queue_capacity=np.inf, num_stations=4,
         # System and queue sizes:
         system_size_avg=[1/9, 1/9, 1/9, 1],

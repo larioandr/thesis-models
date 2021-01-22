@@ -6,8 +6,8 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 from pyqumo import stats
-from pyqumo.arrivals import MarkovArrivalProcess, PoissonProcess, \
-    GenericIndependentProcess
+from pyqumo.arrivals import MarkovArrival, Poisson, \
+    GIProcess
 
 
 #
@@ -18,25 +18,19 @@ from pyqumo.random import Const, Uniform
 
 @pytest.mark.parametrize('proc, m1, m2, m3, l1, string', [
     # Poisson process:
-    (PoissonProcess(1.0), 1, 2, 6, 0.0, '(PoissonProcess: r=1)'),
-    (PoissonProcess(2.5), 0.4, 0.32, 0.384, 0.0, '(PoissonProcess: r=2.5)'),
+    (Poisson(1.0), 1, 2, 6, 0.0, '(Poisson: r=1)'),
+    (Poisson(2.5), 0.4, 0.32, 0.384, 0.0, '(Poisson: r=2.5)'),
     # GI with uniform or constant distributions:
-    (
-            GenericIndependentProcess(Const(3)),
-            3, 9, 27, 0,
-        '(GI: f=(Const: value=3))'
-    ), (
-            GenericIndependentProcess(Uniform(2, 10)),
-            6, 124 / 3, 312, 0,
-        '(GI: f=(Uniform: a=2, b=10))'
-    ),
+    (GIProcess(Const(3)), 3, 9, 27, 0, '(GI: f=(Const: value=3))'),
+    (GIProcess(Uniform(2, 10)), 6, 124 / 3, 312, 0,
+     '(GI: f=(Uniform: a=2, b=10))'),
     # MAP variants of Poisson or Erlang processes:
     (
-        MarkovArrivalProcess.poisson(2.5),
+        MarkovArrival.poisson(2.5),
         0.4, 0.32, 0.384, 0.0,
         '(MAP: d0=[[-2.5]], d1=[[2.5]])'
     ), (
-        MarkovArrivalProcess.erlang(3, rate=4.2),
+        MarkovArrival.erlang(3, rate=4.2),
         0.714286, 0.680272, 0.809848, 0.0,
         '(MAP: d0=[[-4.2, 4.2, 0], [0, -4.2, 4.2], [0, 0, -4.2]], '
         'd1=[[0, 0, 0], [0, 0, 0], [4.2, 0, 0]])'
@@ -76,7 +70,7 @@ def test__props(proc, m1, m2, m3, l1, string):
 def test_map__props():
     d0 = [[-1, 0.5], [0.5, -1]]
     d1 = [[0, 0.5], [0.2, 0.3]]
-    proc = MarkovArrivalProcess(d0, d1)
+    proc = MarkovArrival(d0, d1)
     assert_allclose(proc.generator, [[-1, 1], [0.7, -0.7]])
     assert_allclose(proc.d0, d0)
     assert_allclose(proc.d(0), d0)
@@ -99,7 +93,7 @@ def test_map__invalid_matrices_call_fix_markovian_process():
     d1 = np.asarray([[0, 1.1], [1., 0.]])
     with patch('pyqumo.arrivals.fix_markovian_arrival',
                return_value=((d0, d1), (0.1, 0.1))) as mock:
-        _ = MarkovArrivalProcess(d0, d1, tol=0.2)
+        _ = MarkovArrival(d0, d1, tol=0.2)
         mock.assert_called_once()
 
 
@@ -117,7 +111,7 @@ def test_map__invalid_matrices_call_fix_markovian_process():
 ])
 def test_map__sampling(d0, d1):
     NUM_SAMPLES = 100000
-    proc = MarkovArrivalProcess(d0, d1)
+    proc = MarkovArrival(d0, d1)
     samples = proc(NUM_SAMPLES)
 
     assert len(samples) == NUM_SAMPLES

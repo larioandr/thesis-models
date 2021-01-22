@@ -4,7 +4,7 @@ from numpy.testing import assert_almost_equal
 
 import pyqumo.stats as stats
 from pyqumo.random import Exp, PhaseType
-from pyqumo.arrivals import PoissonProcess, MAP
+from pyqumo.arrivals import Poisson, MAP
 
 
 class TestMoments(ut.TestCase):
@@ -47,7 +47,7 @@ class TestMoments(ut.TestCase):
         assert_almost_equal(stats.moment(source, 3), [1 / 3, 2 / 9, 2 / 9], 10)
 
     def test_moments_poisson_arrival(self):
-        source = PoissonProcess(3.0)
+        source = Poisson(3.0)
 
         self.assertIsInstance(stats.moment(source, 1), np.ndarray)
         self.assertIsInstance(stats.moment(source, 2), np.ndarray)

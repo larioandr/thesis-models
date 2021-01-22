@@ -1,3 +1,4 @@
+from abc import ABC
 from functools import cached_property, lru_cache
 from typing import Union, Sequence
 
@@ -9,69 +10,7 @@ from pyqumo.matrix import cbdiag, order_of, \
 from pyqumo.random import Rnd, Distribution, Exponential
 
 
-class RandomProcess:
-    @cached_property
-    def mean(self) -> float:
-        """
-        Get mean value of the random process.
-        """
-        return self.moment(1)
-
-    @cached_property
-    def rate(self) -> float:
-        return 1.0 / self.mean
-
-    @cached_property
-    def var(self) -> float:
-        """
-        Get variance of the random process.
-        """
-        return self.moment(2) - self.moment(1)**2
-
-    @cached_property
-    def std(self) -> float:
-        """
-        Get standard deviation.
-        """
-        return self.var ** 0.5
-
-    @cached_property
-    def cv(self) -> float:
-        """
-        Get coefficient of variation.
-        """
-        return self.std / self.mean
-
-    @lru_cache
-    def moment(self, n: int) -> float:
-        """
-        Get n-th moment of the random process.
-
-        Parameters
-        ----------
-        n : int
-            moment degree, for n=1 it is mean value
-
-        Returns
-        -------
-        value : float
-
-        Raises
-        ------
-        ValueError
-            raised if n is not an integer or is non-positive
-        """
-        if n < 0 or (n - np.floor(n)) > 0:
-            raise ValueError(f'positive integer expected, but {n} found')
-        if n == 0:
-            return 1
-        return self._moment(n)
-
-    def _moment(self, n: int) -> float:
-        """
-        Compute n-th moment.
-        """
-        raise NotImplementedError
+class RandomProcess(ABC, Distribution):
 
     @lru_cache
     def lag(self, n: int) -> float:
@@ -111,42 +50,11 @@ class RandomProcess:
         """
         raise NotImplementedError
 
-    def __call__(self, size: int = 1) -> Union[float, np.ndarray]:
-        """
-        Generate random samples of the random variable with this process.
-
-        If the process have memory, its state is stored between calls.
-
-        Parameters
-        ----------
-        size : int, optional
-            number of values to generate (default: 1)
-
-        Returns
-        -------
-        value : float or ndarray
-            if size > 1, then returns a 1D array, otherwise a float scalar
-        """
-        if size == 1:
-            x = self._eval(1)
-            try:
-                return x[0]
-            except IndexError:
-                return x
-        return self._eval(size)
-
-    def _eval(self, size: int) -> np.ndarray:
-        """
-        Generate random samples. This method should be defined in inherited
-        classes.
-        """
-        raise NotImplementedError
-
     def copy(self) -> 'RandomProcess':
         raise NotImplementedError
 
 
-class GenericIndependentProcess(RandomProcess):
+class GIProcess(RandomProcess):
     """
     GI-arrival model. Samples of this kind of process are built from a
     known distribution, and they don't change over lifetime.
@@ -197,14 +105,14 @@ class GenericIndependentProcess(RandomProcess):
     def _eval(self, size: int) -> np.ndarray:
         return self._dist(size)
 
-    def copy(self) -> 'GenericIndependentProcess':
-        return GenericIndependentProcess(self._dist.copy())
+    def copy(self) -> 'GIProcess':
+        return GIProcess(self._dist.copy())
 
     def __repr__(self):
         return f'(GI: f={self.dist})'
 
 
-class PoissonProcess(GenericIndependentProcess):
+class Poisson(GIProcess):
     """
     Custom case of GI-process with exponential arrivals.
     """
@@ -222,10 +130,10 @@ class PoissonProcess(GenericIndependentProcess):
         super().__init__(Exponential(rate))
 
     def __repr__(self):
-        return f'(PoissonProcess: r={self.rate:.3g})'
+        return f'(Poisson: r={self.rate:.3g})'
 
 
-class MarkovArrivalProcess(RandomProcess):
+class MarkovArrival(RandomProcess):
     """
     Markovian arrival process (MAP).
     """
@@ -345,7 +253,7 @@ class MarkovArrivalProcess(RandomProcess):
         )
 
     @staticmethod
-    def erlang(shape: int, rate: float) -> 'MarkovArrivalProcess':
+    def erlang(shape: int, rate: float) -> 'MarkovArrival':
         """
         MAP representation of Erlang process with the given shape and rate.
 
@@ -362,10 +270,10 @@ class MarkovArrivalProcess(RandomProcess):
         ])
         d1 = np.zeros((shape, shape))
         d1[shape-1, 0] = rate
-        return MarkovArrivalProcess(d0, d1)
+        return MarkovArrival(d0, d1)
 
     @staticmethod
-    def poisson(rate: float) -> 'MarkovArrivalProcess':
+    def poisson(rate: float) -> 'MarkovArrival':
         """
         MAP representation of a Poisson process with the given rate.
 
@@ -374,13 +282,13 @@ class MarkovArrivalProcess(RandomProcess):
         rate : float
             Exponential distribution rate
         """
-        return MarkovArrivalProcess([[-rate]], [[rate]])
+        return MarkovArrival([[-rate]], [[rate]])
 
-    def copy(self) -> 'MarkovArrivalProcess':
+    def copy(self) -> 'MarkovArrival':
         """
         Build a new MAP with the same matrices D0 and D1 without validation.
         """
-        return MarkovArrivalProcess(self.d0, self.d1, safe=True)
+        return MarkovArrival(self.d0, self.d1, safe=True)
 
     @property
     def d0(self) -> np.ndarray:
@@ -486,16 +394,16 @@ class MarkovArrivalProcess(RandomProcess):
             intervals[n] = interval
         return intervals
     
-    def compose(self, other: 'MarkovArrivalProcess') -> 'MarkovArrivalProcess':
+    def compose(self, other: 'MarkovArrival') -> 'MarkovArrival':
         # TODO:  write unit tests
-        if not isinstance(other, MarkovArrivalProcess):
+        if not isinstance(other, MarkovArrival):
             raise TypeError(f'expected MarkovArrivalProcess, '
                             f'{type(other)} found')
         self_eye = np.eye(self.order)
         other_eye = np.eye(other.order)
         d0_out = np.kron(self.d0, other_eye) + np.kron(other.d0, self_eye)
         d1_out = np.kron(self.d1, other_eye) + np.kron(other.d1, self_eye)
-        return MarkovArrivalProcess(d0_out, d1_out)
+        return MarkovArrival(d0_out, d1_out)
     
     @lru_cache
     def _pow_dtmc_matrix(self, k):

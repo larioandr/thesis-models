@@ -4,14 +4,15 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose
 
-from pyqumo.arrivals import PoissonProcess, RandomProcess
+from pyqumo.arrivals import Poisson
+from pyqumo.random import Exponential, Distribution
 from pyqumo.sim.gg1 import simulate
 
 
 @dataclass
 class GG1Props:
-    arrival: RandomProcess
-    service: RandomProcess
+    arrival: Distribution
+    service: Distribution
     queue_capacity: int
 
     # System and queue sizes:
@@ -38,13 +39,13 @@ class GG1Props:
 
 @pytest.mark.parametrize('props', [
     GG1Props(
-        arrival=PoissonProcess(2), service=PoissonProcess(5), queue_capacity=4,
+        arrival=Poisson(2), service=Poisson(5), queue_capacity=4,
         system_size_avg=0.642, system_size_std=0.981,
         queue_size_avg=0.2444, queue_size_std=0.6545,
         loss_prob=0.0062, utilization=0.3975, departure_rate=1.9877,
         response_time_avg=0.323, wait_time_avg=0.123),
     GG1Props(
-        arrival=PoissonProcess(42), service=PoissonProcess(34),
+        arrival=Exponential(42), service=Exponential(34),
         queue_capacity=7,
         system_size_avg=5.3295, system_size_std=5.6015**0.5,
         queue_size_avg=4.3708, queue_size_std=5.2010**0.5,
@@ -53,7 +54,7 @@ class GG1Props:
         max_packets=int(1e5)
     ),
     GG1Props(
-        arrival=PoissonProcess(1), service=PoissonProcess(2),
+        arrival=Poisson(1), service=Exponential(2),
         queue_capacity=np.inf,
         system_size_avg=1, system_size_std=2.0**0.5,
         queue_size_avg=0.5, queue_size_std=1.25**0.5,

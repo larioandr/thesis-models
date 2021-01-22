@@ -5,7 +5,7 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.queues import MM1Queue, BasicQueueingSystem, MM1NQueue, MapPh1NQueue
-from pyqumo.arrivals import PoissonProcess, MarkovArrivalProcess
+from pyqumo.arrivals import Poisson, MarkovArrival
 
 
 from pyqumo.random import PhaseType
@@ -44,8 +44,8 @@ class QueueProps:
     # M/M/1 queues:
     (
         MM1Queue(2.0, 5.0), QueueProps(
-            arrival_class=PoissonProcess, service_class=PoissonProcess,
-            departure_class=PoissonProcess,
+            arrival_class=Poisson, service_class=Poisson,
+            departure_class=Poisson,
             arrival_rate=2, service_rate=5, departure_rate=2,
             system_size_pmf=[0.6, 0.24, 0.096, 0.0384, 0.0154],
             system_size_avg=0.6667, system_size_var=1.1111,
@@ -68,8 +68,8 @@ class QueueProps:
     # M/M/1/N queues:
     (
         MM1NQueue(2, 5, queue_capacity=4), QueueProps(
-            arrival_class=PoissonProcess, service_class=PoissonProcess,
-            departure_class=MarkovArrivalProcess,
+            arrival_class=Poisson, service_class=Poisson,
+            departure_class=MarkovArrival,
             arrival_rate=2, service_rate=5, departure_rate=1.9877,
             system_size_pmf=[0.6025, 0.2410, 0.0964, 0.0385, 0.0154, 0.0062],
             system_size_avg=0.6420, system_size_var=0.9624,
@@ -97,7 +97,7 @@ class QueueProps:
     # MAP/PH/1/N representation of M/M/1/N queue:
     (
         MapPh1NQueue(
-            MarkovArrivalProcess.poisson(2),
+            MarkovArrival.poisson(2),
             PhaseType.exponential(5),
             queue_capacity=4
         ), QueueProps(
@@ -112,7 +112,7 @@ class QueueProps:
            "service=(GI: f=(PH: s=[[-5]], p=[1])), capacity=5)"
     ), (
         MapPh1NQueue(
-            MarkovArrivalProcess.poisson(42),
+            MarkovArrival.poisson(42),
             PhaseType.exponential(34),
             queue_capacity=7
         ), QueueProps(

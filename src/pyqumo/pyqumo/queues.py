@@ -5,8 +5,8 @@ import numpy as np
 
 from pyqumo.matrix import cbdiag
 from pyqumo.random import Distribution, CountableDistribution, PhaseType
-from pyqumo.arrivals import PoissonProcess, MarkovArrivalProcess, RandomProcess, \
-    GenericIndependentProcess
+from pyqumo.arrivals import Poisson, MarkovArrival, RandomProcess, \
+    GIProcess
 
 
 class BasicQueueingSystem:
@@ -21,9 +21,9 @@ class BasicQueueingSystem:
         Queueing system constructor.
         """
         if isinstance(arrival, Distribution):
-            arrival = GenericIndependentProcess(arrival)
+            arrival = GIProcess(arrival)
         if isinstance(service, Distribution):
-            service = GenericIndependentProcess(service)
+            service = GIProcess(service)
         self._arrival = arrival
         self._service = service
         self._queue_capacity = queue_capacity
@@ -136,13 +136,13 @@ class BasicQueueingSystem:
 class MM1Queue(BasicQueueingSystem):
     def __init__(self, arrival_rate: float, service_rate: float,
                  precision: float = 1e-9):
-        arrival = PoissonProcess(arrival_rate)
-        service = PoissonProcess(service_rate)
+        arrival = Poisson(arrival_rate)
+        service = Poisson(service_rate)
         super().__init__(arrival, service, precision=precision)
 
     @cached_property
     def departure(self):
-        return PoissonProcess(self.lambda_)
+        return Poisson(self.lambda_)
 
     @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
@@ -194,8 +194,8 @@ class MM1NQueue(BasicQueueingSystem):
         if abs(np.math.modf(queue_capacity)[0]) > 1e-12 or queue_capacity <= 0:
             raise ValueError(f"positive integer expected, "
                              f"but {queue_capacity} found")
-        arrival = PoissonProcess(arrival_rate)
-        service = PoissonProcess(service_rate)
+        arrival = Poisson(arrival_rate)
+        service = Poisson(service_rate)
         super().__init__(arrival, service, queue_capacity=queue_capacity,
                          precision=precision)
 
@@ -211,7 +211,7 @@ class MM1NQueue(BasicQueueingSystem):
         d0[0, 0] += b
         d0[n, n] += a
         d1 = cbdiag(n + 1, [(-1, np.asarray([[b]]))])
-        return MarkovArrivalProcess(d0, d1)
+        return MarkovArrival(d0, d1)
 
     @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:
@@ -284,7 +284,7 @@ class MM1NQueue(BasicQueueingSystem):
 
 class MapPh1NQueue(BasicQueueingSystem):
     def __init__(self,
-                 arrival: MarkovArrivalProcess,
+                 arrival: MarkovArrival,
                  service: PhaseType,
                  queue_capacity: int):
         if abs(np.math.modf(queue_capacity)[0]) > 1e-12 or queue_capacity <= 0:
@@ -294,7 +294,7 @@ class MapPh1NQueue(BasicQueueingSystem):
                          precision=1e-20)
 
     def _get_casted_arrival_and_service(self) \
-            -> (MarkovArrivalProcess, PhaseType):
+            -> (MarkovArrival, PhaseType):
         """
         Returns (arrival, service), casted to MarkovArrival and PH.
 
@@ -307,15 +307,15 @@ class MapPh1NQueue(BasicQueueingSystem):
         overhead job.
         """
         arrival = self.arrival
-        assert isinstance(arrival, MarkovArrivalProcess)
+        assert isinstance(arrival, MarkovArrival)
         service_process = self.service
-        assert isinstance(service_process, GenericIndependentProcess)
+        assert isinstance(service_process, GIProcess)
         service = service_process.dist
         assert isinstance(service, PhaseType)
         return arrival, service
 
     @cached_property
-    def departure(self) -> MarkovArrivalProcess:
+    def departure(self) -> MarkovArrival:
         arrival, service = self._get_casted_arrival_and_service()
 
         # Aliasing matrices from arrival MAP and service PH
@@ -349,7 +349,7 @@ class MapPh1NQueue(BasicQueueingSystem):
         d0_dep = np.hstack((d0_left_col, np.vstack((d0_top_row, d0_dep))))
         D1_dep = cbdiag(self.capacity + 1, ((-1, iw_ct),))
 
-        return MarkovArrivalProcess(d0_dep, D1_dep)
+        return MarkovArrival(d0_dep, D1_dep)
 
     @cached_property
     def get_system_size_prob(self) -> Callable[[int], float]:

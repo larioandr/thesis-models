@@ -4,9 +4,8 @@ from typing import Optional, List, Tuple, Sequence, Callable, Union
 import numpy as np
 from tabulate import tabulate
 
-from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
-from pyqumo.random import CountableDistribution
+from pyqumo.random import CountableDistribution, Distribution
 from pyqumo.sim.helpers import Statistics, build_statistics, Queue, \
     TimeSizeRecords, FiniteFifoQueue, InfiniteFifoQueue, Server
 
@@ -285,8 +284,8 @@ class Params:
     """
     Model parameters: arrival and service processes, queue capacity and limits.
     """
-    arrivals: List[Optional[RandomProcess]]
-    services: List[RandomProcess]
+    arrivals: List[Optional[Distribution]]
+    services: List[Distribution]
     num_stations: int
     queue_capacity: int = np.inf
     max_packets: int = 1000000
@@ -406,8 +405,8 @@ class System:
 
 
 def simulate(
-        arrivals: Union[RandomProcess, Sequence[Optional[RandomProcess]]],
-        services: Union[RandomProcess, Sequence[RandomProcess]],
+        arrivals: Union[Distribution, Sequence[Optional[Distribution]]],
+        services: Union[Distribution, Sequence[Distribution]],
         queue_capacity: int = np.inf,
         num_stations: int = 1,
         cross_traffic: bool = False,
@@ -451,8 +450,8 @@ def simulate(
     results : Results
         Simulation results.
     """
-    arrivals_: List[Optional[RandomProcess]] = []
-    if isinstance(arrivals, RandomProcess):
+    arrivals_: List[Optional[Distribution]] = []
+    if isinstance(arrivals, Distribution):
         if cross_traffic:
             arrivals_ = [arrivals.copy() for _ in range(num_stations)]
         else:
@@ -461,7 +460,7 @@ def simulate(
     else:
         arrivals_ = [x.copy() if x is not None else None for x in arrivals]
 
-    if isinstance(services, RandomProcess):
+    if isinstance(services, Distribution):
         services_ = [services.copy() for _ in range(num_stations)]
     else:
         services_ = [x.copy() for x in services]

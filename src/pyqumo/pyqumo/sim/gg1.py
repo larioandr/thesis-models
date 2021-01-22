@@ -4,9 +4,8 @@ from typing import Optional, List, Sequence
 import numpy as np
 from tabulate import tabulate
 
-from pyqumo.arrivals import RandomProcess
 from pyqumo.matrix import str_array
-from pyqumo.random import CountableDistribution
+from pyqumo.random import CountableDistribution, Distribution
 from pyqumo.sim.helpers import build_statistics, FiniteFifoQueue, \
     InfiniteFifoQueue, Server, Queue, TimeSizeRecords
 
@@ -55,8 +54,8 @@ class Params:
     """
     Model parameters: arrival and service processes, queue capacity and limits.
     """
-    arrival: RandomProcess
-    service: RandomProcess
+    arrival: Distribution
+    service: Distribution
     queue_capacity: int
     max_packets: int = 1000000
     max_time: float = np.inf
@@ -278,8 +277,8 @@ class System:
 
 
 def simulate(
-        arrival: RandomProcess,
-        service: RandomProcess,
+        arrival: Distribution,
+        service: Distribution,
         queue_capacity: int = np.inf,
         max_time: float = np.inf,
         max_packets: int = 1000000
