@@ -1,11 +1,9 @@
--e src/qumos
+-e src/pyqumo
 -e src/wisim
--e src/traf
 -e src/pyons
 -e src/rfidlib
 -e src/rfidsim
 -e src/rfidam
--e src/pyqumo
 -e src/pdesim
 -e src/pycsmaca
 click~=7.1.2
@@ -21,3 +19,4 @@ pyons~=1.0
 pytest~=6.1.2
 rfidsim~=1.0
 tqdm==4.54.1
+Cython==0.29.21

@@ -7,7 +7,7 @@ from tabulate import tabulate
 from pyqumo.matrix import str_array
 from pyqumo.random import CountableDistribution, Distribution
 from pyqumo.sim.helpers import build_statistics, FiniteFifoQueue, \
-    InfiniteFifoQueue, Server, Queue, TimeSizeRecords
+    InfiniteFifoQueue, Server, Queue, TimeSizeRecords, Statistics
 
 
 @dataclass
@@ -61,77 +61,18 @@ class Params:
     max_time: float = np.inf
 
 
+@dataclass
 class Results:
     """
     Results returned from G/G/1/N model simulation.
-
-    Attributes
-    ----------
-    system_size : CountableDistribution
-    queue_size : CountableDistribution
-    busy : CountableDistribution
-    loss_prob : float
-    departures : Statistics
-    wait_time : Statistics
-    response_time : Statistics
-
-    Methods
-    -------
-    utilization : float
-        A synonym to busy.mean(), or, which is the same, busy.pmf(1).
-    tabulate : float
-        Represent results in a form of pretty formatted table.
     """
-    def __init__(self, records: Records):
-        """
-        Create results from the records.
-
-        Parameters
-        ----------
-        records : Records
-        """
-        #
-        # 1) Build system size, queue size and busy (server size)
-        #    distributions. To do this, we need PMFs. Queue size
-        #    PMF and busy PMF can be computed from system size PMF.
-        #
-        system_size_pmf = list(records.system_size.pmf)
-        num_states = len(system_size_pmf)
-        p0 = system_size_pmf[0]
-        p1 = system_size_pmf[1] if num_states > 1 else 0.0
-
-        queue_size_pmf = [p0 + p1] + system_size_pmf[2:]
-        server_size_pmf = [p0, sum(system_size_pmf[1:])]
-
-        self.system_size = CountableDistribution(system_size_pmf)
-        self.queue_size = CountableDistribution(queue_size_pmf)
-        self.busy = CountableDistribution(server_size_pmf)
-
-        #
-        # 2) For future estimations, we need packets and some filters.
-        #    Group all of them here.
-        #
-        all_packets = records.packets
-        served_packets = [packet for packet in all_packets if packet.served]
-        dropped_packets = [packet for packet in all_packets if packet.dropped]
-
-        #
-        # 3) Build scalar statistics.
-        #
-        self.loss_prob = len(dropped_packets) / len(all_packets)
-
-        #
-        # 4) Build various intervals statistics: departures, waiting times,
-        #    response times.
-        #
-        departure_intervals = _get_departure_intervals(served_packets)
-        self.departures = build_statistics(np.asarray(departure_intervals))
-        self.response_time = build_statistics([
-            pkt.departed_at - pkt.created_at for pkt in served_packets
-        ])
-        self.wait_time = build_statistics([
-            pkt.service_started_at - pkt.created_at for pkt in served_packets
-        ])
+    system_size: Optional[CountableDistribution] = None
+    queue_size: Optional[CountableDistribution] = None
+    busy: Optional[CountableDistribution] = None
+    loss_prob: float = 0.0
+    departures: Optional[Statistics] = None
+    response_time: Optional[Statistics] = None
+    wait_time: Optional[Statistics] = None
 
     @property
     def utilization(self) -> float:
@@ -345,7 +286,7 @@ def simulate(
         elif event == Event.STOP:
             system.stop()
 
-    return Results(records)
+    return _build_results(records)
 
 
 def _handle_arrival(system: System, params: Params, records: Records):
@@ -456,3 +397,59 @@ def _get_departure_intervals(packets_list: Sequence[Packet]) -> List[float]:
             intervals.append(packet.departed_at - prev_time)
             prev_time = packet.departed_at
     return intervals
+
+
+def _build_results(records: Records) -> Results:
+    """
+    Create results from the records.
+
+    Parameters
+    ----------
+    records : Records
+    """
+    ret = Results()
+
+    #
+    # 1) Build system size, queue size and busy (server size)
+    #    distributions. To do this, we need PMFs. Queue size
+    #    PMF and busy PMF can be computed from system size PMF.
+    #
+    system_size_pmf = list(records.system_size.pmf)
+    num_states = len(system_size_pmf)
+    p0 = system_size_pmf[0]
+    p1 = system_size_pmf[1] if num_states > 1 else 0.0
+
+    queue_size_pmf = [p0 + p1] + system_size_pmf[2:]
+    server_size_pmf = [p0, sum(system_size_pmf[1:])]
+
+    ret.system_size = CountableDistribution(system_size_pmf)
+    ret.queue_size = CountableDistribution(queue_size_pmf)
+    ret.busy = CountableDistribution(server_size_pmf)
+
+    #
+    # 2) For future estimations, we need packets and some filters.
+    #    Group all of them here.
+    #
+    all_packets = records.packets
+    served_packets = [packet for packet in all_packets if packet.served]
+    dropped_packets = [packet for packet in all_packets if packet.dropped]
+
+    #
+    # 3) Build scalar statistics.
+    #
+    ret.loss_prob = len(dropped_packets) / len(all_packets)
+
+    #
+    # 4) Build various intervals statistics: departures, waiting times,
+    #    response times.
+    #
+    departure_intervals = _get_departure_intervals(served_packets)
+    ret.departures = build_statistics(np.asarray(departure_intervals))
+    ret.response_time = build_statistics([
+        pkt.departed_at - pkt.created_at for pkt in served_packets
+    ])
+    ret.wait_time = build_statistics([
+        pkt.service_started_at - pkt.created_at for pkt in served_packets
+    ])
+
+    return ret

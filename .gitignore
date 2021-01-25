@@ -4,6 +4,8 @@
 data/dumps/
 .idea/
 logs/
+cy_*.cpp
+cy_*.html
 
 
 ##################################
