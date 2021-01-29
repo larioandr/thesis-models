@@ -3,11 +3,12 @@ from Cython.Build import cythonize
 
 
 extensions = [
-    Extension("pyqumo.csim.mm1n", ["pyqumo/csim/cy_mm1n.pyx"],
-              include_dirs=['pyqumo/csim/c_src'],
-              language="c++",
-              extra_compile_args=["-std=c++11", "-O3"],
-              extra_link_args=["-std=c++11"]),
+    Extension(
+        "pyqumo.csim.mm1n", ["pyqumo/csim/cy_mm1n.pyx"],
+        include_dirs=['cpp_src/'],
+        language="c++",
+        extra_compile_args=["-std=c++11", "-O3", "-Wno-deprecated"],
+        extra_link_args=["-std=c++11"]),
 ]
 
 compiler_directives = {

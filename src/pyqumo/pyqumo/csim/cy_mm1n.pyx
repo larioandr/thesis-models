@@ -1,4 +1,4 @@
-# distutils: sources = pyqumo/csim/c_src/mm1n.cpp
+# distutils: sources = cpp_src/mm1n.cpp cpp_src/statistics.cpp
 # distutils: language = c++
 import numpy as np
 from libcpp.vector cimport vector
