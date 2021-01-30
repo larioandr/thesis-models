@@ -2,7 +2,7 @@
 # distutils: language = c++
 import numpy as np
 from libcpp.vector cimport vector
-from pyqumo.csim.mm1n cimport SimData, NodeData, simulate_mm1, VarData
+from pyqumo.csim.model cimport SimData, NodeData, simulate_mm1, VarData
 from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
 from pyqumo.random import CountableDistribution

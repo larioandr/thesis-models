@@ -4,7 +4,7 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        "pyqumo.csim.mm1n", ["pyqumo/csim/cy_mm1n.pyx"],
+        "pyqumo.csim.model", ["pyqumo/csim/model.pyx"],
         include_dirs=['cpp_src/'],
         language="c++",
         extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
