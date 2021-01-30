@@ -73,6 +73,7 @@ class Results:
     departures: Optional[Statistics] = None
     response_time: Optional[Statistics] = None
     wait_time: Optional[Statistics] = None
+    real_time: Optional[float] = 0.0
 
     @property
     def utilization(self) -> float:
@@ -107,6 +108,7 @@ class Results:
             ('Response time, std.dev.', self.response_time.std),
             ('Wait time, average', self.wait_time.avg),
             ('Wait time, std.dev.', self.wait_time.std),
+            ("Execution time, ms.", self.real_time),
         ]
         return tabulate(items, headers=('Param', 'Value'))
 

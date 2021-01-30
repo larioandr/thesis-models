@@ -95,7 +95,9 @@ std::string Server::toString() const {
 // ==========================================================================
 // Class Source
 // ==========================================================================
-Source::Source(const DblFn& intervalGetter, std::string  label) : intervalGetter(intervalGetter), label(std::move(label)) {}
+Source::Source(const DblFn& intervalGetter, int destAddr, std::string  label)
+: intervalGetter(intervalGetter), label(std::move(label)), destAddr(destAddr) {}
+
 Source::~Source() = default;
 
 Packet *Source::createPacket(double time) const {
@@ -168,7 +170,7 @@ std::string Network::toString() const {
 Network *buildOneHopeNetwork(const DblFn& arrival, const DblFn& service, int queueCapacity) {
     auto queue = new Queue(queueCapacity);
     auto server = new Server(service);
-    auto source = new Source(arrival);
+    auto source = new Source(arrival, 0);
     auto node = new Node(0, queue, server, source);
     auto network = new Network;
     network->addNode(node);

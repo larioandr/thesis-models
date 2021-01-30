@@ -3,12 +3,10 @@
 
 #include "Base.h"
 #include "Records.h"
+#include "Functions.h"
 #include <queue>
 #include <functional>
 #include <map>
-
-
-typedef std::function<double()> DblFn;
 
 
 class Packet : public Object {
@@ -102,7 +100,7 @@ private:
 
 class Source : public NodeComponent {
 public:
-    explicit Source(const DblFn& intervalGetter, std::string label = "");
+    explicit Source(const DblFn& intervalGetter, int destAddr, std::string label = "");
     ~Source() override;
 
     inline double getInterval() const { return intervalGetter(); }

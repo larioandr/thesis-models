@@ -4,8 +4,6 @@
 #include <string>
 #include <sstream>
 
-//#define VERBOSE 1
-
 #ifdef VERBOSE
 #define debug(...) printf(__VA_ARGS__)
 #else

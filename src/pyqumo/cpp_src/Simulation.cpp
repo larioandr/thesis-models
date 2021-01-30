@@ -126,10 +126,17 @@ std::string SimData::text(const std::string &prefix) const {
 SimData simulate_mm1(double arrivalRate, double serviceRate, int queueCapacity, int maxPackets) {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     auto gen = std::default_random_engine(seed);
-    auto arrivalExp = std::exponential_distribution<double>(arrivalRate);
-    auto arrival = [&]() { return arrivalExp(gen); };
-    auto serviceExp = std::exponential_distribution<double>(serviceRate);
-    auto service = [&]() { return serviceExp(gen); };
+    struct Context { std::default_random_engine *gen = nullptr; std::exponential_distribution<double> fn; };
+    Context arrivalContext = { &gen, std::exponential_distribution<double>(arrivalRate) };
+    Context serviceContext = { &gen, std::exponential_distribution<double>(serviceRate) };
+    auto intervalBuilder = [](Context *ctx) {
+        return ContextFunctor([](void *ctx) {
+            auto ctx_ = static_cast<Context*>(ctx);
+            return ctx_->fn(*(ctx_->gen));
+        }, ctx);
+    };
+    auto arrival = intervalBuilder(&arrivalContext);
+    auto service = intervalBuilder(&serviceContext);
     return simulate_gg1(arrival, service, queueCapacity, maxPackets);
 }
 

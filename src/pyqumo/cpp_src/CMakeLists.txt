@@ -7,4 +7,4 @@ add_executable(TandemNetworkSim
         main.cpp
         Statistics.cpp
         Statistics.h
-        System.h Records.cpp Records.h Base.cpp Base.h Components.h Components.cpp System.cpp Simulation.h Simulation.cpp)
+        System.h Records.cpp Records.h Base.cpp Base.h Components.h Components.cpp System.cpp Simulation.h Simulation.cpp Functions.h)

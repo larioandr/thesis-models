@@ -7,8 +7,8 @@ extensions = [
         "pyqumo.csim.mm1n", ["pyqumo/csim/cy_mm1n.pyx"],
         include_dirs=['cpp_src/'],
         language="c++",
-        extra_compile_args=["-std=c++11", "-O3", "-Wno-deprecated"],
-        extra_link_args=["-std=c++11"]),
+        extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
+        extra_link_args=["-std=c++14"]),
 ]
 
 compiler_directives = {

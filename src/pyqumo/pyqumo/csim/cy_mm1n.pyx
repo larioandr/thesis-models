@@ -1,8 +1,8 @@
-# distutils: sources = cpp_src/mm1n.cpp cpp_src/statistics.cpp
+# distutils: sources = cpp_src/Base.cpp cpp_src/Components.cpp cpp_src/Records.cpp cpp_src/Simulation.cpp cpp_src/Statistics.cpp cpp_src/System.cpp
 # distutils: language = c++
 import numpy as np
 from libcpp.vector cimport vector
-from pyqumo.csim.mm1n cimport cResults, cSimulateMm1n, cStatistics
+from pyqumo.csim.mm1n cimport SimData, NodeData, simulate_mm1, VarData
 from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
 from pyqumo.random import CountableDistribution
@@ -16,28 +16,36 @@ cdef vector_asarray(vector[double] vect):
     return ret
 
 
-cdef _build_statistics(cStatistics *cs):
+cdef _build_statistics(VarData* cs):
     return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)
 
 
-cdef _build_results(cResults *cr):
+cdef _build_results(const SimData& sim_data):
+    cdef int addr = 0
+    cdef NodeData data = sim_data.nodeData.at(0)
     results = Results()
-    results.system_size = CountableDistribution(vector_asarray(cr.systemSize.pmf))
-    results.queue_size = CountableDistribution(vector_asarray(cr.queueSize.pmf))
-    results.busy = CountableDistribution(vector_asarray(cr.busy.pmf))
-    results.loss_prob = cr.lossProb
-    results.departures = _build_statistics(&cr.departures)
-    results.response_time = _build_statistics(&cr.responseTime)
-    results.wait_time = _build_statistics(&cr.waitTime)
+    results.system_size = CountableDistribution(
+        vector_asarray(data.systemSize.getPmf())
+    )
+    results.queue_size = CountableDistribution(
+        vector_asarray(data.queueSize.getPmf())
+    )
+    results.busy = CountableDistribution(
+        vector_asarray(data.serverSize.getPmf())
+    )
+    results.loss_prob = data.lossProb
+    results.departures = _build_statistics(&data.departures)
+    results.response_time = _build_statistics(&data.responseTime)
+    results.wait_time = _build_statistics(&data.waitTime)
+    results.real_time = sim_data.realTimeMs
     return results
 
 
 cdef call_simulate_mm1n(double arrival_rate, double service_rate,
                         int queue_capacity, int max_packets):
-    cdef cResults *c_ret = cSimulateMm1n(
+    cdef SimData c_ret = simulate_mm1(
         arrival_rate, service_rate, queue_capacity, max_packets)
     result: Results = _build_results(c_ret)
-    del c_ret
     return result
 
 

@@ -1,33 +1,51 @@
 from libcpp.vector cimport vector
-from libcpp.string cimport string
+from libcpp.map cimport map
 
-cdef extern from "mm1n.h":
-    # noinspection PyPep8Naming
-    cdef cppclass cStatistics:
+
+cdef extern from "Statistics.h":
+    cdef cppclass SizeDist:
+        double getMean()
+        double getVariance()
+        double getStdDev()
+        double getMoment(int order)
+        vector[double] getPmf()
+
+    cdef cppclass VarData:
         double avg
         double std
         double var
-        size_t count
+        unsigned count
+        vector[double] moments
 
-    # noinspection PyPep8Naming
-    cdef cppclass cDiscreteStatistics:
-        vector[double] pmf
 
-    # noinspection PyPep8Naming
-    cdef cppclass cResults:
-        cDiscreteStatistics systemSize
-        cDiscreteStatistics queueSize
-        cDiscreteStatistics busy
+cdef extern from "Simulation.h":
+    cdef cppclass NodeData:
+        SizeDist systemSize
+        SizeDist queueSize
+        SizeDist serverSize
+        VarData delays
+        VarData departures
+        VarData waitTime
+        VarData responseTime
+        unsigned numPacketsGenerated
+        unsigned numPacketsDelivered
+        unsigned numPacketsLost
+        unsigned numPacketsArrived
+        unsigned numPacketsServed
+        unsigned numPacketsDropped
         double lossProb
-        cStatistics departures
-        cStatistics responseTime
-        cStatistics waitTime
+        double dropProb
+        double deliveryProb
 
-        string tabulate() const
+    cdef cppclass SimData:
+        map[int, NodeData] nodeData
+        unsigned numPacketsGenerated
+        double simTime
+        double realTimeMs
 
     # noinspection PyPep8Naming
-    cResults* cSimulateMm1n(
+    SimData simulate_mm1(
             double arrivalRate,
             double serviceRate,
             int queueCapacity,
-            int maxPackets);
+            int maxPackets)

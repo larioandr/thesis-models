@@ -12,7 +12,7 @@ class Journal;
 
 class Counter : public Object {
 public:
-    Counter(int initValue = 0);
+    Counter(int initValue = 0); // NOLINT(google-explicit-constructor)
     Counter(const Counter& counter);
     ~Counter() override;
 
