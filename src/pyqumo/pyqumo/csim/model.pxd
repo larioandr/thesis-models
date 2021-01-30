@@ -2,7 +2,7 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map
 
 
-cdef extern from "Statistics.h":
+cdef extern from "Statistics.h" namespace "cqumo":
     cdef cppclass SizeDist:
         double getMean()
         double getVariance()
@@ -18,7 +18,7 @@ cdef extern from "Statistics.h":
         vector[double] moments
 
 
-cdef extern from "Simulation.h":
+cdef extern from "Simulation.h" namespace "cqumo":
     cdef cppclass NodeData:
         SizeDist systemSize
         SizeDist queueSize
@@ -44,7 +44,7 @@ cdef extern from "Simulation.h":
         double realTimeMs
 
     # noinspection PyPep8Naming
-    SimData simulate_mm1(
+    SimData simMM1(
             double arrivalRate,
             double serviceRate,
             int queueCapacity,

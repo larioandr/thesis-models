@@ -1,20 +1,24 @@
+/**
+ * @author Andrey Larionov
+ */
 #include "Statistics.h"
 #include <cmath>
 #include <sstream>
 
 
+namespace cqumo {
+
 double getUnbiasedVariance(double m1, double m2, unsigned n) {
     if (n > 1) {
         auto _n = static_cast<double>(n);
-        return (m2 - m1*m1) * (_n / (_n - 1));
+        return (m2 - m1 * m1) * (_n / (_n - 1));
     }
-    return m2 - m1*m1;
+    return m2 - m1 * m1;
 }
 
 
-// ==========================================================================
 // Class Series
-// ==========================================================================
+// --------------------------------------------------------------------------
 
 Series::Series(unsigned nMoments, unsigned windowSize) {
     moments.resize(nMoments, 0.0);
@@ -24,12 +28,6 @@ Series::Series(unsigned nMoments, unsigned windowSize) {
     nCommittedRecords = 0;
 }
 
-
-Series::~Series() {
-    // nothing to be done
-}
-
-
 void Series::record(double x) {
     window[wPos++] = x;
     nRecords++;
@@ -38,25 +36,26 @@ void Series::record(double x) {
     }
 }
 
-
 void Series::commit() {
     int numMoments = static_cast<int>(moments.size());
     for (int i = 0; i < numMoments; ++i) {
-        moments[i] = estimate_moment(i + 1, moments[i], window, wPos, nRecords);
+        moments[i] = estimate_moment(
+                i + 1,
+                moments[i],
+                window, wPos, nRecords);
     }
     nCommittedRecords = nRecords;
     wPos = 0;
 }
 
-
 std::string Series::toString() const {
     std::stringstream ss;
     ss << "(Series: moments=[";
-    std::copy(moments.begin(), moments.end(), std::ostream_iterator<double>(ss, " "));
+    std::copy(moments.begin(), moments.end(),
+              std::ostream_iterator<double>(ss, " "));
     ss << "], nRecords=" << nRecords << ")";
     return ss.str();
 }
-
 
 double Series::estimate_moment(
         int order,
@@ -72,20 +71,17 @@ double Series::estimate_moment(
     for (unsigned i = 0; i < windowSize; ++i) {
         accum += std::pow(window[i], order);
     }
-    return value * (1.0 - static_cast<double>(windowSize)/nRecords) + accum/nRecords;
+    return value * (1.0 - static_cast<double>(windowSize) / nRecords) +
+           accum / nRecords;
 }
 
 
-// ==========================================================================
 // Class SizeDist
-// ==========================================================================
+// --------------------------------------------------------------------------
+
 SizeDist::SizeDist() : pmf(std::vector<double>(1, 1.0)) {}
 
-SizeDist::SizeDist(const std::vector<double>& pmf) : pmf(pmf) {}
-
-SizeDist::SizeDist(const SizeDist& other) : pmf(other.pmf) {}
-
-SizeDist::~SizeDist() {}
+SizeDist::SizeDist(std::vector<double> pmf) : pmf(std::move(pmf)) {}
 
 double SizeDist::getMoment(int order) const {
     double accum = 0.0;
@@ -109,19 +105,19 @@ double SizeDist::getStdDev() const {
 
 std::string SizeDist::toString() const {
     std::stringstream ss;
-    ss << "(SizeDist: mean=" << getMean() << ", std=" << getStdDev() << ", pmf=[";
+    ss << "(SizeDist: mean=" << getMean() << ", std=" << getStdDev()
+       << ", pmf=[";
     std::copy(pmf.begin(), pmf.end(), std::ostream_iterator<double>(ss, " "));
     ss << "])";
     return ss.str();
 }
 
 
-// ==========================================================================
 // Class TimeSizeSeries
-// ==========================================================================
+// --------------------------------------------------------------------------
 
 TimeSizeSeries::TimeSizeSeries(double time, unsigned value)
-: initTime(time), currValue(value), prevRecordTime(0.0) {
+        : initTime(time), currValue(value), prevRecordTime(0.0) {
     durations.resize(1, 0.0);
 }
 
@@ -152,53 +148,56 @@ SizeDist TimeSizeSeries::getSizeDist() const {
 std::string TimeSizeSeries::toString() const {
     std::stringstream ss;
     ss << "(TimeSizeSeries: durations=[";
-    std::copy(durations.begin(), durations.end(), std::ostream_iterator<double>(ss, " "));
+    std::copy(durations.begin(), durations.end(),
+              std::ostream_iterator<double>(ss, " "));
     ss << "])";
     return ss.str();
 }
 
 
-// ==========================================================================
 // Class VarData
-// ==========================================================================
-VarData::VarData() = default;
+// --------------------------------------------------------------------------
 
-VarData::VarData(const VarData &other)
-: avg(other.avg),
-std(other.std),
-var(other.var),
-count(other.count),
-moments(other.moments)
-{}
+// VarData::VarData(const VarData &other)
+//        : avg(other.avg),
+//          std(other.std),
+//          var(other.var),
+//          count(other.count),
+//          moments(other.moments) {}
 
 VarData::VarData(const Series &series)
-: avg(series.getMean()),
-std(series.getStdDev()),
-var(series.getVariance()),
-count(series.getNumSamples()),
-moments(series.getMoments())
-{}
+        : avg(series.getMean()),
+          std(series.getStdDev()),
+          var(series.getVariance()),
+          count(series.getNumSamples()),
+          moments(series.getMoments()) {}
 
 std::string VarData::toString() const {
     std::stringstream ss;
     ss << "(VarData: avg=" << avg
-        << ", var=" << var
-        << ", std=" << std
-        << ", count=" << count
-        << ", moments=[" << ::toString(moments) << "])";
+       << ", var=" << var
+       << ", std=" << std
+       << ", count=" << count
+       << ", moments=[" << cqumo::toString(moments) << "])";
     return ss.str();
 }
 
 
-// ==========================================================================
-// Helpers
-// ==========================================================================
-VarData buildVarData(const Series& series) {
-    VarData varData;
-    varData.count = series.getNumSamples();
-    varData.avg = series.getMoment(1);
-    varData.var = series.getVariance();
-    varData.std = series.getStdDev();
-    varData.moments = series.getMoments();
-    return varData;
+// Class Counter
+// --------------------------------------------------------------------------
+
+Counter::Counter(int initValue) : value_(initValue) {}
+
+Counter &Counter::operator=(const Counter &rside) {
+    value_ = rside.get();
+    return *this;
+}
+
+std::string Counter::toString() const {
+    std::stringstream ss;
+    ss << "(Counter: value=" << value_ << ")";
+    return ss.str();
+}
+
+
 }

@@ -1,11 +1,16 @@
-#ifndef STATISTICS_H_
-#define STATISTICS_H_
+/**
+ * @author Andrey Larionov
+ */
+#ifndef CQUMO_TANDEM_STATISTICS_H
+#define CQUMO_TANDEM_STATISTICS_H
 
 #include <vector>
 #include <string>
 #include <cmath>
 #include "Base.h"
 
+
+namespace cqumo {
 
 /**
  * Get unbiased variance estimation.
@@ -14,9 +19,9 @@
  * Otherwise, multiplies biased estimation `m2 - m1*m1` by `n/(n-1)`
  * to get unbiased estimation.
  *
- * @param m1 - sample mean
- * @param m2 - sample moment of order 2
- * @param n - number of samples
+ * @param m1 sample mean
+ * @param m2 sample moment of order 2
+ * @param n number of samples
  * @return `(m2 - m1^2) * (n/(n-1))`
  */
 double getUnbiasedVariance(double m1, double m2, unsigned n = 0);
@@ -25,10 +30,11 @@ double getUnbiasedVariance(double m1, double m2, unsigned n = 0);
 /**
  * Class representing samples series moments estimation using
  */
-class Series {
-public:
+class Series : public Object {
+  public:
     Series(unsigned nMoments, unsigned windowSize);
-    virtual ~Series();
+
+    ~Series() override = default;
 
     /**
      * Estimate new k-th moment value from the previous estimation and new samples.
@@ -43,7 +49,7 @@ public:
     static double estimate_moment(
             int order,
             double value,
-            const std::vector<double>& window,
+            const std::vector<double> &window,
             unsigned windowSize,
             unsigned nRecords
     );
@@ -66,7 +72,7 @@ public:
     /**
      * Get estimated moments values.
      */
-    inline const std::vector<double>& getMoments() const {
+    inline const std::vector<double> &getMoments() const {
         return moments;
     }
 
@@ -86,7 +92,10 @@ public:
      * Get unbiased variance.
      */
     inline double getVariance() const {
-        return getUnbiasedVariance(moments[0], moments[1], nCommittedRecords);
+        return getUnbiasedVariance(
+                moments[0],
+                moments[1],
+                nCommittedRecords);
     }
 
     /**
@@ -106,9 +115,9 @@ public:
     /**
      * Get string representation of the Series object.
      */
-    std::string toString() const;
+    std::string toString() const override;
 
-private:
+  private:
     std::vector<double> moments;
     std::vector<double> window;
     unsigned wPos;
@@ -118,56 +127,46 @@ private:
 
 
 /**
- * Size distribution given with a probability mass function of values 0, 1, ..., N-1.
+ * Size distribution given with a probability mass function of
+ * values 0, 1, ..., N-1.
  */
-class SizeDist {
-public:
+class SizeDist : public Object {
+  public:
     /**
      * Create size distribution from a given PMF.
-     *
-     * @param pmf a vector with sum of elements equal 1.0, all elements should be non-negative.
+     * @param pmf a vector with sum of elements equal 1.0,
+     *      all elements should be non-negative.
      */
     SizeDist();
-    explicit SizeDist(const std::vector<double>& pmf);
-    SizeDist(const SizeDist& other);
-
-    virtual ~SizeDist();
+    explicit SizeDist(std::vector<double> pmf);
+    SizeDist(const SizeDist &other) = default;
+    ~SizeDist() override = default;
 
     /**
      * Get k-th moment of the distribution.
-     *
-     * @param order - number of moment
+     * @param order - number of moment (e.g. 1 - mean value)
      * @return sum of i^k * pmf[i] over all i
      */
     double getMoment(int order) const;
 
-    /**
-     * Get mean value.
-     */
+    /** Get mean value. */
     double getMean() const;
 
-    /**
-     * Get variance.
-     */
+    /** Get variance. */
     double getVariance() const;
 
-    /**
-     * Get standard deviation.
-     */
+    /** Get standard deviation. */
     double getStdDev() const;
 
-    /**
-     * Get probability mass function.
-     */
-    inline const std::vector<double>& getPmf() const {
+    /** Get probability mass function. */
+    inline const std::vector<double> &getPmf() const {
         return pmf;
     }
 
-    /**
-     * Get string representation.
-     */
-    std::string toString() const;
-private:
+    /** Get string representation. */
+    std::string toString() const override;
+
+  private:
     std::vector<double> pmf;
 };
 
@@ -179,10 +178,11 @@ private:
  * was kept. When estimating moments, we just divide all the time
  * on the total time and so get the probability mass function.
  */
-class TimeSizeSeries {
-public:
+class TimeSizeSeries : public Object {
+  public:
     explicit TimeSizeSeries(double time = 0.0, unsigned value = 0);
-    virtual ~TimeSizeSeries();
+
+    ~TimeSizeSeries() override;
 
     /**
      * Record new value update.
@@ -193,26 +193,21 @@ public:
      * time this method is called, information about this value
      * will be recorded.
      *
-     * @param time - current time
-     * @param value - new value
+     * @param time current time
+     * @param value new value
      */
     void record(double time, unsigned value);
 
-    /**
-     * Estimate probability mass function.
-     */
+    /** Estimate probability mass function. */
     std::vector<double> getPmf() const;
 
-    /**
-     * Estimate size distribution.
-     */
+    /** Estimate size distribution. */
     SizeDist getSizeDist() const;
 
-    /**
-     * Get string representation.
-     */
-    std::string toString() const;
-private:
+    /** Get string representation. */
+    std::string toString() const override;
+
+  private:
     double initTime;
     unsigned currValue;
     double prevRecordTime;
@@ -220,21 +215,72 @@ private:
 };
 
 
-struct VarData {
-    double avg = 0.0;
-    double std = 0.0;
-    double var = 0.0;
-    unsigned count = 0;
-    std::vector<double> moments;
+/**
+ * A plain structure-like class representing samples statistics:
+ *
+ * - average value
+ * - standard deviation
+ * - variance
+ * - number (count) of samples
+ * - estimated moments (first N moments)
+ *
+ * This class doesn't contain any dynamically allocated objects those need
+ * manually freeing/deletion.
+ */
+class VarData : public Object {
+  public:
+    double avg = 0.0;  ///< Estimated average value
+    double std = 0.0;  ///< Estimated standard deviation
+    double var = 0.0;  ///< Estimated variance
+    unsigned count = 0;   ///< Number of samples used in estimation
+    std::vector<double> moments;  ///< First N moments
 
-    VarData();
-    VarData(const VarData& other);
-    explicit VarData(const Series& series);
+    VarData() = default;
+    VarData(const VarData &other) = default;
 
-    std::string toString() const;
+    /**
+     * Construct VarData from Series object.
+     * @param series
+     */
+    explicit VarData(const Series &series);
+
+    /** Get string representation. */
+    std::string toString() const override;
 };
 
 
-VarData buildVarData(const Series& series);
+/**
+ * Simple integer counter that can be evaluated, incremented or reset.
+ */
+class Counter : public Object {
+  public:
+    /**
+     * Convert from integer constructor.
+     * @param initValue initial counter value (default: 0)
+     */
+    Counter(int initValue = 0); // NOLINT(google-explicit-constructor)
 
-#endif
+    Counter(const Counter &counter) = default;
+    ~Counter() override = default;
+
+    Counter &operator=(const Counter &rside);
+
+    /** Get counter value. */
+    inline int get() const { return value_; }
+
+    /** Increment counter value. */
+    inline void inc() { value_++; }
+
+    /** Reset counter. */
+    inline void reset(int initValue = 0) { value_ = initValue; }
+
+    /** Get string representation. */
+    std::string toString() const override;
+
+  private:
+    int value_ = 0;
+};
+
+}
+
+#endif //CQUMO_TANDEM_STATISTICS_H

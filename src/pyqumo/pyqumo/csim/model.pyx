@@ -1,11 +1,10 @@
-# distutils: sources = cpp_src/Base.cpp cpp_src/Components.cpp cpp_src/Records.cpp cpp_src/Simulation.cpp cpp_src/Statistics.cpp cpp_src/System.cpp
-# distutils: language = c++
 import numpy as np
 from libcpp.vector cimport vector
-from pyqumo.csim.model cimport SimData, NodeData, simulate_mm1, VarData
+from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData
 from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
 from pyqumo.random import CountableDistribution
+
 
 # noinspection PyUnresolvedReferences
 cdef vector_asarray(vector[double] vect):
@@ -42,9 +41,9 @@ cdef _build_results(const SimData& sim_data):
     return results
 
 
-cdef call_simulate_mm1n(double arrival_rate, double service_rate,
+cdef call_simMM1(double arrival_rate, double service_rate,
                         int queue_capacity, int max_packets):
-    cdef SimData c_ret = simulate_mm1(
+    cdef SimData c_ret = simMM1(
         arrival_rate, service_rate, queue_capacity, max_packets)
     result: Results = _build_results(c_ret)
     return result
@@ -74,7 +73,7 @@ def simulate_mm1n(
     -------
     results : Results
     """
-    return call_simulate_mm1n(
+    return call_simMM1(
         arrival_rate,
         service_rate,
         queue_capacity,

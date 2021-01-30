@@ -4,8 +4,17 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        "pyqumo.csim.model", ["pyqumo/csim/model.pyx"],
-        include_dirs=['cpp_src/'],
+        "pyqumo.csim.model", [
+            "pyqumo/csim/model.pyx",
+            "cqumo/tandem/Base.cpp",
+            "cqumo/tandem/Functions.cpp",
+            "cqumo/tandem/Components.cpp",
+            "cqumo/tandem/Journals.cpp",
+            "cqumo/tandem/Simulation.cpp",
+            "cqumo/tandem/Statistics.cpp",
+            "cqumo/tandem/System.cpp",
+        ],
+        include_dirs=['cqumo/tandem'],
         language="c++",
         extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
         extra_link_args=["-std=c++14"]),
