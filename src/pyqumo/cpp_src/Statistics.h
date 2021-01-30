@@ -19,7 +19,7 @@
  * @param n - number of samples
  * @return `(m2 - m1^2) * (n/(n-1))`
  */
-double getUnbiasedVariance(double m1, double m2, ssize_t n = 0);
+double getUnbiasedVariance(double m1, double m2, unsigned n = 0);
 
 
 /**
@@ -27,7 +27,7 @@ double getUnbiasedVariance(double m1, double m2, ssize_t n = 0);
  */
 class Series {
 public:
-    Series(ssize_t nMoments, ssize_t windowSize);
+    Series(unsigned nMoments, unsigned windowSize);
     virtual ~Series();
 
     /**
@@ -44,8 +44,8 @@ public:
             int order,
             double value,
             const std::vector<double>& window,
-            ssize_t windowSize,
-            ssize_t nRecords
+            unsigned windowSize,
+            unsigned nRecords
     );
 
     /**
@@ -74,7 +74,7 @@ public:
      * Get moment of the given order.
      */
     inline double getMoment(int order) const {
-        if (order <= 0 || order > moments.size()) {
+        if (order <= 0 || order > static_cast<int>(moments.size())) {
             throw std::out_of_range("illegal order");
         }
         return moments[order - 1];
@@ -99,7 +99,7 @@ public:
     /**
      * Get number of recorded samples.
      */
-    inline ssize_t getNumSamples() const {
+    inline unsigned getNumSamples() const {
         return nRecords;
     }
 
@@ -111,9 +111,9 @@ public:
 private:
     std::vector<double> moments;
     std::vector<double> window;
-    ssize_t wPos;
-    ssize_t nRecords;
-    ssize_t nCommittedRecords;
+    unsigned wPos;
+    unsigned nRecords;
+    unsigned nCommittedRecords;
 };
 
 
@@ -181,7 +181,7 @@ private:
  */
 class TimeSizeSeries {
 public:
-    explicit TimeSizeSeries(double time = 0.0, ssize_t value = 0);
+    explicit TimeSizeSeries(double time = 0.0, unsigned value = 0);
     virtual ~TimeSizeSeries();
 
     /**
@@ -196,7 +196,7 @@ public:
      * @param time - current time
      * @param value - new value
      */
-    void record(double time, double value);
+    void record(double time, unsigned value);
 
     /**
      * Estimate probability mass function.
@@ -214,7 +214,7 @@ public:
     std::string toString() const;
 private:
     double initTime;
-    ssize_t currValue;
+    unsigned currValue;
     double prevRecordTime;
     std::vector<double> durations;
 };

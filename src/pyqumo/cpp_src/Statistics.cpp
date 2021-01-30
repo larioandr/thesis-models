@@ -3,7 +3,7 @@
 #include <sstream>
 
 
-double getUnbiasedVariance(double m1, double m2, ssize_t n) {
+double getUnbiasedVariance(double m1, double m2, unsigned n) {
     if (n > 1) {
         auto _n = static_cast<double>(n);
         return (m2 - m1*m1) * (_n / (_n - 1));
@@ -16,7 +16,7 @@ double getUnbiasedVariance(double m1, double m2, ssize_t n) {
 // Class Series
 // ==========================================================================
 
-Series::Series(ssize_t nMoments, ssize_t windowSize) {
+Series::Series(unsigned nMoments, unsigned windowSize) {
     moments.resize(nMoments, 0.0);
     window.resize(windowSize, 0.0);
     wPos = 0;
@@ -40,7 +40,8 @@ void Series::record(double x) {
 
 
 void Series::commit() {
-    for (int i = 0; i < moments.size(); ++i) {
+    int numMoments = static_cast<int>(moments.size());
+    for (int i = 0; i < numMoments; ++i) {
         moments[i] = estimate_moment(i + 1, moments[i], window, wPos, nRecords);
     }
     nCommittedRecords = nRecords;
@@ -61,14 +62,14 @@ double Series::estimate_moment(
         int order,
         double value,
         const std::vector<double> &window,
-        ssize_t windowSize,
-        ssize_t nRecords) {
+        unsigned windowSize,
+        unsigned nRecords) {
     if (nRecords <= 0) {
         return value;
     }
     double accum = 0.0;
-    windowSize = std::min(static_cast<ssize_t>(window.size()), windowSize);
-    for (ssize_t i = 0; i < windowSize; ++i) {
+    windowSize = std::min(static_cast<unsigned>(window.size()), windowSize);
+    for (unsigned i = 0; i < windowSize; ++i) {
         accum += std::pow(window[i], order);
     }
     return value * (1.0 - static_cast<double>(windowSize)/nRecords) + accum/nRecords;
@@ -88,7 +89,7 @@ SizeDist::~SizeDist() {}
 
 double SizeDist::getMoment(int order) const {
     double accum = 0.0;
-    for (int i = 0; i < pmf.size(); ++i) {
+    for (unsigned i = 0; i < pmf.size(); ++i) {
         accum += std::pow(i, order) * pmf[i];
     }
     return accum;
@@ -119,16 +120,14 @@ std::string SizeDist::toString() const {
 // Class TimeSizeSeries
 // ==========================================================================
 
-TimeSizeSeries::TimeSizeSeries(double time, ssize_t value)
+TimeSizeSeries::TimeSizeSeries(double time, unsigned value)
 : initTime(time), currValue(value), prevRecordTime(0.0) {
     durations.resize(1, 0.0);
 }
 
-TimeSizeSeries::~TimeSizeSeries() {
-    // nothing to be done here
-}
+TimeSizeSeries::~TimeSizeSeries() = default;
 
-void TimeSizeSeries::record(double time, double value) {
+void TimeSizeSeries::record(double time, unsigned value) {
     if (durations.size() <= currValue) {
         durations.resize(currValue + 1, 0.0);
     }
@@ -140,7 +139,7 @@ void TimeSizeSeries::record(double time, double value) {
 std::vector<double> TimeSizeSeries::getPmf() const {
     std::vector<double> pmf(durations);
     double dt = prevRecordTime - initTime;
-    for (ssize_t i = 0; i < pmf.size(); ++i) {
+    for (unsigned i = 0; i < pmf.size(); ++i) {
         pmf[i] /= dt;
     }
     return pmf;

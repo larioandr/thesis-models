@@ -17,15 +17,15 @@ delays(other.delays),
 departures(other.departures),
 waitTime(other.waitTime),
 responseTime(other.responseTime),
-lossProb(other.lossProb),
-dropProb(other.dropProb),
-deliveryProb(other.deliveryProb),
 numPacketsGenerated(other.numPacketsGenerated),
 numPacketsDelivered(other.numPacketsDelivered),
 numPacketsLost(other.numPacketsLost),
 numPacketsArrived(other.numPacketsArrived),
 numPacketsServed(other.numPacketsServed),
-numPacketsDropped(other.numPacketsServed)
+numPacketsDropped(other.numPacketsServed),
+lossProb(other.lossProb),
+dropProb(other.dropProb),
+deliveryProb(other.deliveryProb)
 {
 }
 

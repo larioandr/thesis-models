@@ -7,7 +7,7 @@ from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
 from pyqumo.random import CountableDistribution
 
-
+# noinspection PyUnresolvedReferences
 cdef vector_asarray(vector[double] vect):
     cdef int n = vect.size()
     ret = np.zeros(n)
@@ -20,6 +20,7 @@ cdef _build_statistics(VarData* cs):
     return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)
 
 
+# noinspection PyUnresolvedReferences
 cdef _build_results(const SimData& sim_data):
     cdef int addr = 0
     cdef NodeData data = sim_data.nodeData.at(0)
