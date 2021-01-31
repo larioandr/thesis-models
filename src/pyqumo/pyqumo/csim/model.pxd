@@ -1,5 +1,6 @@
 from libcpp.vector cimport vector
 from libcpp.map cimport map
+from libcpp.functional cimport function
 
 
 cdef extern from "Statistics.h" namespace "cqumo":
@@ -16,6 +17,14 @@ cdef extern from "Statistics.h" namespace "cqumo":
         double var
         unsigned count
         vector[double] moments
+
+
+cdef extern from "Functions.h" namespace "cqumo":
+    ctypedef function[double()] DblFn
+    cdef DblFn makeDblFn(double (*ctxFn)(void*), void* context)
+    # cdef cppclass ContextFunctor:
+    #     ContextFunctor(double (*fn)(void*), void *context)
+    #     double operator()()
 
 
 cdef extern from "Simulation.h" namespace "cqumo":
@@ -47,5 +56,11 @@ cdef extern from "Simulation.h" namespace "cqumo":
     SimData simMM1(
             double arrivalRate,
             double serviceRate,
+            int queueCapacity,
+            int maxPackets)
+
+    SimData simGG1(
+            DblFn arrival,
+            DblFn service,
             int queueCapacity,
             int maxPackets)

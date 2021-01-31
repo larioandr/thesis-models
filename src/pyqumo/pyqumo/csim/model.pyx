@@ -1,9 +1,12 @@
+from typing import Callable
+
 import numpy as np
 from libcpp.vector cimport vector
-from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData
+from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
+    makeDblFn, DblFn
 from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
-from pyqumo.random import CountableDistribution
+from pyqumo.random import CountableDistribution, Exponential
 
 
 # noinspection PyUnresolvedReferences
@@ -41,8 +44,33 @@ cdef _build_results(const SimData& sim_data):
     return results
 
 
-cdef call_simMM1(double arrival_rate, double service_rate,
-                        int queue_capacity, int max_packets):
+cdef double _call_pyobject(void *context):
+    # noinspection PyBroadException
+    try:
+        func = <object>context
+        return func()
+    except:
+        return -1
+
+
+cdef call_simGG1(
+        void* pyArrival,
+        void* pyService,
+        int queue_capacity,
+        int max_packets):
+    cdef DblFn cArrival = makeDblFn(_call_pyobject, pyArrival)
+    cdef DblFn cService = makeDblFn(_call_pyobject, pyService)
+    cdef SimData c_ret = simGG1(
+        cArrival, cService, queue_capacity, max_packets)
+    result: Results = _build_results(c_ret)
+    return result
+
+
+cdef call_simMM1(
+        double arrival_rate,
+        double service_rate,
+        int queue_capacity,
+        int max_packets):
     cdef SimData c_ret = simMM1(
         arrival_rate, service_rate, queue_capacity, max_packets)
     result: Results = _build_results(c_ret)
@@ -56,7 +84,7 @@ def simulate_mm1n(
         max_packets: int = 100000
 ) -> Results:
     """
-    Wrapper for C++ implementation of M/M/1/N model.
+    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.
 
     Returns results in the same dataclass as defined for G/G/1 model
     in `pyqumo.sim.gg1.Results`.
@@ -73,9 +101,33 @@ def simulate_mm1n(
     -------
     results : Results
     """
-    return call_simMM1(
-        arrival_rate,
-        service_rate,
-        queue_capacity,
-        max_packets
-    )
+    return call_simMM1(arrival_rate, service_rate, queue_capacity, max_packets)
+
+
+def simulate_gg1n(
+        arrival,
+        service,
+        queue_capacity: int,
+        max_packets: int = 100000
+) -> Results:
+    """
+    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.
+
+    Returns results in the same dataclass as defined for G/G/1 model
+    in `pyqumo.sim.gg1.Results`.
+
+    Parameters
+    ----------
+    arrival : callable `() -> double`
+    service : callable `() -> double`
+    queue_capacity : int
+    max_packets : int, optional
+        By default 100'000
+
+    Returns
+    -------
+    results : Results
+    """
+    cdef void* pyArrival = <void*>arrival
+    cdef void* pyService = <void*>service
+    return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)

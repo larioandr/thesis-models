@@ -44,6 +44,9 @@ class ContextFunctor {
     void *context_;
 };
 
+
+DblFn makeDblFn(CtxDblFn ctxFn, void *context);
+
 }
 
 #endif //FUNCTIONS_H
