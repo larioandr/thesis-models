@@ -21,39 +21,39 @@ double getUnbiasedVariance(double m1, double m2, unsigned n) {
 // --------------------------------------------------------------------------
 
 Series::Series(unsigned nMoments, unsigned windowSize) {
-    moments.resize(nMoments, 0.0);
-    window.resize(windowSize, 0.0);
-    wPos = 0;
-    nRecords = 0;
-    nCommittedRecords = 0;
+    moments_.resize(nMoments, 0.0);
+    window_.resize(windowSize, 0.0);
+    wPos_ = 0;
+    nRecords_ = 0;
+    nCommittedRecords_ = 0;
 }
 
 void Series::record(double x) {
-    window[wPos++] = x;
-    nRecords++;
-    if (wPos >= window.size()) {
+    window_[wPos_++] = x;
+    nRecords_++;
+    if (wPos_ >= window_.size()) {
         commit();
     }
 }
 
 void Series::commit() {
-    int numMoments = static_cast<int>(moments.size());
+    int numMoments = static_cast<int>(moments_.size());
     for (int i = 0; i < numMoments; ++i) {
-        moments[i] = estimate_moment(
+        moments_[i] = estimate_moment(
                 i + 1,
-                moments[i],
-                window, wPos, nRecords);
+                moments_[i],
+                window_, wPos_, nRecords_);
     }
-    nCommittedRecords = nRecords;
-    wPos = 0;
+    nCommittedRecords_ = nRecords_;
+    wPos_ = 0;
 }
 
 std::string Series::toString() const {
     std::stringstream ss;
     ss << "(Series: moments=[";
-    std::copy(moments.begin(), moments.end(),
+    std::copy(moments_.begin(), moments_.end(),
               std::ostream_iterator<double>(ss, " "));
-    ss << "], nRecords=" << nRecords << ")";
+    ss << "], nRecords=" << nRecords_ << ")";
     return ss.str();
 }
 
@@ -79,36 +79,34 @@ double Series::estimate_moment(
 // Class SizeDist
 // --------------------------------------------------------------------------
 
-SizeDist::SizeDist() : pmf(std::vector<double>(1, 1.0)) {}
+SizeDist::SizeDist() : pmf_(std::vector<double>(1, 1.0)) {}
 
-SizeDist::SizeDist(std::vector<double> pmf) : pmf(std::move(pmf)) {}
+SizeDist::SizeDist(std::vector<double> pmf) : pmf_(std::move(pmf)) {}
 
-double SizeDist::getMoment(int order) const {
+double SizeDist::moment(int order) const {
     double accum = 0.0;
-    for (unsigned i = 0; i < pmf.size(); ++i) {
-        accum += std::pow(i, order) * pmf[i];
+    for (unsigned i = 0; i < pmf_.size(); ++i) {
+        accum += std::pow(i, order) * pmf_[i];
     }
     return accum;
 }
 
-double SizeDist::getMean() const {
-    return getMoment(1);
+double SizeDist::mean() const {
+    return moment(1);
 }
 
-double SizeDist::getVariance() const {
-    return getMoment(2) - std::pow(getMoment(1), 2);
+double SizeDist::var() const {
+    return moment(2) - std::pow(moment(1), 2);
 }
 
-double SizeDist::getStdDev() const {
-    return std::pow(getVariance(), 0.5);
+double SizeDist::std() const {
+    return std::pow(var(), 0.5);
 }
 
 std::string SizeDist::toString() const {
     std::stringstream ss;
-    ss << "(SizeDist: mean=" << getMean() << ", std=" << getStdDev()
-       << ", pmf=[";
-    std::copy(pmf.begin(), pmf.end(), std::ostream_iterator<double>(ss, " "));
-    ss << "])";
+    ss << "(SizeDist: mean=" << mean() << ", std=" << std()
+       << ", pmf=" << cqumo::toString(pmf_) << ")";
     return ss.str();
 }
 
@@ -117,38 +115,34 @@ std::string SizeDist::toString() const {
 // --------------------------------------------------------------------------
 
 TimeSizeSeries::TimeSizeSeries(double time, unsigned value)
-        : initTime(time), currValue(value), prevRecordTime(0.0) {
-    durations.resize(1, 0.0);
+        : initTime_(time), currValue_(value), prevRecordTime_(0.0) {
+    durations_.resize(1, 0.0);
 }
 
 TimeSizeSeries::~TimeSizeSeries() = default;
 
 void TimeSizeSeries::record(double time, unsigned value) {
-    if (durations.size() <= currValue) {
-        durations.resize(currValue + 1, 0.0);
+    if (durations_.size() <= currValue_) {
+        durations_.resize(currValue_ + 1, 0.0);
     }
-    durations[currValue] += time - prevRecordTime;
-    prevRecordTime = time;
-    currValue = value;
+    durations_[currValue_] += time - prevRecordTime_;
+    prevRecordTime_ = time;
+    currValue_ = value;
 }
 
-std::vector<double> TimeSizeSeries::getPmf() const {
-    std::vector<double> pmf(durations);
-    double dt = prevRecordTime - initTime;
-    for (unsigned i = 0; i < pmf.size(); ++i) {
-        pmf[i] /= dt;
+std::vector<double> TimeSizeSeries::pmf() const {
+    std::vector<double> pmf(durations_);
+    double dt = prevRecordTime_ - initTime_;
+    for (double & i : pmf) {
+        i /= dt;
     }
     return pmf;
-}
-
-SizeDist TimeSizeSeries::getSizeDist() const {
-    return SizeDist(getPmf());
 }
 
 std::string TimeSizeSeries::toString() const {
     std::stringstream ss;
     ss << "(TimeSizeSeries: durations=[";
-    std::copy(durations.begin(), durations.end(),
+    std::copy(durations_.begin(), durations_.end(),
               std::ostream_iterator<double>(ss, " "));
     ss << "])";
     return ss.str();
@@ -158,23 +152,16 @@ std::string TimeSizeSeries::toString() const {
 // Class VarData
 // --------------------------------------------------------------------------
 
-// VarData::VarData(const VarData &other)
-//        : avg(other.avg),
-//          std(other.std),
-//          var(other.var),
-//          count(other.count),
-//          moments(other.moments) {}
-
 VarData::VarData(const Series &series)
-        : avg(series.getMean()),
-          std(series.getStdDev()),
-          var(series.getVariance()),
-          count(series.getNumSamples()),
-          moments(series.getMoments()) {}
+        : mean(series.mean()),
+          std(series.std()),
+          var(series.var()),
+          count(series.count()),
+          moments(series.moments()) {}
 
 std::string VarData::toString() const {
     std::stringstream ss;
-    ss << "(VarData: avg=" << avg
+    ss << "(VarData: mean=" << mean
        << ", var=" << var
        << ", std=" << std
        << ", count=" << count
@@ -189,7 +176,7 @@ std::string VarData::toString() const {
 Counter::Counter(int initValue) : value_(initValue) {}
 
 Counter &Counter::operator=(const Counter &rside) {
-    value_ = rside.get();
+    value_ = rside.value();
     return *this;
 }
 

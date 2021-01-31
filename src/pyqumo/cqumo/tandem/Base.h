@@ -33,10 +33,10 @@ namespace cqumo {
  */
 class Object {
   public:
-    Object();
+    Object() = default;
+    virtual ~Object() = default;
 
-    virtual ~Object();
-
+    /** Get one-line string representation for internal usage. */
     virtual std::string toString() const;
 };
 

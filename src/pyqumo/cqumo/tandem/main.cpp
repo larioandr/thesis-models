@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "Simulation.h"
+#include "Marshal.h"
 
 
 const char *FORMAT =
@@ -48,6 +49,6 @@ int main(int argc, char **argv) {
             maxPackets);
 
     // Print results to stdout:
-    std::cout << ret.text() << std::endl;
+    std::cout << toYaml(ret) << std::endl;
     return 0;
 }

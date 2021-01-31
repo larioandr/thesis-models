@@ -4,14 +4,14 @@ from libcpp.map cimport map
 
 cdef extern from "Statistics.h" namespace "cqumo":
     cdef cppclass SizeDist:
-        double getMean()
-        double getVariance()
-        double getStdDev()
-        double getMoment(int order)
-        vector[double] getPmf()
+        double mean()
+        double var()
+        double std()
+        double moment(int order)
+        vector[double] pmf()
 
     cdef cppclass VarData:
-        double avg
+        double mean
         double std
         double var
         unsigned count

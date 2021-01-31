@@ -16,7 +16,7 @@ cdef vector_asarray(vector[double] vect):
 
 
 cdef _build_statistics(VarData* cs):
-    return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)
+    return Statistics(avg=cs.mean, std=cs.std, var=cs.var, count=cs.count)
 
 
 # noinspection PyUnresolvedReferences
@@ -25,13 +25,13 @@ cdef _build_results(const SimData& sim_data):
     cdef NodeData data = sim_data.nodeData.at(0)
     results = Results()
     results.system_size = CountableDistribution(
-        vector_asarray(data.systemSize.getPmf())
+        vector_asarray(data.systemSize.pmf())
     )
     results.queue_size = CountableDistribution(
-        vector_asarray(data.queueSize.getPmf())
+        vector_asarray(data.queueSize.pmf())
     )
     results.busy = CountableDistribution(
-        vector_asarray(data.serverSize.getPmf())
+        vector_asarray(data.serverSize.pmf())
     )
     results.loss_prob = data.lossProb
     results.departures = _build_statistics(&data.departures)

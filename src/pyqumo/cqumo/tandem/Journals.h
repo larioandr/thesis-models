@@ -56,13 +56,13 @@ class NetworkJournal : public Object {
     void addNodeJournal(Node *node);
 
     /** Get the number of moments estimated by Series. */
-    inline unsigned getNumMoments() const { return numMoments_; }
+    inline unsigned numMoments() const { return numMoments_; }
 
     /** Get the size of the sliding window used by Series. */
-    inline unsigned getWindowSize() const { return windowSize_; }
+    inline unsigned windowSize() const { return windowSize_; }
 
     /** Get NodeJournal for a given node address, or nullptr if not found. */
-    inline NodeJournal *getRecords(int address) const {
+    inline NodeJournal *nodeJournal(int address) const {
         auto iter = nodeRecordsMap_.find(address);
         return iter == nodeRecordsMap_.end() ? nullptr : iter->second;
     }

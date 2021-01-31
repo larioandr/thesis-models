@@ -14,10 +14,9 @@ namespace cqumo {
 
 /**
  * Get unbiased variance estimation.
- *
  * If no number of samples provided, returns biased estimation.
  * Otherwise, multiplies biased estimation `m2 - m1*m1` by `n/(n-1)`
- * to get unbiased estimation.
+ * to value unbiased estimation.
  *
  * @param m1 sample mean
  * @param m2 sample moment of order 2
@@ -37,13 +36,13 @@ class Series : public Object {
     ~Series() override = default;
 
     /**
-     * Estimate new k-th moment value from the previous estimation and new samples.
-     *
-     * @param order - moment order (greater or equal then 1)
-     * @param value - previous estimation
-     * @param window - array of new samples
-     * @param windowSize - number of samples to be taken from window
-     * @param nRecords - total number of samples, incl. those in the window
+     * Estimate new k-th moment value from the previous estimation and
+     * new samples.
+     * @param order moment order (greater or equal then 1)
+     * @param value previous estimation
+     * @param window array of new samples
+     * @param windowSize number of samples to be taken from window
+     * @param nRecords total number of samples, incl. those in the window
      * @return new moment estimation
      */
     static double estimate_moment(
@@ -55,74 +54,56 @@ class Series : public Object {
     );
 
     /**
-     * Record new sample.
-     *
-     * The sample will be written into the window. If the window is full, then
-     * new moments values will be estimated using `commit()`.
-     *
+     * Record new sample. The sample will be written into the window.
+     * If the window is full, then new moments values will be estimated
+     * using `commit()`.
      * @param x
      */
     void record(double x);
 
-    /**
-     * Estimate new moments values and reset sliding window.
+    /** Estimate new moments values and reset sliding window.
      */
     void commit();
 
-    /**
-     * Get estimated moments values.
-     */
-    inline const std::vector<double> &getMoments() const {
-        return moments;
+    /** Get estimated moments values. */
+    inline const std::vector<double> &moments() const {
+        return moments_;
     }
 
-    /**
-     * Get moment of the given order.
-     */
-    inline double getMoment(int order) const {
-        if (order <= 0 || order > static_cast<int>(moments.size())) {
+    /** Get moment of the given order. */
+    inline double moment(int order) const {
+        if (order <= 0 || order > static_cast<int>(moments_.size())) {
             throw std::out_of_range("illegal order");
         }
-        return moments[order - 1];
+        return moments_[order - 1];
     }
 
-    inline double getMean() const { return moments[0]; }
+    /** Get mean value. */
+    inline double mean() const { return moments_[0]; }
 
-    /**
-     * Get unbiased variance.
-     */
-    inline double getVariance() const {
+    /** Get unbiased variance. */
+    inline double var() const {
         return getUnbiasedVariance(
-                moments[0],
-                moments[1],
-                nCommittedRecords);
+                moments_[0],
+                moments_[1],
+                nCommittedRecords_);
     }
 
-    /**
-     * Get standard deviation.
-     */
-    inline double getStdDev() const {
-        return std::pow(getVariance(), 0.5);
-    }
+    /** Get standard deviation. */
+    inline double std() const { return std::pow(var(), 0.5); }
 
-    /**
-     * Get number of recorded samples.
-     */
-    inline unsigned getNumSamples() const {
-        return nRecords;
-    }
+    /** Get number of recorded samples. */
+    inline unsigned count() const { return nRecords_; }
 
-    /**
-     * Get string representation of the Series object.
-     */
+    /** Get string representation of the Series object. */
     std::string toString() const override;
 
   private:
-    std::vector<double> moments;
-    std::vector<double> window;
-    unsigned wPos;
-    unsigned nRecords;
-    unsigned nCommittedRecords;
+    std::vector<double> moments_;
+    std::vector<double> window_;
+    unsigned wPos_;
+    unsigned nRecords_;
+    unsigned nCommittedRecords_;
 };
 
 
@@ -147,27 +128,27 @@ class SizeDist : public Object {
      * @param order - number of moment (e.g. 1 - mean value)
      * @return sum of i^k * pmf[i] over all i
      */
-    double getMoment(int order) const;
+    double moment(int order) const;
 
     /** Get mean value. */
-    double getMean() const;
+    double mean() const;
 
     /** Get variance. */
-    double getVariance() const;
+    double var() const;
 
     /** Get standard deviation. */
-    double getStdDev() const;
+    double std() const;
 
     /** Get probability mass function. */
-    inline const std::vector<double> &getPmf() const {
-        return pmf;
+    inline const std::vector<double> &pmf() const {
+        return pmf_;
     }
 
     /** Get string representation. */
     std::string toString() const override;
 
   private:
-    std::vector<double> pmf;
+    std::vector<double> pmf_;
 };
 
 
@@ -176,7 +157,7 @@ class SizeDist : public Object {
  *
  * Size varies in time, so here we store how long each size value
  * was kept. When estimating moments, we just divide all the time
- * on the total time and so get the probability mass function.
+ * on the total time and so value the probability mass function.
  */
 class TimeSizeSeries : public Object {
   public:
@@ -199,19 +180,16 @@ class TimeSizeSeries : public Object {
     void record(double time, unsigned value);
 
     /** Estimate probability mass function. */
-    std::vector<double> getPmf() const;
-
-    /** Estimate size distribution. */
-    SizeDist getSizeDist() const;
+    std::vector<double> pmf() const;
 
     /** Get string representation. */
     std::string toString() const override;
 
   private:
-    double initTime;
-    unsigned currValue;
-    double prevRecordTime;
-    std::vector<double> durations;
+    double initTime_;
+    unsigned currValue_;
+    double prevRecordTime_;
+    std::vector<double> durations_;
 };
 
 
@@ -229,9 +207,9 @@ class TimeSizeSeries : public Object {
  */
 class VarData : public Object {
   public:
-    double avg = 0.0;  ///< Estimated average value
-    double std = 0.0;  ///< Estimated standard deviation
-    double var = 0.0;  ///< Estimated variance
+    double mean = 0.0;    ///< Estimated average value
+    double std = 0.0;     ///< Estimated standard deviation
+    double var = 0.0;     ///< Estimated variance
     unsigned count = 0;   ///< Number of samples used in estimation
     std::vector<double> moments;  ///< First N moments
 
@@ -266,7 +244,7 @@ class Counter : public Object {
     Counter &operator=(const Counter &rside);
 
     /** Get counter value. */
-    inline int get() const { return value_; }
+    inline int value() const { return value_; }
 
     /** Increment counter value. */
     inline void inc() { value_++; }

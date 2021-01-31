@@ -91,19 +91,19 @@ class System {
     Event *nextEvent();
 
     /** Get current model time. */
-    inline double getTime() const { return time; }
+    inline double time() const { return time_; }
 
     /** Check whether simulation was stopped. */
-    inline bool stopped() const { return wasStopped; }
+    inline bool stopped() const { return wasStopped_; }
 
     /** Set stopped flag indicating that simulation SHOULD be stopped. */
-    inline void stop() { wasStopped = true; }
+    inline void stop() { wasStopped_ = true; }
 
   private:
-    EventQueue *eventsQueue = nullptr;
-    double time = 0.0;
-    unsigned nextId = 0;
-    bool wasStopped = false;
+    EventQueue *eventsQueue_ = nullptr;
+    double time_ = 0.0;
+    unsigned nextId_ = 0;
+    bool wasStopped_ = false;
 };
 
 

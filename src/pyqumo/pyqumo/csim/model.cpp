@@ -1462,7 +1462,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
  * 
  * 
  * cdef _build_statistics(VarData* cs):             # <<<<<<<<<<<<<<
- *     return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)
+ *     return Statistics(avg=cs.mean, std=cs.std, var=cs.var, count=cs.count)
  * 
  */
 
@@ -1480,7 +1480,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   /* "pyqumo/csim/model.pyx":19
  * 
  * cdef _build_statistics(VarData* cs):
- *     return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)             # <<<<<<<<<<<<<<
+ *     return Statistics(avg=cs.mean, std=cs.std, var=cs.var, count=cs.count)             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -1489,7 +1489,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_cs->avg); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_cs->mean); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_avg, __pyx_t_3) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1517,7 +1517,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
  * 
  * 
  * cdef _build_statistics(VarData* cs):             # <<<<<<<<<<<<<<
- *     return Statistics(avg=cs.avg, std=cs.std, var=cs.var, count=cs.count)
+ *     return Statistics(avg=cs.mean, std=cs.std, var=cs.var, count=cs.count)
  * 
  */
 
@@ -1587,7 +1587,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()             # <<<<<<<<<<<<<<
  *     results.system_size = CountableDistribution(
- *         vector_asarray(data.systemSize.getPmf())
+ *         vector_asarray(data.systemSize.pmf())
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Results); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -1613,7 +1613,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()
  *     results.system_size = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.systemSize.getPmf())
+ *         vector_asarray(data.systemSize.pmf())
  *     )
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
@@ -1622,11 +1622,11 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   /* "pyqumo/csim/model.pyx":28
  *     results = Results()
  *     results.system_size = CountableDistribution(
- *         vector_asarray(data.systemSize.getPmf())             # <<<<<<<<<<<<<<
+ *         vector_asarray(data.systemSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.queue_size = CountableDistribution(
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.systemSize.getPmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.systemSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1649,17 +1649,17 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()
  *     results.system_size = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.systemSize.getPmf())
+ *         vector_asarray(data.systemSize.pmf())
  *     )
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_system_size, __pyx_t_2) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyqumo/csim/model.pyx":30
- *         vector_asarray(data.systemSize.getPmf())
+ *         vector_asarray(data.systemSize.pmf())
  *     )
  *     results.queue_size = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.queueSize.getPmf())
+ *         vector_asarray(data.queueSize.pmf())
  *     )
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
@@ -1668,11 +1668,11 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   /* "pyqumo/csim/model.pyx":31
  *     )
  *     results.queue_size = CountableDistribution(
- *         vector_asarray(data.queueSize.getPmf())             # <<<<<<<<<<<<<<
+ *         vector_asarray(data.queueSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.busy = CountableDistribution(
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.queueSize.getPmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.queueSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1692,20 +1692,20 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pyqumo/csim/model.pyx":30
- *         vector_asarray(data.systemSize.getPmf())
+ *         vector_asarray(data.systemSize.pmf())
  *     )
  *     results.queue_size = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.queueSize.getPmf())
+ *         vector_asarray(data.queueSize.pmf())
  *     )
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_queue_size, __pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyqumo/csim/model.pyx":33
- *         vector_asarray(data.queueSize.getPmf())
+ *         vector_asarray(data.queueSize.pmf())
  *     )
  *     results.busy = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.serverSize.getPmf())
+ *         vector_asarray(data.serverSize.pmf())
  *     )
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
@@ -1714,11 +1714,11 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   /* "pyqumo/csim/model.pyx":34
  *     )
  *     results.busy = CountableDistribution(
- *         vector_asarray(data.serverSize.getPmf())             # <<<<<<<<<<<<<<
+ *         vector_asarray(data.serverSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.loss_prob = data.lossProb
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.serverSize.getPmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.serverSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1738,17 +1738,17 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pyqumo/csim/model.pyx":33
- *         vector_asarray(data.queueSize.getPmf())
+ *         vector_asarray(data.queueSize.pmf())
  *     )
  *     results.busy = CountableDistribution(             # <<<<<<<<<<<<<<
- *         vector_asarray(data.serverSize.getPmf())
+ *         vector_asarray(data.serverSize.pmf())
  *     )
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_busy, __pyx_t_2) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyqumo/csim/model.pyx":36
- *         vector_asarray(data.serverSize.getPmf())
+ *         vector_asarray(data.serverSize.pmf())
  *     )
  *     results.loss_prob = data.lossProb             # <<<<<<<<<<<<<<
  *     results.departures = _build_statistics(&data.departures)

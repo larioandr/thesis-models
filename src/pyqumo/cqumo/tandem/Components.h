@@ -50,16 +50,16 @@ class Packet : public Object {
     ~Packet() override = default;
 
     /** Get source node address. */
-    inline int getSource() const { return source_; }
+    inline int source() const { return source_; }
 
     /** Get target node address. */
-    inline int getTarget() const { return target_; }
+    inline int target() const { return target_; }
 
     /** Get model time when the packet_ was created. */
-    inline double getCreatedAt() const { return createdAt_; }
+    inline double createdAt() const { return createdAt_; }
 
     /** Get model time when the packet_ arrived at current node. */
-    inline double getArrivedAt() const { return arrivedAt_; }
+    inline double arrivedAt() const { return arrivedAt_; }
 
     /** Set model time when the packet_ arrived at current node. */
     inline void setArrivedAt(double time) { arrivedAt_ = time; }
@@ -85,12 +85,12 @@ class NodeComponent : public Object {
     ~NodeComponent() override = default;
 
     /** Get owning Node. */
-    inline Node *getOwner() const { return owner_; }
+    inline Node *owner() const { return owner_; }
 
     /** Set owning Node. */
     inline void setOwner(Node *node) { this->owner_ = node; }
 
-    /** Helper to get owning node address. */
+    /** Helper to value owning node address. */
     int address() const;
 
   private:
@@ -138,7 +138,7 @@ class Queue : public NodeComponent {
     inline bool empty() { return packets_.empty(); }
 
     /** Get queue capacity_. */
-    inline int getCapacity() const { return capacity_; }
+    inline int capacity() const { return capacity_; }
 
     /**
      * Check whether the queue is full. For queues with infinite capacity_,
@@ -166,7 +166,7 @@ class Server : public NodeComponent {
   public:
     /**
      * Create a server.
-     * @param intervals a function without arguments to get service intervals
+     * @param intervals a function without arguments to value service intervals
      */
     explicit Server(const DblFn& intervals);
 
@@ -198,13 +198,13 @@ class Server : public NodeComponent {
     inline unsigned size() const { return packet_ ? 1 : 0; }
 
     /** Get next service interval. */
-    inline double getInterval() const { return intervals_(); }
+    inline double interval() const { return intervals_(); }
 
     /** Get the last model time when the server became empty. */
-    inline double getLastDepartureTime() const { return lastDepartureTime_; }
+    inline double lastDepartureAt() const { return lastDepartureAt_; }
 
     /** Store the model time when the server became empty. */
-    inline void setLastDepartureTime(double time) { lastDepartureTime_ = time; }
+    inline void setLastDepartureAt(double time) { lastDepartureAt_ = time; }
 
     /** Get string representation of the server object. */
     std::string toString() const override;
@@ -212,7 +212,7 @@ class Server : public NodeComponent {
   private:
     DblFn intervals_;
     Packet *packet_ = nullptr;
-    double lastDepartureTime_ = 0.0;
+    double lastDepartureAt_ = 0.0;
 };
 
 
@@ -224,7 +224,7 @@ class Source : public NodeComponent {
   public:
     /**
      * Create source.
-     * @param intervals a function without arguments to get arrival intervals
+     * @param intervals a function without arguments to value arrival intervals
      * @param target destination node address
      */
     explicit Source(const DblFn& intervals, int target);
@@ -232,10 +232,10 @@ class Source : public NodeComponent {
     ~Source() override = default;
 
     /** Get next arrival interval. */
-    inline double getInterval() const { return intervals_(); }
+    inline double interval() const { return intervals_(); }
 
     /** Get packet destination address. */
-    inline int getTarget() const { return target_; }
+    inline int target() const { return target_; }
 
     /** Create new packet. */
     Packet *createPacket(double time) const;
@@ -269,22 +269,22 @@ class Node : public Object {
     ~Node() override;
 
     /** Get node address. */
-    inline int getAddress() const { return address_; }
+    inline int address() const { return address_; }
 
     /** Get queue component. */
-    inline Queue *getQueue() const { return queue_; }
+    inline Queue *queue() const { return queue_; }
 
     /** Get server component. */
-    inline Server *getServer() const { return server_; }
+    inline Server *server() const { return server_; }
 
     /** Get source component. */
-    inline Source *getSource() const { return source_; }
+    inline Source *source() const { return source_; }
 
     /** Set next node - neighbour the node forwards served packets to. */
-    inline void setNextNode(Node *node) { nextNode_ = node; }
+    inline void setNextHop(Node *node) { nextHop_ = node; }
 
     /** Get next node. */
-    inline Node *getNextNode() const { return nextNode_; }
+    inline Node *nextHop() const { return nextHop_; }
 
     /** Get node size - sum of queue and server sizes. */
     inline unsigned size() const {
@@ -299,13 +299,13 @@ class Node : public Object {
     Queue *queue_;
     Server *server_;
     Source *source_;
-    Node *nextNode_;
+    Node *nextHop_;
 };
 
 
 /**
  * Network is just a collection of nodes. In current version it allows
- * to add and get nodes by their addresses, or get a collection of all nodes.
+ * to add and get nodes by their addresses, or value a collection of all nodes.
  * When the network is destroyed, all nodes in this network are also destroyed.
  */
 class Network : public Object {
@@ -322,7 +322,7 @@ class Network : public Object {
     void addNode(Node *node);
 
     /** Get node by address. If not found, returns nullptr. */
-    inline Node *getNode(int address) const {
+    inline Node *node(int address) const {
         auto iter = nodes_.find(address);
         if (iter == nodes_.end()) {
             return nullptr;
@@ -331,7 +331,7 @@ class Network : public Object {
     }
 
     /** Get a mapping of all nodes. */
-    inline const std::map<int, Node *> &getNodes() const { return nodes_; }
+    inline const std::map<int, Node *>& nodes() const { return nodes_; }
 
     /** Get network string representation. */
     std::string toString() const override;

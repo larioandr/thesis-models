@@ -27,7 +27,7 @@ std::string Packet::toString() const {
 // Class NodeComponent
 // --------------------------------------------------------------------------
 int NodeComponent::address() const {
-    return owner_->getAddress();
+    return owner_->address();
 }
 
 
@@ -105,7 +105,7 @@ Source::Source(const DblFn& intervals, int target)
 : intervals_(intervals), target_(target) {} // NOLINT(modernize-pass-by-value)
 
 Packet *Source::createPacket(double time) const {
-    return new Packet(getOwner()->getAddress(), target_, time);
+    return new Packet(owner()->address(), target_, time);
 }
 
 std::string Source::toString() const {
@@ -119,10 +119,10 @@ std::string Source::toString() const {
 // --------------------------------------------------------------------------
 Node::Node(int address, Queue *queue, Server *server, Source *source)
 : address_(address),
-queue_(queue),
-server_(server),
-source_(source),
-nextNode_(nullptr)
+  queue_(queue),
+  server_(server),
+  source_(source),
+  nextHop_(nullptr)
 {
     queue->setOwner(this);
     server->setOwner(this);
@@ -145,7 +145,7 @@ std::string Node::toString() const {
        << ", server=" << server_->toString()
        << ", queue=" << queue_->toString()
        << ", nextNodeAddr="
-       << (nextNode_ ? std::to_string(nextNode_->getAddress()) : "NULL")
+       << (nextHop_ ? std::to_string(nextHop_->address()) : "NULL")
        << ")";
     return ss.str();
 }
@@ -163,7 +163,7 @@ void Network::addNode(Node *node) {
     if (node == nullptr) {
         throw std::runtime_error("node = nullptr in Network::addNodeJournal()");
     }
-    auto address = node->getAddress();
+    auto address = node->address();
     if (nodes_.count(address)) {
         throw std::runtime_error(
                 std::string("node with address ") +
@@ -186,7 +186,10 @@ std::string Network::toString() const {
 
 // Helpers
 // --------------------------------------------------------------------------
-Network *buildOneHopeNetwork(const DblFn &arrival, const DblFn &service, int queueCapacity) {
+Network *buildOneHopeNetwork(
+        const DblFn &arrival,
+        const DblFn &service,
+        int queueCapacity) {
     auto queue = new Queue(queueCapacity);
     auto server = new Server(service);
     auto source = new Source(arrival, 0);

@@ -40,41 +40,41 @@ System::System() {
         return (left->time > right->time) ||
                (left->time == right->time && left->id > right->id);
     };
-    eventsQueue = new EventQueue(cmp);
+    eventsQueue_ = new EventQueue(cmp);
 }
 
 System::~System() {
-    while (!eventsQueue->empty()) {
-        delete eventsQueue->top();
-        eventsQueue->pop();
+    while (!eventsQueue_->empty()) {
+        delete eventsQueue_->top();
+        eventsQueue_->pop();
     }
-    delete eventsQueue;
+    delete eventsQueue_;
 }
 
 void System::schedule(EventType type, double interval, int address) {
     auto event = new Event{
-        .id = nextId++,
-        .time = this->time + interval,
+        .id = nextId_++,
+        .time = time_ + interval,
         .address = address,
         .type = type
     };
     debug("\t- <SYSTEM> scheduled %s\n", event->toString().c_str());
-    eventsQueue->push(event);
+    eventsQueue_->push(event);
 }
 
 Event *System::nextEvent() {
-    if (eventsQueue->empty()) {
+    if (eventsQueue_->empty()) {
         return new Event{
-            .id = nextId++,
-            .time = this->time,
+            .id = nextId_++,
+            .time = time_,
             .address = -1,
             .type = STOP
         };
     }
-    auto event = eventsQueue->top();
-    eventsQueue->pop();
+    auto event = eventsQueue_->top();
+    eventsQueue_->pop();
     debug("\t- <SYSTEM> extracted event %s\n", event->toString().c_str());
-    this->time = event->time;
+    time_ = event->time;
     return event;
 }
 
@@ -86,19 +86,19 @@ void startService(
         Packet *packet,
         System *system,
         NetworkJournal *journal) {
-    auto time = system->getTime();
-    auto address = server->getOwner()->getAddress();
+    auto time = system->time();
+    auto address = server->owner()->address();
 
     // Start service and schedule end:
     server->push(packet);
-    double interval = server->getInterval();
+    double interval = server->interval();
     system->schedule(SERVER_TIMEOUT, interval, address);
     debug("\t- scheduled service end at %.3f (interval = %.3f)\n",
           time + interval, interval);
 
     // Update statistics:
-    auto nodeRecords = journal->getRecords(address);
-    nodeRecords->waitTimes()->record(time - packet->getArrivedAt());
+    auto nodeRecords = journal->nodeJournal(address);
+    nodeRecords->waitTimes()->record(time - packet->arrivedAt());
     nodeRecords->serverSize()->record(time, server->size());
 }
 
@@ -108,11 +108,11 @@ void handleArrival(
         Node *node,
         System *system,
         NetworkJournal *journal) {
-    auto server = node->getServer();
-    auto queue = node->getQueue();
-    auto time = system->getTime();
-    auto address = node->getAddress();
-    auto records = journal->getRecords(address);
+    auto server = node->server();
+    auto queue = node->queue();
+    auto time = system->time();
+    auto address = node->address();
+    auto records = journal->nodeJournal(address);
 
     // Update number of arrived packets and arrival time:
     records->numPacketsArrived()->inc();
@@ -133,7 +133,7 @@ void handleArrival(
         // and delete the packet_ itself:
         debug("\t- server was busy and queue was full, dropping packet_\n");
         records->numPacketsDropped()->inc();
-        journal->getRecords(packet->getSource())->numPacketsLost()->inc();
+        journal->nodeJournal(packet->source())->numPacketsLost()->inc();
         delete packet;
     }
 }
@@ -142,38 +142,38 @@ void handleArrival(
 // Event handlers
 // ---------------------------------------------------------------------------
 void handleSourceTimeout(Node *node, System *system, NetworkJournal *journal) {
-    debug("[%.3f] packet_ arrived at %d\n", system->getTime(),
-          node->getAddress());
-    auto source = node->getSource();
-    auto address = node->getAddress();
-    auto records = journal->getRecords(address);
+    debug("[%.3f] packet_ arrived at %d\n", system->time(),
+          node->address());
+    auto source = node->source();
+    auto address = node->address();
+    auto records = journal->nodeJournal(address);
 
     // Update statistics:
     records->numPacketsGenerated()->inc();
     journal->numPacketsGenerated()->inc();
 
     // Schedule next event, create the packet_ and start serving it:
-    double interval = source->getInterval();
+    double interval = source->interval();
     system->schedule(SOURCE_TIMEOUT, interval, address);
-    auto packet = source->createPacket(system->getTime());
+    auto packet = source->createPacket(system->time());
 
     debug("\t- scheduled next arrival at %.3f (interval = %.3f)\n",
-          system->getTime() + interval, interval);
+          system->time() + interval, interval);
 
     // Call helper to process the packet
     handleArrival(packet, node, system, journal);
 
-    debug("\t- server size: %zd, queue size: %zd\n", node->getServer()->size(),
-          node->getQueue()->size());
+    debug("\t- server size: %zd, queue size: %zd\n", node->server()->size(),
+          node->queue()->size());
 }
 
 
 void handleServerTimeout(Node *node, System *system, NetworkJournal *journal) {
-    auto address = node->getAddress();
-    auto server = node->getServer();
-    auto queue = node->getQueue();
-    auto time = system->getTime();
-    auto records = journal->getRecords(address);
+    auto address = node->address();
+    auto server = node->server();
+    auto queue = node->queue();
+    auto time = system->time();
+    auto records = journal->nodeJournal(address);
 
     auto packet = server->pop();
 
@@ -182,25 +182,25 @@ void handleServerTimeout(Node *node, System *system, NetworkJournal *journal) {
 
     // Update number of served packets and response time:
     records->numPacketsServed()->inc();
-    records->responseTimes()->record(time - packet->getArrivedAt());
-    records->departures()->record(time - server->getLastDepartureTime());
-    server->setLastDepartureTime(time);
+    records->responseTimes()->record(time - packet->arrivedAt());
+    records->departures()->record(time - server->lastDepartureAt());
+    server->setLastDepartureAt(time);
 
     // Decide, what to do with the packet_:
     // - if its target is this node, deliver
     // - otherwise, forward to the next node
-    if (packet->getTarget() == node->getAddress()) {
+    if (packet->target() == node->address()) {
         // Packet was delivered: record statistics and delete packet_
         debug("\t- packet_ was delivered\n");
-        auto sourceRecords = journal->getRecords(packet->getSource());
+        auto sourceRecords = journal->nodeJournal(packet->source());
         sourceRecords->numPacketsDelivered()->inc();
-        sourceRecords->delays()->record(time - packet->getCreatedAt());
+        sourceRecords->delays()->record(time - packet->createdAt());
         delete packet;
     } else {
         // Packet should be forwarded to the next hop:
         debug("\t- forwarding packet_ to %d\n",
-              node->getNextNode()->getAddress());
-        handleArrival(packet, node->getNextNode(), system, journal);
+              node->nextHop()->address());
+        handleArrival(packet, node->nextHop(), system, journal);
     }
 
     // Check whether next packet_ can be served:
@@ -232,13 +232,13 @@ void runMainLoop(
         int maxPackets) {
     // Initialize the model:
     debug("==== INIT ====\nnetwork: %s\n", network->toString().c_str());
-    journal->reset(system->getTime());
-    for (auto &addrNodePair: network->getNodes()) {
+    journal->reset(system->time());
+    for (auto &addrNodePair: network->nodes()) {
         auto node = addrNodePair.second;
-        auto source = node->getSource();
+        auto source = node->source();
         if (source) {
             auto address = addrNodePair.first;
-            system->schedule(SOURCE_TIMEOUT, source->getInterval(), address);
+            system->schedule(SOURCE_TIMEOUT, source->interval(), address);
         }
     }
 
@@ -246,7 +246,7 @@ void runMainLoop(
     while (!system->stopped()) {
         // Check whether enough packets were generated:
         if (maxPackets >= 0 &&
-            journal->numPacketsGenerated()->get() >= maxPackets) {
+                journal->numPacketsGenerated()->value() >= maxPackets) {
             system->stop();
             continue;
         }
@@ -256,10 +256,10 @@ void runMainLoop(
         if (event->type == STOP) {
             system->stop();
         } else if (event->type == SOURCE_TIMEOUT) {
-            handleSourceTimeout(network->getNode(event->address), system,
+            handleSourceTimeout(network->node(event->address), system,
                                 journal);
         } else if (event->type == SERVER_TIMEOUT) {
-            handleServerTimeout(network->getNode(event->address), system,
+            handleServerTimeout(network->node(event->address), system,
                                 journal);
         }
         delete event;

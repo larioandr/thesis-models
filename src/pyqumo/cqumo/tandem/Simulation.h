@@ -95,15 +95,6 @@ struct NodeData {
     explicit NodeData(const NodeJournal &records);
 
     NodeData &operator=(const NodeData &other) = default;
-
-    /**
-     * Get multiline string representation of the structure. It is very
-     * close to YAML. However toString() routines are used to print fields,
-     * its format is generally not YAML-friendly.
-     * @param prefix string added in the beginning of each line
-     * @return multiline string
-     */
-    std::string text(const std::string &prefix = "") const;
 };
 
 
@@ -134,13 +125,6 @@ struct SimData {
     SimData(const NetworkJournal &journal, double simTime, double realTimeMs);
 
     SimData &operator=(const SimData &other) = default;
-
-    /**
-     * Get multiline text representation of simulation results.
-     * @param prefix a string added in the beginning of each line
-     * @return multiline string
-     */
-    std::string text(const std::string &prefix = "") const;
 };
 
 

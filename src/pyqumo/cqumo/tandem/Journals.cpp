@@ -27,7 +27,7 @@ NetworkJournal::~NetworkJournal() {
 }
 
 void NetworkJournal::addNodeJournal(Node *node) {
-    auto address = node->getAddress();
+    auto address = node->address();
     auto it = nodeRecordsMap_.find(address);
     if (it != nodeRecordsMap_.end()) {
         delete it->second;
@@ -120,12 +120,12 @@ void NodeJournal::clean() {
 }
 
 void NodeJournal::build(double time) {
-    auto numMoments = networkJournal_->getNumMoments();
-    auto windowSize = networkJournal_->getWindowSize();
+    auto numMoments = networkJournal_->numMoments();
+    auto windowSize = networkJournal_->windowSize();
 
     systemSize_ = new TimeSizeSeries(time, node_->size());
-    queueSize_ = new TimeSizeSeries(time, node_->getQueue()->size());
-    serverSize_ = new TimeSizeSeries(time, node_->getServer()->size());
+    queueSize_ = new TimeSizeSeries(time, node_->queue()->size());
+    serverSize_ = new TimeSizeSeries(time, node_->server()->size());
     delays_ = new Series(numMoments, windowSize);
     departures_ = new Series(numMoments, windowSize);
     waitTimes_ = new Series(numMoments, windowSize);
@@ -140,7 +140,7 @@ void NodeJournal::build(double time) {
 
 std::string NodeJournal::toString() const {
     std::stringstream ss;
-    ss << "(NodeJournal: address=" << node_->getAddress()
+    ss << "(NodeJournal: address=" << node_->address()
        << ", systemSize=" << systemSize_->toString()
        << ", queueSize=" << queueSize_->toString()
        << ", serverSize=" << serverSize_->toString()
