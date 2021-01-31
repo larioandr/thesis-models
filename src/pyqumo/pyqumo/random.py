@@ -8,6 +8,7 @@ import scipy.stats
 from scipy.special import ndtr
 
 from pyqumo import stats
+from pyqumo.cy_random import CyRnd
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
     is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
@@ -122,6 +123,8 @@ class Distribution:
             try:
                 return x[0]
             except IndexError:
+                return x
+            except TypeError:
                 return x
         return self._eval(size)
 
@@ -339,6 +342,8 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         if rate <= 0.0:
             raise ValueError("exponential parameter must be positive")
         self._param = rate
+        self._eval_rnd = CyRnd(
+            lambda size, r=rate: np.random.exponential(1 / r, size=size))
 
     @property
     def param(self):
@@ -361,7 +366,10 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return lambda x: 1 - base**x if x >= 0 else 0.0
 
     def _eval(self, size: int) -> np.ndarray:
-        return np.random.exponential(1 / self.rate, size=size)
+        # return np.random.exponential(1 / self.rate, size=size)
+        if size == 1:
+            return self._eval_rnd()
+        return np.asarray([self._eval_rnd() for _ in range(size)])
 
     def __str__(self):
         return f"(Exp: rate={self.rate:g})"

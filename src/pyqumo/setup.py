@@ -17,7 +17,15 @@ extensions = [
         include_dirs=['cqumo/tandem'],
         language="c++",
         extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
-        extra_link_args=["-std=c++14"]),
+        extra_link_args=["-std=c++14"]
+    ),
+    Extension(
+        "pyqumo.cy_random", ["pyqumo/cy_random.pyx"],
+        language="c++",
+        extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"]
+    ),
+    Extension("pyqumo.arrivals", ["pyqumo/arrivals.py"],
+              extra_compile_args=["-Wno-deprecated", "-O3"])
 ]
 
 compiler_directives = {

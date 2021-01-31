@@ -5,9 +5,10 @@ from typing import Union, Sequence
 import numpy as np
 
 from pyqumo.chains import ContinuousTimeMarkovChain, DiscreteTimeMarkovChain
+from pyqumo.cy_random import CyRnd
 from pyqumo.matrix import cbdiag, order_of, \
     check_markovian_arrival, fix_markovian_arrival, str_array
-from pyqumo.random import Rnd, Distribution, Exponential
+from pyqumo.random import Distribution, Exponential
 
 
 class RandomProcess(ABC, Distribution):
@@ -234,17 +235,18 @@ class MarkovArrival(RandomProcess):
         # Define random variables generators:
         # -----------------------------------
         # - random generators for time in each state:
-        self.__rate_rnd = [Rnd(
-            lambda n, r=r: np.random.exponential(1/r, size=n),
-            label=f"exp({r:.3f})"
-        ) for r in self._rates]
+        self.__rate_rnd = [
+            CyRnd(lambda n, r=r: np.random.exponential(1/r, size=n))
+            for r in self._rates
+        ]
 
         # - random generators of state transitions:
         n_trans = self._order * len(self._matrices)
-        self.__trans_rnd = [Rnd(
-            lambda n, p0=p: np.random.choice(np.arange(n_trans), p=p0, size=n),
-            label=f"choose({n_trans}, p={p})"
-        ) for p in self._trans_pmf]
+        self.__trans_rnd = [
+            CyRnd(lambda n, p0=p: np.random.choice(
+                np.arange(n_trans), p=p0, size=n))
+            for p in self._trans_pmf
+        ]
 
         # Since we have the initial distribution, we find the initial state:
         self._state = np.random.choice(
@@ -388,7 +390,7 @@ class MarkovArrival(RandomProcess):
             state = self._state
             while pkt_type == 0:
                 interval += self.__rate_rnd[state]()
-                j = self.__trans_rnd[state]()
+                j = int(self.__trans_rnd[state]())
                 pkt_type, state = divmod(j, self._order)
             self._state = state
             intervals[n] = interval
