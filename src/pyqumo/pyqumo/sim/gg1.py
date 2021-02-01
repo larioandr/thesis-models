@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List, Sequence
+from typing import Optional, List, Sequence, Any
 import numpy as np
 from tabulate import tabulate
 
@@ -54,8 +54,8 @@ class Params:
     """
     Model parameters: arrival and service processes, queue capacity and limits.
     """
-    arrival: Distribution
-    service: Distribution
+    arrival: Any
+    service: Any
     queue_capacity: int
     max_packets: int = 1000000
     max_time: float = np.inf
@@ -258,14 +258,14 @@ def simulate(
         Simulation results.
     """
     params = Params(
-        arrival=arrival, service=service, queue_capacity=queue_capacity,
+        arrival=arrival.rnd, service=service.rnd, queue_capacity=queue_capacity,
         max_packets=max_packets, max_time=max_time)
     system = System(params)
     records = Records()
 
     # Initialize model:
     records.system_size.add(0.0, system.size)
-    system.schedule(Event.ARRIVAL, params.arrival())
+    system.schedule(Event.ARRIVAL, params.arrival.eval())
 
     # Run simulation:
     max_time = params.max_time
@@ -330,7 +330,7 @@ def _handle_arrival(system: System, params: Params, records: Records):
     if server.ready:
         # start serving immediately
         server.serve(packet)
-        system.schedule(Event.SERVICE_END, params.service())
+        system.schedule(Event.SERVICE_END, params.service.eval())
         packet.service_started_at = time_now
         records.system_size.add(time_now, system.size)
 
@@ -343,7 +343,7 @@ def _handle_arrival(system: System, params: Params, records: Records):
         packet.dropped = True
 
     # Schedule next arrival:
-    system.schedule(Event.ARRIVAL, params.arrival())
+    system.schedule(Event.ARRIVAL, params.arrival.eval())
 
 
 def _handle_service_end(system: System, params: Params, records: Records):
@@ -374,7 +374,7 @@ def _handle_service_end(system: System, params: Params, records: Records):
     if packet is not None:
         server.serve(packet)
         packet.service_started_at = time_now
-        system.schedule(Event.SERVICE_END, params.service())
+        system.schedule(Event.SERVICE_END, params.service.eval())
 
     # Anyway, system size has changed - record it!
     records.system_size.add(time_now, system.size)

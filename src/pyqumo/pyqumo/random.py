@@ -7,32 +7,13 @@ from scipy import linalg, integrate
 import scipy.stats
 from scipy.special import ndtr
 
-from pyqumo import stats
-from pyqumo.cy_random import CyRnd
+from pyqumo import stats, cy, cqumo
+from pyqumo.cy.random import Rnd
+from pyqumo.cqumo.randoms import createExpGen
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
     is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
     str_array
-
-
-class Rnd:
-    def __init__(self, fn, cache_size=10000, label=""):
-        self.__fn = fn
-        self.__cache_size = cache_size
-        self.__samples = []
-        self.__index = cache_size
-        self.label = label
-
-    def __call__(self):
-        if self.__index >= self.__cache_size:
-            self.__samples = self.__fn(self.__cache_size)
-            self.__index = 0
-        x = self.__samples[self.__index]
-        self.__index += 1
-        return x
-
-    def __repr__(self):
-        return f"<Rnd: '{self.label}'>"
 
 
 class Distribution:
@@ -133,7 +114,22 @@ class Distribution:
         Generate random samples. This method should be defined in inherited
         classes.
         """
-        raise NotImplementedError
+        # raise NotImplementedError
+        return np.asarray([0.0] * size)
+
+    @property
+    def rnd(self):
+        class RndGen:
+            def __init__(self, owner):
+                self.owner = owner
+
+            def eval(self):
+                return self.owner(1)
+
+            def __call__(self, size: int = 1):
+                return self.owner(size)
+
+        return RndGen(self)
 
     def copy(self) -> 'Distribution':
         raise NotImplementedError
@@ -342,8 +338,10 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         if rate <= 0.0:
             raise ValueError("exponential parameter must be positive")
         self._param = rate
-        self._eval_rnd = CyRnd(
-            lambda size, r=rate: np.random.exponential(1 / r, size=size))
+        # self._eval_rnd = Rnd(
+        #     lambda size, r=rate: np.random.exponential(1 / r, size=size))
+        self._generator = createExpGen(rate)
+        # self._generator = cy.random.Exp(rate)
 
     @property
     def param(self):
@@ -365,17 +363,26 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         base = np.e ** -r
         return lambda x: 1 - base**x if x >= 0 else 0.0
 
-    def _eval(self, size: int) -> np.ndarray:
-        # return np.random.exponential(1 / self.rate, size=size)
+    # def _eval(self, size: int) -> np.ndarray:
+    #     # return np.random.exponential(1 / self.rate, size=size)
+    #     if size == 1:
+    #         return self._eval_rnd()
+    #     return np.asarray([self._eval_rnd() for _ in range(size)])
+
+    def __call__(self, size=1):
         if size == 1:
-            return self._eval_rnd()
-        return np.asarray([self._eval_rnd() for _ in range(size)])
+            return self._generator.eval()
+        return self._generator(size)
 
     def __str__(self):
         return f"(Exp: rate={self.rate:g})"
 
     def copy(self) -> 'Exponential':
         return Exponential(self._param)
+
+    @property
+    def rnd(self):
+        return self._generator
 
     @staticmethod
     def fit(avg: float) -> 'Exponential':
@@ -707,10 +714,10 @@ class AbsorbMarkovPhasedEvalMixin:
             # Select random initial state and jump over the chain
             # till getting into absorbing state:
             sample = 0.0
-            j = self.__init_rnd()
+            j = int(self.__init_rnd())
             while not self.is_absorbing_state(j):
                 sample += self.__time_rnd[j]()
-                j = self.__trans_rnd[j]()
+                j = int(self.__trans_rnd[j]())
             samples_array[i] = sample
         return samples_array
 

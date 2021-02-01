@@ -5,8 +5,8 @@
  *
  * @author Andrey Larionov
  */
-#ifndef CQUMO_TANDEM_FUNCTIONS_H
-#define CQUMO_TANDEM_FUNCTIONS_H
+#ifndef CQUMO_FUNCTIONS_H
+#define CQUMO_FUNCTIONS_H
 
 #include <functional>
 

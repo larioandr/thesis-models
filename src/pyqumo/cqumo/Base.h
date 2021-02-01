@@ -13,8 +13,8 @@
  *
  * @author Andrey Larionov
  */
-#ifndef CQUMO_TANDEM_BASE_H
-#define CQUMO_TANDEM_BASE_H
+#ifndef CQUMO_BASE_H
+#define CQUMO_BASE_H
 
 #include <string>
 #include <sstream>

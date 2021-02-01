@@ -4,8 +4,9 @@ from typing import Union, Sequence
 
 import numpy as np
 
+from pyqumo import cy
 from pyqumo.chains import ContinuousTimeMarkovChain, DiscreteTimeMarkovChain
-from pyqumo.cy_random import CyRnd
+from pyqumo.cy.random import Rnd
 from pyqumo.matrix import cbdiag, order_of, \
     check_markovian_arrival, fix_markovian_arrival, str_array
 from pyqumo.random import Distribution, Exponential
@@ -217,10 +218,10 @@ class MarkovArrival(RandomProcess):
         #      - new state will be J (mod N), and
         #      - if J < N, then no packet is generated, or
         #      - if J >= N, then packet of type J // N is generated.
-        self._trans_pmf = np.hstack((
-            self._matrices[0] + np.diag(self._rates),
-            self._matrices[1]
-        )) / self._rates[:, None]
+        # self._trans_pmf = np.hstack((
+        #     self._matrices[0] + np.diag(self._rates),
+        #     self._matrices[1]
+        # )) / self._rates[:, None]
 
         # Build embedded DTMC and CTMC:
         self._ctmc = ContinuousTimeMarkovChain(
@@ -235,24 +236,24 @@ class MarkovArrival(RandomProcess):
         # Define random variables generators:
         # -----------------------------------
         # - random generators for time in each state:
-        self.__rate_rnd = [
-            CyRnd(lambda n, r=r: np.random.exponential(1/r, size=n))
-            for r in self._rates
-        ]
-
-        # - random generators of state transitions:
-        n_trans = self._order * len(self._matrices)
-        self.__trans_rnd = [
-            CyRnd(lambda n, p0=p: np.random.choice(
-                np.arange(n_trans), p=p0, size=n))
-            for p in self._trans_pmf
-        ]
-
-        # Since we have the initial distribution, we find the initial state:
-        self._state = np.random.choice(
-            np.arange(self._order),
-            p=self._dtmc.steady_pmf
-        )
+        # self.__rate_rnd = [
+        #     Rnd(lambda n, r=r: np.random.exponential(1/r, size=n))
+        #     for r in self._rates
+        # ]
+        #
+        # # - random generators of state transitions:
+        # n_trans = self._order * len(self._matrices)
+        # self.__trans_rnd = [
+        #     Rnd(lambda n, p0=p: np.random.choice(
+        #         np.arange(n_trans), p=p0, size=n))
+        #     for p in self._trans_pmf
+        # ]
+        #
+        # # Since we have the initial distribution, we find the initial state:
+        # self._state = np.random.choice(
+        #     np.arange(self._order),
+        #     p=self._dtmc.steady_pmf
+        # )
 
     @staticmethod
     def erlang(shape: int, rate: float) -> 'MarkovArrival':
@@ -381,20 +382,27 @@ class MarkovArrival(RandomProcess):
         """
         return self._dtmc
 
-    def _eval(self, size: int) -> np.ndarray:
-        intervals = np.zeros(size)
-        for n in range(size):
-            pkt_type = 0
-            interval = 0.0
-            # print('> start in state ', self._state)
-            state = self._state
-            while pkt_type == 0:
-                interval += self.__rate_rnd[state]()
-                j = int(self.__trans_rnd[state]())
-                pkt_type, state = divmod(j, self._order)
-            self._state = state
-            intervals[n] = interval
-        return intervals
+    @cached_property
+    def rnd(self):
+        return cy.random.MarkovArrival(self.d0, self.d1, self.dtmc.steady_pmf)
+
+    def __call__(self, size: int = 1):
+        return self.rnd(size)
+
+    # def _eval(self, size: int) -> np.ndarray:
+    #     intervals = np.zeros(size)
+    #     for n in range(size):
+    #         pkt_type = 0
+    #         interval = 0.0
+    #         # print('> start in state ', self._state)
+    #         state = self._state
+    #         while pkt_type == 0:
+    #             interval += self.__rate_rnd[state]()
+    #             j = int(self.__trans_rnd[state]())
+    #             pkt_type, state = divmod(j, self._order)
+    #         self._state = state
+    #         intervals[n] = interval
+    #     return intervals
     
     def compose(self, other: 'MarkovArrival') -> 'MarkovArrival':
         # TODO:  write unit tests

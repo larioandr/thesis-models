@@ -22,9 +22,6 @@ cdef extern from "Statistics.h" namespace "cqumo":
 cdef extern from "Functions.h" namespace "cqumo":
     ctypedef function[double()] DblFn
     cdef DblFn makeDblFn(double (*ctxFn)(void*), void* context)
-    # cdef cppclass ContextFunctor:
-    #     ContextFunctor(double (*fn)(void*), void *context)
-    #     double operator()()
 
 
 cdef extern from "Simulation.h" namespace "cqumo":

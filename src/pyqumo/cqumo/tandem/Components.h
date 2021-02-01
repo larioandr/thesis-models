@@ -18,9 +18,9 @@
 #ifndef CQUMO_TANDEM_COMPONENTS_H
 #define CQUMO_TANDEM_COMPONENTS_H
 
-#include "Base.h"
+#include "../Base.h"
 #include "Journals.h"
-#include "Functions.h"
+#include "../Functions.h"
 #include <queue>
 #include <functional>
 #include <map>

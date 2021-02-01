@@ -6,26 +6,35 @@ extensions = [
     Extension(
         "pyqumo.csim.model", [
             "pyqumo/csim/model.pyx",
-            "cqumo/tandem/Base.cpp",
-            "cqumo/tandem/Functions.cpp",
+            "cqumo/Base.cpp",
+            "cqumo/Functions.cpp",
             "cqumo/tandem/Components.cpp",
             "cqumo/tandem/Journals.cpp",
             "cqumo/tandem/Simulation.cpp",
             "cqumo/tandem/Statistics.cpp",
             "cqumo/tandem/System.cpp",
         ],
-        include_dirs=['cqumo/tandem'],
+        include_dirs=['cqumo', 'cqumo/tandem'],
         language="c++",
         extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
         extra_link_args=["-std=c++14"]
     ),
     Extension(
-        "pyqumo.cy_random", ["pyqumo/cy_random.pyx"],
+        "pyqumo.cy.random", ["pyqumo/cy/random.pyx"],
         language="c++",
         extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"]
     ),
-    Extension("pyqumo.arrivals", ["pyqumo/arrivals.py"],
-              extra_compile_args=["-Wno-deprecated", "-O3"])
+    Extension(
+        "pyqumo.cqumo.randoms", [
+            "pyqumo/cqumo/randoms.pyx",
+            "cqumo/Functions.cpp",
+            "cqumo/Randoms.cpp",
+        ],
+        include_dirs=['cqumo'],
+        language="c++",
+        extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"],
+        extra_link_args=["-std=c++14"]
+    )
 ]
 
 compiler_directives = {

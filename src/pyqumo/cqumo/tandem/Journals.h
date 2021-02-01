@@ -9,7 +9,7 @@
 #ifndef CQUMO_TANDEM_JOURNALS_H
 #define CQUMO_TANDEM_JOURNALS_H
 
-#include "Base.h"
+#include "../Base.h"
 #include "Statistics.h"
 #include <map>
 

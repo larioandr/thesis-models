@@ -1,5 +1,3 @@
-from typing import Callable
-
 import numpy as np
 from libcpp.vector cimport vector
 from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
@@ -47,8 +45,8 @@ cdef _build_results(const SimData& sim_data):
 cdef double _call_pyobject(void *context):
     # noinspection PyBroadException
     try:
-        func = <object>context
-        return func()
+        evaluable = <object>context
+        return evaluable.eval()
     except:
         return -1
 
@@ -128,6 +126,6 @@ def simulate_gg1n(
     -------
     results : Results
     """
-    cdef void* pyArrival = <void*>arrival
-    cdef void* pyService = <void*>service
+    cdef void* pyArrival = <void*>arrival.rnd
+    cdef void* pyService = <void*>service.rnd
     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)

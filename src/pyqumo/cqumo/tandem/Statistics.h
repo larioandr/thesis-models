@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
-#include "Base.h"
+#include "../Base.h"
 
 
 namespace cqumo {
