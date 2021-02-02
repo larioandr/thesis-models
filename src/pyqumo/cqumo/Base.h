@@ -18,6 +18,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #ifdef DEBUG
 #define debug(...) printf(__VA_ARGS__)

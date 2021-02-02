@@ -4,6 +4,8 @@
 #include "Statistics.h"
 #include <cmath>
 #include <sstream>
+#include <ostream>
+#include <iterator>
 
 
 namespace cqumo {
