@@ -14,18 +14,21 @@ cdef class Engine:
     def __dealloc__(self):
         destroyEngine(self.cEngine)
 
+    cdef void* getEngine(self):
+        return self.cEngine
+
 
 cdef class ExpGen:
     cdef ExpVar *cExpVar
     cdef void* cEngine
 
     def __cinit__(self, double rate):
-        cdef void* cEngine = createEngine()
+        cEngine = createEngine()
         self.cExpVar = new ExpVar(cEngine, rate)
 
     def __init__(self, rate):
         pass
-
+        
     def __dealloc__(self):
         del self.cExpVar
         destroyEngine(self.cEngine)

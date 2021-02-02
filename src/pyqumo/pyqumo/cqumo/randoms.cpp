@@ -874,11 +874,12 @@ struct __pyx_obj_6pyqumo_5cqumo_7randoms_ExpGen;
  */
 struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine {
   PyObject_HEAD
+  struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Engine *__pyx_vtab;
   void *cEngine;
 };
 
 
-/* "pyqumo/cqumo/randoms.pyx":18
+/* "pyqumo/cqumo/randoms.pyx":21
  * 
  * 
  * cdef class ExpGen:             # <<<<<<<<<<<<<<
@@ -893,6 +894,28 @@ struct __pyx_obj_6pyqumo_5cqumo_7randoms_ExpGen {
 };
 
 
+
+/* "pyqumo/cqumo/randoms.pyx":5
+ * 
+ * 
+ * cdef class Engine:             # <<<<<<<<<<<<<<
+ *     cdef void* cEngine
+ * 
+ */
+
+struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Engine {
+  void *(*getEngine)(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *);
+};
+static struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Engine *__pyx_vtabptr_6pyqumo_5cqumo_7randoms_Engine;
+
+
+/* "pyqumo/cqumo/randoms.pyx":21
+ * 
+ * 
+ * cdef class ExpGen:             # <<<<<<<<<<<<<<
+ *     cdef ExpVar *cExpVar
+ *     cdef void* cEngine
+ */
 
 struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_ExpGen {
   double (*eval)(struct __pyx_obj_6pyqumo_5cqumo_7randoms_ExpGen *, int __pyx_skip_dispatch);
@@ -1165,6 +1188,9 @@ static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_nam
 #define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
 #endif
 
+/* SetVTable.proto */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+
 /* PyErrExceptionMatches.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
@@ -1178,9 +1204,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStrNoError(PyObject* obj, P
 
 /* SetupReduce.proto */
 static int __Pyx_setup_reduce(PyObject* type_obj);
-
-/* SetVTable.proto */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
@@ -1242,6 +1265,7 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static void *__pyx_f_6pyqumo_5cqumo_7randoms_6Engine_getEngine(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *__pyx_v_self); /* proto*/
 static double __pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(struct __pyx_obj_6pyqumo_5cqumo_7randoms_ExpGen *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'pyqumo.cqumo.randoms' */
@@ -1501,7 +1525,7 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6Engine_2__dealloc__(struct __pyx_o
  *     def __dealloc__(self):
  *         destroyEngine(self.cEngine)             # <<<<<<<<<<<<<<
  * 
- * 
+ *     cdef void* getEngine(self):
  */
   cqumo::destroyEngine(__pyx_v_self->cEngine);
 
@@ -1515,6 +1539,43 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6Engine_2__dealloc__(struct __pyx_o
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
+}
+
+/* "pyqumo/cqumo/randoms.pyx":17
+ *         destroyEngine(self.cEngine)
+ * 
+ *     cdef void* getEngine(self):             # <<<<<<<<<<<<<<
+ *         return self.cEngine
+ * 
+ */
+
+static void *__pyx_f_6pyqumo_5cqumo_7randoms_6Engine_getEngine(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *__pyx_v_self) {
+  void *__pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getEngine", 0);
+
+  /* "pyqumo/cqumo/randoms.pyx":18
+ * 
+ *     cdef void* getEngine(self):
+ *         return self.cEngine             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_self->cEngine;
+  goto __pyx_L0;
+
+  /* "pyqumo/cqumo/randoms.pyx":17
+ *         destroyEngine(self.cEngine)
+ * 
+ *     cdef void* getEngine(self):             # <<<<<<<<<<<<<<
+ *         return self.cEngine
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
 }
 
 /* "(tree fragment)":1
@@ -1632,11 +1693,11 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6Engine_6__setstate_cython__(C
   return __pyx_r;
 }
 
-/* "pyqumo/cqumo/randoms.pyx":22
+/* "pyqumo/cqumo/randoms.pyx":25
  *     cdef void* cEngine
  * 
  *     def __cinit__(self, double rate):             # <<<<<<<<<<<<<<
- *         cdef void* cEngine = createEngine()
+ *         cEngine = createEngine()
  *         self.cExpVar = new ExpVar(cEngine, rate)
  */
 
@@ -1669,18 +1730,18 @@ static int __pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_1__cinit__(PyObject *__pyx_v
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 22, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 25, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
     }
-    __pyx_v_rate = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 22, __pyx_L3_error)
+    __pyx_v_rate = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 25, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 22, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 25, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pyqumo.cqumo.randoms.ExpGen.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1699,29 +1760,29 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen___cinit__(struct __pyx_obj_6
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "pyqumo/cqumo/randoms.pyx":23
+  /* "pyqumo/cqumo/randoms.pyx":26
  * 
  *     def __cinit__(self, double rate):
- *         cdef void* cEngine = createEngine()             # <<<<<<<<<<<<<<
+ *         cEngine = createEngine()             # <<<<<<<<<<<<<<
  *         self.cExpVar = new ExpVar(cEngine, rate)
  * 
  */
   __pyx_v_cEngine = cqumo::createEngine();
 
-  /* "pyqumo/cqumo/randoms.pyx":24
+  /* "pyqumo/cqumo/randoms.pyx":27
  *     def __cinit__(self, double rate):
- *         cdef void* cEngine = createEngine()
+ *         cEngine = createEngine()
  *         self.cExpVar = new ExpVar(cEngine, rate)             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self, rate):
  */
   __pyx_v_self->cExpVar = new cqumo::ExpVar(__pyx_v_cEngine, __pyx_v_rate);
 
-  /* "pyqumo/cqumo/randoms.pyx":22
+  /* "pyqumo/cqumo/randoms.pyx":25
  *     cdef void* cEngine
  * 
  *     def __cinit__(self, double rate):             # <<<<<<<<<<<<<<
- *         cdef void* cEngine = createEngine()
+ *         cEngine = createEngine()
  *         self.cExpVar = new ExpVar(cEngine, rate)
  */
 
@@ -1731,7 +1792,7 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen___cinit__(struct __pyx_obj_6
   return __pyx_r;
 }
 
-/* "pyqumo/cqumo/randoms.pyx":26
+/* "pyqumo/cqumo/randoms.pyx":29
  *         self.cExpVar = new ExpVar(cEngine, rate)
  * 
  *     def __init__(self, rate):             # <<<<<<<<<<<<<<
@@ -1768,7 +1829,7 @@ static int __pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_3__init__(PyObject *__pyx_v_
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 26, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 29, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -1779,7 +1840,7 @@ static int __pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_3__init__(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 26, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 29, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pyqumo.cqumo.randoms.ExpGen.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1803,7 +1864,7 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_2__init__(CYTHON_UNUSED stru
   return __pyx_r;
 }
 
-/* "pyqumo/cqumo/randoms.pyx":29
+/* "pyqumo/cqumo/randoms.pyx":32
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1826,7 +1887,7 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_4__dealloc__(struct __pyx_o
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "pyqumo/cqumo/randoms.pyx":30
+  /* "pyqumo/cqumo/randoms.pyx":33
  * 
  *     def __dealloc__(self):
  *         del self.cExpVar             # <<<<<<<<<<<<<<
@@ -1835,7 +1896,7 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_4__dealloc__(struct __pyx_o
  */
   delete __pyx_v_self->cExpVar;
 
-  /* "pyqumo/cqumo/randoms.pyx":31
+  /* "pyqumo/cqumo/randoms.pyx":34
  *     def __dealloc__(self):
  *         del self.cExpVar
  *         destroyEngine(self.cEngine)             # <<<<<<<<<<<<<<
@@ -1844,7 +1905,7 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_4__dealloc__(struct __pyx_o
  */
   cqumo::destroyEngine(__pyx_v_self->cEngine);
 
-  /* "pyqumo/cqumo/randoms.pyx":29
+  /* "pyqumo/cqumo/randoms.pyx":32
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1856,7 +1917,7 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_4__dealloc__(struct __pyx_o
   __Pyx_RefNannyFinishContext();
 }
 
-/* "pyqumo/cqumo/randoms.pyx":33
+/* "pyqumo/cqumo/randoms.pyx":36
  *         destroyEngine(self.cEngine)
  * 
  *     cpdef double eval(self):             # <<<<<<<<<<<<<<
@@ -1886,7 +1947,7 @@ static double __pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(struct __pyx_obj_6pyq
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_eval); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 33, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_eval); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 36, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_7eval)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -1902,10 +1963,10 @@ static double __pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(struct __pyx_obj_6pyq
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 33, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 36, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 33, __pyx_L1_error)
+        __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 36, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1924,7 +1985,7 @@ static double __pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(struct __pyx_obj_6pyq
     #endif
   }
 
-  /* "pyqumo/cqumo/randoms.pyx":34
+  /* "pyqumo/cqumo/randoms.pyx":37
  * 
  *     cpdef double eval(self):
  *         return self.cExpVar.eval()             # <<<<<<<<<<<<<<
@@ -1934,7 +1995,7 @@ static double __pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(struct __pyx_obj_6pyq
   __pyx_r = __pyx_v_self->cExpVar->eval();
   goto __pyx_L0;
 
-  /* "pyqumo/cqumo/randoms.pyx":33
+  /* "pyqumo/cqumo/randoms.pyx":36
  *         destroyEngine(self.cEngine)
  * 
  *     cpdef double eval(self):             # <<<<<<<<<<<<<<
@@ -1978,7 +2039,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_6eval(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("eval", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 33, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1995,7 +2056,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_6eval(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "pyqumo/cqumo/randoms.pyx":36
+/* "pyqumo/cqumo/randoms.pyx":39
  *         return self.cExpVar.eval()
  * 
  *     def __call__(self, size=1):             # <<<<<<<<<<<<<<
@@ -2035,7 +2096,7 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_9__call__(PyObject *__
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(1, 36, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(1, 39, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2049,7 +2110,7 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_6ExpGen_9__call__(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__call__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 36, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__call__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 39, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pyqumo.cqumo.randoms.ExpGen.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2079,20 +2140,20 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "pyqumo/cqumo/randoms.pyx":37
+  /* "pyqumo/cqumo/randoms.pyx":40
  * 
  *     def __call__(self, size=1):
  *         if size == 1:             # <<<<<<<<<<<<<<
  *             return self.eval()
  *         return np.asarray([self.eval() for _ in range(size)])
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_size, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 37, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_size, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 37, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "pyqumo/cqumo/randoms.pyx":38
+    /* "pyqumo/cqumo/randoms.pyx":41
  *     def __call__(self, size=1):
  *         if size == 1:
  *             return self.eval()             # <<<<<<<<<<<<<<
@@ -2100,13 +2161,13 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyFloat_FromDouble(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_ExpGen *)__pyx_v_self->__pyx_vtab)->eval(__pyx_v_self, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 38, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_ExpGen *)__pyx_v_self->__pyx_vtab)->eval(__pyx_v_self, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "pyqumo/cqumo/randoms.pyx":37
+    /* "pyqumo/cqumo/randoms.pyx":40
  * 
  *     def __call__(self, size=1):
  *         if size == 1:             # <<<<<<<<<<<<<<
@@ -2115,7 +2176,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
  */
   }
 
-  /* "pyqumo/cqumo/randoms.pyx":39
+  /* "pyqumo/cqumo/randoms.pyx":42
  *         if size == 1:
  *             return self.eval()
  *         return np.asarray([self.eval() for _ in range(size)])             # <<<<<<<<<<<<<<
@@ -2123,23 +2184,23 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 39, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_asarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 39, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_asarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   { /* enter inner scope */
-    __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 39, __pyx_L6_error)
+    __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 42, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_size); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 39, __pyx_L6_error)
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_size); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 42, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
       __pyx_t_6 = __pyx_t_5; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 39, __pyx_L6_error)
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 42, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 39, __pyx_L6_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 42, __pyx_L6_error)
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     for (;;) {
@@ -2147,17 +2208,17 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 39, __pyx_L6_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 42, __pyx_L6_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 39, __pyx_L6_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 42, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 39, __pyx_L6_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 42, __pyx_L6_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 39, __pyx_L6_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 42, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -2167,7 +2228,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(1, 39, __pyx_L6_error)
+            else __PYX_ERR(1, 42, __pyx_L6_error)
           }
           break;
         }
@@ -2175,9 +2236,9 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
       }
       __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v__, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_5 = PyFloat_FromDouble(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_ExpGen *)__pyx_v_self->__pyx_vtab)->eval(__pyx_v_self, 0)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 39, __pyx_L6_error)
+      __pyx_t_5 = PyFloat_FromDouble(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_ExpGen *)__pyx_v_self->__pyx_vtab)->eval(__pyx_v_self, 0)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 42, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_5);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_5))) __PYX_ERR(1, 39, __pyx_L6_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_5))) __PYX_ERR(1, 42, __pyx_L6_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -2201,14 +2262,14 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_8__call__(struct __pyx
   __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 39, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyqumo/cqumo/randoms.pyx":36
+  /* "pyqumo/cqumo/randoms.pyx":39
  *         return self.cExpVar.eval()
  * 
  *     def __call__(self, size=1):             # <<<<<<<<<<<<<<
@@ -2347,7 +2408,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_6ExpGen_12__setstate_cython__(
   return __pyx_r;
 }
 
-/* "pyqumo/cqumo/randoms.pyx":42
+/* "pyqumo/cqumo/randoms.pyx":45
  * 
  * 
  * def createExpGen(rate):             # <<<<<<<<<<<<<<
@@ -2378,19 +2439,19 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_createExpGen(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("createExpGen", 0);
 
-  /* "pyqumo/cqumo/randoms.pyx":43
+  /* "pyqumo/cqumo/randoms.pyx":46
  * 
  * def createExpGen(rate):
  *     return ExpGen(rate)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_ExpGen), __pyx_v_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 43, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_ExpGen), __pyx_v_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyqumo/cqumo/randoms.pyx":42
+  /* "pyqumo/cqumo/randoms.pyx":45
  * 
  * 
  * def createExpGen(rate):             # <<<<<<<<<<<<<<
@@ -2407,8 +2468,10 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_createExpGen(CYTHON_UNUSED PyO
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+static struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Engine __pyx_vtable_6pyqumo_5cqumo_7randoms_Engine;
 
 static PyObject *__pyx_tp_new_6pyqumo_5cqumo_7randoms_Engine(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -2416,6 +2479,8 @@ static PyObject *__pyx_tp_new_6pyqumo_5cqumo_7randoms_Engine(PyTypeObject *t, CY
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *)o);
+  p->__pyx_vtab = __pyx_vtabptr_6pyqumo_5cqumo_7randoms_Engine;
   return o;
 }
 
@@ -2701,7 +2766,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 2, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(1, 39, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(1, 42, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2749,16 +2814,16 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "pyqumo/cqumo/randoms.pyx":42
+  /* "pyqumo/cqumo/randoms.pyx":45
  * 
  * 
  * def createExpGen(rate):             # <<<<<<<<<<<<<<
  *     return ExpGen(rate)
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_rate); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 42, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_rate); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_randoms_pyx, __pyx_n_s_createExpGen, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(1, 42, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_randoms_pyx, __pyx_n_s_createExpGen, 45, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2813,6 +2878,8 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
+  __pyx_vtabptr_6pyqumo_5cqumo_7randoms_Engine = &__pyx_vtable_6pyqumo_5cqumo_7randoms_Engine;
+  __pyx_vtable_6pyqumo_5cqumo_7randoms_Engine.getEngine = (void *(*)(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Engine *))__pyx_f_6pyqumo_5cqumo_7randoms_6Engine_getEngine;
   if (PyType_Ready(&__pyx_type_6pyqumo_5cqumo_7randoms_Engine) < 0) __PYX_ERR(1, 5, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_6pyqumo_5cqumo_7randoms_Engine.tp_print = 0;
@@ -2820,21 +2887,22 @@ static int __Pyx_modinit_type_init_code(void) {
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_6pyqumo_5cqumo_7randoms_Engine.tp_dictoffset && __pyx_type_6pyqumo_5cqumo_7randoms_Engine.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_6pyqumo_5cqumo_7randoms_Engine.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
+  if (__Pyx_SetVtable(__pyx_type_6pyqumo_5cqumo_7randoms_Engine.tp_dict, __pyx_vtabptr_6pyqumo_5cqumo_7randoms_Engine) < 0) __PYX_ERR(1, 5, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Engine, (PyObject *)&__pyx_type_6pyqumo_5cqumo_7randoms_Engine) < 0) __PYX_ERR(1, 5, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pyqumo_5cqumo_7randoms_Engine) < 0) __PYX_ERR(1, 5, __pyx_L1_error)
   __pyx_ptype_6pyqumo_5cqumo_7randoms_Engine = &__pyx_type_6pyqumo_5cqumo_7randoms_Engine;
   __pyx_vtabptr_6pyqumo_5cqumo_7randoms_ExpGen = &__pyx_vtable_6pyqumo_5cqumo_7randoms_ExpGen;
   __pyx_vtable_6pyqumo_5cqumo_7randoms_ExpGen.eval = (double (*)(struct __pyx_obj_6pyqumo_5cqumo_7randoms_ExpGen *, int __pyx_skip_dispatch))__pyx_f_6pyqumo_5cqumo_7randoms_6ExpGen_eval;
-  if (PyType_Ready(&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 21, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_dictoffset && __pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_dict, __pyx_vtabptr_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ExpGen, (PyObject *)&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen.tp_dict, __pyx_vtabptr_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 21, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ExpGen, (PyObject *)&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 21, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen) < 0) __PYX_ERR(1, 21, __pyx_L1_error)
   __pyx_ptype_6pyqumo_5cqumo_7randoms_ExpGen = &__pyx_type_6pyqumo_5cqumo_7randoms_ExpGen;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -3079,15 +3147,15 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyqumo/cqumo/randoms.pyx":42
+  /* "pyqumo/cqumo/randoms.pyx":45
  * 
  * 
  * def createExpGen(rate):             # <<<<<<<<<<<<<<
  *     return ExpGen(rate)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_5cqumo_7randoms_1createExpGen, NULL, __pyx_n_s_pyqumo_cqumo_randoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 42, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_5cqumo_7randoms_1createExpGen, NULL, __pyx_n_s_pyqumo_cqumo_randoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_createExpGen, __pyx_t_1) < 0) __PYX_ERR(1, 42, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_createExpGen, __pyx_t_1) < 0) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "pyqumo/cqumo/randoms.pyx":1
@@ -3988,6 +4056,24 @@ static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_nam
 }
 #endif
 
+/* SetVTable */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
+#else
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
+#endif
+    if (!ob)
+        goto bad;
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
+    return 0;
+bad:
+    Py_XDECREF(ob);
+    return -1;
+}
+
 /* PyErrExceptionMatches */
 #if CYTHON_FAST_THREAD_STATE
 static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
@@ -4117,24 +4203,6 @@ __PYX_GOOD:
     Py_XDECREF(setstate);
     Py_XDECREF(setstate_cython);
     return ret;
-}
-
-/* SetVTable */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
-#if PY_VERSION_HEX >= 0x02070000
-    PyObject *ob = PyCapsule_New(vtable, 0, 0);
-#else
-    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
-#endif
-    if (!ob)
-        goto bad;
-    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
-        goto bad;
-    Py_DECREF(ob);
-    return 0;
-bad:
-    Py_XDECREF(ob);
-    return -1;
 }
 
 /* Import */
