@@ -6,6 +6,7 @@
 
 #include "Functions.h"
 #include <random>
+#include <vector>
 
 namespace cqumo {
 
@@ -37,6 +38,57 @@ class ExpVar : public RndBase {
   private:
     std::exponential_distribution<double> distribution;
 };
+
+
+class UniformVar : public RndBase {
+  public:
+    UniformVar(void *engine, double a, double b);
+    ~UniformVar() override = default;
+
+    double eval() override;
+  private:
+    std::uniform_real_distribution<double> distribution;
+};
+
+
+class NormalVar : public RndBase  {
+  public:
+    NormalVar(void *engine, double mean, double std);
+    ~NormalVar() override = default;
+
+    double eval() override;
+  private:
+    std::normal_distribution<double> distribution;
+};
+
+
+class ErlangVar : public RndBase {
+  public:
+    ErlangVar(void *engine, int shape, double param);
+    ~ErlangVar() override = default;
+
+    double eval() override;
+  private:
+    std::exponential_distribution<double> exponent;
+};
+
+
+class HyperExpVar : public RndBase {
+  public:
+    HyperExpVar(
+      void *engine, 
+      const std::vector<double>& rates,
+      const std::vector<double>& probs);
+
+    ~HyperExpVar() override = default;
+
+    double eval() override;
+  private:
+    std::vector<std::exponential_distribution<double>> exponents_;
+    std::vector<double> probs_;
+};
+
+
 
 }
 
