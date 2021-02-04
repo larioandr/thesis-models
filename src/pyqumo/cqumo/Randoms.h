@@ -15,11 +15,32 @@ void *createEngine();
 void *createEngineWith(unsigned seed);
 void destroyEngine(void *engine);
 
+class RandomVariable;
 
-class RndBase {
+class Randoms {
   public:
-    explicit RndBase(void *engine);
-    virtual ~RndBase() = default;
+    Randoms();
+    Randoms(unsigned seed);
+    ~Randoms();
+
+    RandomVariable *createExponential(double rate);
+    RandomVariable *createUniform(double a, double b);
+    RandomVariable *createNormal(double mean, double std);
+    RandomVariable *createErlang(int shape, double param);
+    
+    RandomVariable *createHyperExp(
+      const std::vector<double>& rates, 
+      const std::vector<double>& weights);
+
+  private:
+    std::default_random_engine *engine_ = nullptr;
+};
+
+
+class RandomVariable {
+  public:
+    explicit RandomVariable(void *engine);
+    virtual ~RandomVariable() = default;
 
     inline std::default_random_engine *engine() const { return engine_; }
 
@@ -29,10 +50,10 @@ class RndBase {
 };
 
 
-class ExpVar : public RndBase {
+class ExponentialVariable : public RandomVariable {
   public:
-    ExpVar(void *engine, double rate);
-    ~ExpVar() override = default;
+    ExponentialVariable(void *engine, double rate);
+    ~ExponentialVariable() override = default;
 
     double eval() override;
   private:
@@ -40,10 +61,10 @@ class ExpVar : public RndBase {
 };
 
 
-class UniformVar : public RndBase {
+class UniformVariable : public RandomVariable {
   public:
-    UniformVar(void *engine, double a, double b);
-    ~UniformVar() override = default;
+    UniformVariable(void *engine, double a, double b);
+    ~UniformVariable() override = default;
 
     double eval() override;
   private:
@@ -51,10 +72,10 @@ class UniformVar : public RndBase {
 };
 
 
-class NormalVar : public RndBase  {
+class NormalVariable : public RandomVariable  {
   public:
-    NormalVar(void *engine, double mean, double std);
-    ~NormalVar() override = default;
+    NormalVariable(void *engine, double mean, double std);
+    ~NormalVariable() override = default;
 
     double eval() override;
   private:
@@ -62,33 +83,32 @@ class NormalVar : public RndBase  {
 };
 
 
-class ErlangVar : public RndBase {
+class ErlangVariable : public RandomVariable {
   public:
-    ErlangVar(void *engine, int shape, double param);
-    ~ErlangVar() override = default;
+    ErlangVariable(void *engine, int shape, double param);
+    ~ErlangVariable() override = default;
 
     double eval() override;
   private:
+    int shape_;
     std::exponential_distribution<double> exponent;
 };
 
 
-class HyperExpVar : public RndBase {
+class HyperExpVariable : public RandomVariable {
   public:
-    HyperExpVar(
+    HyperExpVariable(
       void *engine, 
       const std::vector<double>& rates,
       const std::vector<double>& probs);
 
-    ~HyperExpVar() override = default;
+    ~HyperExpVariable() override = default;
 
     double eval() override;
   private:
+    std::discrete_distribution<int> choices_;
     std::vector<std::exponential_distribution<double>> exponents_;
-    std::vector<double> probs_;
 };
-
-
 
 }
 

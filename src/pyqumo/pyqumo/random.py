@@ -9,11 +9,14 @@ from scipy.special import ndtr
 
 from pyqumo import stats, cy, cqumo
 from pyqumo.cy.random import Rnd
-from pyqumo.cqumo.randoms import createExpGen
+from pyqumo.cqumo.randoms import RandomsFactory
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
     is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
     str_array
+
+
+default_randoms_factory = RandomsFactory()
 
 
 class Distribution:
@@ -233,8 +236,10 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     Variance :math:`Var(x) = (b - a)^2 / 12.
     """
-    def __init__(self, a: float = 0, b: float = 1):
+    def __init__(self, a: float = 0, b: float = 1, 
+                 factory: RandomsFactory = None):
         self._a, self._b = a, b
+        self._factory = factory or default_randoms_factory
 
     @property
     def min(self) -> float:
@@ -260,10 +265,16 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         a, b = self.min, self.max
         k = 1 / (b - a)
         return lambda x: 0 if x < a else 1 if x > b else k * (x - a)
-
-    def _eval(self, size: int) -> np.ndarray:
-        return np.random.uniform(self.min, self.max, size=size)
-
+    
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
+    
+    @cached_property
+    def rnd(self):
+        return self._factory.createUniformVariable(self.min, self.max)
+    
     def __repr__(self):
         return f'(Uniform: a={self.min:g}, b={self.max:g})'
 
@@ -275,8 +286,9 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Normal random distribution.
     """
-    def __init__(self, mean: float, std: float):
+    def __init__(self, mean: float, std: float, factory: RandomsFactory = None):
         self._mean, self._std = mean, std
+        self._factory = factory or default_randoms_factory
 
     @property
     def mean(self) -> float:
@@ -318,9 +330,15 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def cdf(self) -> Callable[[float], float]:
         k = 1 / (self.std * 2**0.5)
         return lambda x: 0.5 * (1 + np.math.erf(k * (x - self.mean)))
+    
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
 
-    def _eval(self, size: int) -> np.ndarray:
-        return np.random.normal(self._mean, self._std, size=size)
+    @cached_property
+    def rnd(self):
+        return self._factory.createNormalVariable(self.mean, self.std)
 
     def __repr__(self):
         return f'(Normal: mean={self._mean:.3g}, std={self._std:.3g})'
@@ -333,15 +351,12 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Exponential random distribution.
     """
-    def __init__(self, rate: float):
+    def __init__(self, rate: float, factory: RandomsFactory = None):
         super().__init__()
         if rate <= 0.0:
             raise ValueError("exponential parameter must be positive")
         self._param = rate
-        # self._eval_rnd = Rnd(
-        #     lambda size, r=rate: np.random.exponential(1 / r, size=size))
-        self._generator = createExpGen(rate)
-        # self._generator = cy.random.Exp(rate)
+        self._factory = factory or default_randoms_factory
 
     @property
     def param(self):
@@ -363,26 +378,20 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         base = np.e ** -r
         return lambda x: 1 - base**x if x >= 0 else 0.0
 
-    # def _eval(self, size: int) -> np.ndarray:
-    #     # return np.random.exponential(1 / self.rate, size=size)
-    #     if size == 1:
-    #         return self._eval_rnd()
-    #     return np.asarray([self._eval_rnd() for _ in range(size)])
-
-    def __call__(self, size=1):
-        if size == 1:
-            return self._generator.eval()
-        return self._generator(size)
-
     def __str__(self):
         return f"(Exp: rate={self.rate:g})"
 
     def copy(self) -> 'Exponential':
         return Exponential(self._param)
 
-    @property
+    @cached_property
     def rnd(self):
-        return self._generator
+        return self._factory.createExponentialVariable(rate)
+
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
 
     @staticmethod
     def fit(avg: float) -> 'Exponential':
@@ -412,7 +421,8 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         f(x; k, l) = l^k x^(k-1) e^(-l * x) / (k-1)!
     """
 
-    def __init__(self, shape: int, param: float):
+    def __init__(self, shape: int, param: float, 
+                 factory: RandomsFactory = None):
         super().__init__()
         if (shape <= 0 or shape == np.inf or
                 np.abs(np.round(shape) - shape) > 0):
@@ -420,6 +430,7 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         if param <= 0.0:
             raise ValueError("rate must be positive")
         self._shape, self._param = int(np.round(shape)), param
+        self._factory = factory or default_randoms_factory
 
     @property
     def shape(self) -> int:
@@ -461,10 +472,14 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return lambda x: 0 if x < 0 else \
             1 - base**x * koefs.dot(np.power(x, np.arange(k)))
 
-    def _eval(self, size: int) -> np.ndarray:
-        return np.random.exponential(1 / self.param, size=(size * self.shape))\
-            .reshape((self.shape, size))\
-            .sum(axis=0)
+    @cached_property
+    def rnd(self):
+        return self._factory.createErlangVariable(self.shape, self.param)
+
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
 
     def __repr__(self):
         return f"(Erlang: shape={self.shape:.3g}, rate={self.param:.3g})"
@@ -590,6 +605,7 @@ class HyperExponential(MixtureDistribution):
     def __init__(self, rates: Sequence[float], probs: Sequence[float]):
         exponents = [Exponential(rate) for rate in rates]
         super().__init__(exponents, probs)
+        self._factory = factory or default_randoms_factory
 
     # noinspection PyUnresolvedReferences
     @cached_property
@@ -630,6 +646,7 @@ class HyperExponential(MixtureDistribution):
                                f"r1 = {r1}; selected r2={r2}.")
 
         return HyperExponential([r1, r2], [p1, p2])
+
 
 
 # noinspection PyUnresolvedReferences

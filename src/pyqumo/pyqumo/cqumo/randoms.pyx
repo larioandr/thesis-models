@@ -1,46 +1,64 @@
 import numpy as np
-from pyqumo.cqumo.randoms cimport createEngine, createEngineWith
+from libcpp.vector cimport vector
+from pyqumo.cqumo.randoms cimport RandomVariable as CxxRandomVariable, Randoms
+
+cdef class RandomsFactory:
+    cdef Randoms* randoms
+
+    def __init__(self):
+        self.randoms = new Randoms()
+    
+    def __dealloc__(self):
+        del self.randoms
+    
+    def createExponentialVariable(self, rate):
+        cdef CxxRandomVariable *c_var = self.randoms.createExponential(rate)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
+
+    def createNormalVariable(self, mean, std):
+        cdef CxxRandomVariable *c_var = self.randoms.createNormal(mean, std)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
+    
+    def createUniformVariable(self, a, b):
+        cdef CxxRandomVariable *c_var = self.randoms.createUniform(a, b)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
+
+    def createHyperExponentialVariable(self, rates, weights):
+        cdef vector[double] _rates = rates
+        cdef vector[double] _weights = weights
+        cdef CxxRandomVariable *c_var = \
+            self.randoms.createHyperExp(_rates, _weights)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
+    
+    def createErlangVariable(self, shape, param):
+        cdef CxxRandomVariable *c_var = self.randoms.createErlang(shape, param)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
 
 
-cdef class Engine:
-    cdef void* cEngine
+cdef class Variable:
+    cdef CxxRandomVariable* variable
 
-    def __init__(self, seed=None):
-        if seed is None:
-            self.cEngine = createEngine()
-        else:
-            self.cEngine = createEngineWith(<unsigned>seed)
+    def __init__(self):
+        self.variable = NULL
 
     def __dealloc__(self):
-        destroyEngine(self.cEngine)
+        del self.variable
+    
+    cdef set_variable(self, CxxRandomVariable *variable):
+        self.variable = variable
+    
+    cpdef eval(self):
+        return self.variable.eval()
 
-    cdef void* getEngine(self):
-        return self.cEngine
-
-
-cdef class ExpGen:
-    cdef ExpVar *cExpVar
-    cdef void* cEngine
-
-    def __cinit__(self, double rate):
-        cEngine = createEngine()
-        self.cExpVar = new ExpVar(cEngine, rate)
-
-    def __init__(self, rate):
-        pass
-        
-    def __dealloc__(self):
-        del self.cExpVar
-        destroyEngine(self.cEngine)
-
-    cpdef double eval(self):
-        return self.cExpVar.eval()
-
-    def __call__(self, size=1):
-        if size == 1:
-            return self.eval()
+    def __call__(self, size):
         return np.asarray([self.eval() for _ in range(size)])
-
-
-def createExpGen(rate):
-    return ExpGen(rate)
