@@ -20,6 +20,13 @@ default_randoms_factory = RandomsFactory()
 
 
 class Distribution:
+    def __init__(self, factory: RandomsFactory = None):
+        self._factory = factory or default_randoms_factory
+    
+    @property
+    def factory(self) -> RandomsFactory:
+        return self._factory
+    
     """
     Base class for all continuous distributions.
     """
@@ -45,14 +52,14 @@ class Distribution:
         return self._moment(2) - self._moment(1)**2
 
     @cached_property
-    def std(self):
+    def std(self) -> float:
         """
         Get standard deviation of the random variable.
         """
         return self.var ** 0.5
 
     @cached_property
-    def cv(self):
+    def cv(self) -> float:
         """
         Get coefficient of variation (relation of std.dev. to mean value)
         """
@@ -161,7 +168,8 @@ class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
     """
     Constant distribution that always results in a given constant value.
     """
-    def __init__(self, value: float):
+    def __init__(self, value: float, factory: RandomsFactory = None):
+        super().__init__(factory)
         self._value = value
         self._next = None
 
@@ -186,7 +194,7 @@ class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
     
     @cached_property
     def rnd(self) -> Variable:
-        return default_randoms_factory.createConstant(self._value)
+        return self.factory.createConstantVariable(self._value)
         
     def __repr__(self):
         return f'(Const: value={self._value:g})'
@@ -215,8 +223,8 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     def __init__(self, a: float = 0, b: float = 1, 
                  factory: RandomsFactory = None):
+        super().__init__(factory)
         self._a, self._b = a, b
-        self._factory = factory or default_randoms_factory
 
     @property
     def min(self) -> float:
@@ -243,14 +251,9 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         k = 1 / (b - a)
         return lambda x: 0 if x < a else 1 if x > b else k * (x - a)
     
-    def __call__(self, size: int = 1):
-        if size == 1:
-            return self.rnd.eval()
-        return np.asarray([self.rnd.eval() for _ in range(size)])
-    
     @cached_property
-    def rnd(self):
-        return self._factory.createUniformVariable(self.min, self.max)
+    def rnd(self) -> Variable:
+        return self.factory.createUniformVariable(self.min, self.max)
     
     def __repr__(self):
         return f'(Uniform: a={self.min:g}, b={self.max:g})'
@@ -264,8 +267,8 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     Normal random distribution.
     """
     def __init__(self, mean: float, std: float, factory: RandomsFactory = None):
+        super().__init__(factory)
         self._mean, self._std = mean, std
-        self._factory = factory or default_randoms_factory
 
     @property
     def mean(self) -> float:
@@ -276,7 +279,7 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return self._std
 
     @cached_property
-    def var(self):
+    def var(self) -> float:
         return self._std**2
 
     @lru_cache
@@ -308,14 +311,9 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         k = 1 / (self.std * 2**0.5)
         return lambda x: 0.5 * (1 + np.math.erf(k * (x - self.mean)))
     
-    def __call__(self, size: int = 1):
-        if size == 1:
-            return self.rnd.eval()
-        return np.asarray([self.rnd.eval() for _ in range(size)])
-
     @cached_property
-    def rnd(self):
-        return self._factory.createNormalVariable(self.mean, self.std)
+    def rnd(self) -> Variable:
+        return self.factory.createNormalVariable(self.mean, self.std)
 
     def __repr__(self):
         return f'(Normal: mean={self._mean:.3g}, std={self._std:.3g})'
@@ -329,11 +327,10 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     Exponential random distribution.
     """
     def __init__(self, rate: float, factory: RandomsFactory = None):
-        super().__init__()
+        super().__init__(factory)
         if rate <= 0.0:
             raise ValueError("exponential parameter must be positive")
         self._param = rate
-        self._factory = factory or default_randoms_factory
 
     @property
     def param(self):
@@ -362,13 +359,8 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         return Exponential(self._param)
 
     @cached_property
-    def rnd(self):
-        return self._factory.createExponentialVariable(self.rate)
-
-    def __call__(self, size: int = 1):
-        if size == 1:
-            return self.rnd.eval()
-        return np.asarray([self.rnd.eval() for _ in range(size)])
+    def rnd(self) -> Variable:
+        return self.factory.createExponentialVariable(self.rate)
 
     @staticmethod
     def fit(avg: float) -> 'Exponential':
@@ -400,14 +392,13 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     def __init__(self, shape: int, param: float, 
                  factory: RandomsFactory = None):
-        super().__init__()
+        super().__init__(factory)
         if (shape <= 0 or shape == np.inf or
                 np.abs(np.round(shape) - shape) > 0):
             raise ValueError("shape must be positive integer")
         if param <= 0.0:
             raise ValueError("rate must be positive")
         self._shape, self._param = int(np.round(shape)), param
-        self._factory = factory or default_randoms_factory
 
     @property
     def shape(self) -> int:
@@ -450,13 +441,8 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
             1 - base**x * koefs.dot(np.power(x, np.arange(k)))
 
     @cached_property
-    def rnd(self):
-        return self._factory.createErlangVariable(self.shape, self.param)
-
-    def __call__(self, size: int = 1):
-        if size == 1:
-            return self.rnd.eval()
-        return np.asarray([self.rnd.eval() for _ in range(size)])
+    def rnd(self) -> Variable:
+        return self.factory.createErlangVariable(self.shape, self.param)
 
     def __repr__(self):
         return f"(Erlang: shape={self.shape:.3g}, rate={self.param:.3g})"
@@ -504,6 +490,7 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
     def __init__(self, states: Sequence[Distribution],
                  weights: Optional[Sequence[float]] = None,
                  factory: RandomsFactory = None):
+        super().__init__(factory)
         order = len(states)
         if order == 0:
             raise ValueError("no distributions provided")
@@ -522,7 +509,6 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         # Store distributions as a new tuple:
         self._states = tuple(states)
         self._order = order
-        self._factory = factory or default_randoms_factory
 
     @property
     def states(self) -> Sequence[Distribution]:
@@ -551,15 +537,10 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         fns = [state.cdf for state in self._states]
         return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
 
-    def __call__(self, size: int = 1):
-        if size == 1:
-            return self.rnd.eval()
-        return np.asarray([self.rnd.eval() for _ in range(size)])
-    
     @cached_property
-    def rnd(self):
+    def rnd(self) -> Variable:
         variables = [state.rnd for state in self.states]
-        return self._factory.createMixtureVariable(variables, self.probs)
+        return self.factory.createMixtureVariable(variables, self.probs)
 
     def __repr__(self):
         states_str = "[" + ", ".join(str(state) for state in self.states) + "]"
@@ -636,7 +617,7 @@ class HyperExponential(MixtureDistribution):
 # noinspection PyUnresolvedReferences
 class AbsorbMarkovPhasedEvalMixin:
     """
-    Mixin for _eval() for phased distributions with Markovian transitions.
+    Mixin for RND for phased distributions with Markovian transitions.
 
     To use this mixin, distribution need to implement:
 
@@ -668,59 +649,19 @@ class AbsorbMarkovPhasedEvalMixin:
     def trans_probs(self) -> np.ndarray:
         raise NotImplementedError
 
-    def _init_eval(self):
-        """
-        Initialize random values generators
-        """
-        assert hasattr(self, 'order')
-        assert hasattr(self, 'states')
-        assert hasattr(self, 'init_probs')
-        assert hasattr(self, 'trans_probs')
-
-        # Random generator for initial state:
-        self.__init_rnd = Rnd(
-            lambda n: np.random.choice(
-                all_states[:-1],
-                p=self.init_probs,
-                size=n
-            ))
-
-        # Random generators for time in each state:
-        self.__time_rnd = [
-            Rnd(lambda n, fn=state: fn(n))
-            for state in self.states
-        ]
-
-        # Random generators of state transitions:
-        all_states = np.arange(self.order + 1)
-        self.__trans_rnd = [
-            Rnd(lambda n, p=row: np.random.choice(all_states, p=p, size=n))
-            for row in self.trans_probs
-        ]
-
-    def is_absorbing_state(self, state_index: int) -> bool:
-        """
-        Check whether the state is absorbing.
-        """
-        return state_index >= self.order
-
-    def _eval(self, size: int) -> np.ndarray:
-        # Initialize random generators if they were not inited earlier
-        if not hasattr(self, '__init_rnd'):
-            self._init_eval()
-
-        # Generate required number of items:
-        samples_array = np.zeros(size)
-        for i in range(size):
-            # Select random initial state and jump over the chain
-            # till getting into absorbing state:
-            sample = 0.0
-            j = int(self.__init_rnd())
-            while not self.is_absorbing_state(j):
-                sample += self.__time_rnd[j]()
-                j = int(self.__trans_rnd[j]())
-            samples_array[i] = sample
-        return samples_array
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
+    
+    @cached_property
+    def rnd(self) -> Variable:
+        variables = [state.rnd for state in self.states]
+        return self.factory.createAbsorbSemiMarkovVariable(
+            variables, 
+            self.init_probs,
+            self.trans_probs,
+            self.order)
 
 
 class PhaseType(ContinuousDistributionMixin,
@@ -739,7 +680,9 @@ class PhaseType(ContinuousDistributionMixin,
     operates with matrices, incl. matrix-exponential operations, so it is
     less efficient then custom implementations.
     """
-    def __init__(self, sub: np.ndarray, p: np.ndarray, safe: bool = False):
+    def __init__(self, sub: np.ndarray, p: np.ndarray, safe: bool = False,
+                 factory: RandomsFactory = None):
+        super().__init__(factory)
         # Validate and fix data:
         # ----------------------
         if not safe:
@@ -765,7 +708,7 @@ class PhaseType(ContinuousDistributionMixin,
             -self._subgenerator.sum(axis=1)[:, None]
         )) / self._rates[:, None]
         self._states = [Exponential(r) for r in self._rates]
-
+    
     @staticmethod
     def exponential(rate: float) -> 'PhaseType':
         sub = np.asarray([[-rate]])
@@ -850,7 +793,8 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     Discrete distribution of values with given non-negative weights.
     """
     def __init__(self, values: Sequence[float],
-                 weights: Union[Mapping[float, float], Sequence[float]] = None):
+                 weights: Union[Mapping[float, float], Sequence[float]] = None,
+                 factory: RandomsFactory = None):
         """
         Discrete distribution constructor.
 
@@ -865,6 +809,7 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
             to values length; if not provided, all values are expected to
             have the same weight.
         """
+        super().__init__(factory)
         if len(values) == 0:
             raise ValueError('expected non-empty values')
         values_ = []
@@ -981,9 +926,10 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     @lru_cache
     def _moment(self, n: int) -> float:
         return (self.values**n).dot(self.probs).sum()
-
-    def _eval(self, size: int) -> np.ndarray:
-        return np.random.choice(self.values, p=self.probs, size=size)
+    
+    @cached_property
+    def rnd(self):
+        return self.factory.createChoiceVariable(self.values, self.probs)
 
     @cached_property
     def cdf(self) -> Callable[[float], float]:
@@ -1030,7 +976,8 @@ class CountableDistribution(DiscreteDistributionMixin,
                  prob: Union[Callable[[int], float], Sequence[float]],
                  precision: float = 1e-9,
                  max_value: int = np.inf,
-                 moments: Sequence[float] = ()):
+                 moments: Sequence[float] = (),
+                 factory: RandomsFactory = None):
         """
         Constructor.
 
@@ -1061,6 +1008,7 @@ class CountableDistribution(DiscreteDistributionMixin,
             used instead of estimating over first 0, 1, ..., N values.
             By default, empty tuple.
         """
+        super().__init__(factory)
         self._prob = prob
         self._precision = precision
         self._moments = moments
@@ -1260,24 +1208,28 @@ class CountableDistribution(DiscreteDistributionMixin,
             p = self.get_prob_at(i)
             total_prob += p
             yield i, p
+    
+    @cached_property
+    def rnd(self) -> Variable:
+        return self._trunc_choice.rnd
 
-    def _eval(self, size: int) -> np.ndarray:
-        """
-        Generate a random array of the given size.
+    # def _eval(self, size: int) -> np.ndarray:
+    #     """
+    #     Generate a random array of the given size.
 
-        When generating random values, use `Choice` distribution with values
-        0, 1, ..., `truncated_at`. Thus, no values from tail (which prob. is
-        less then precision) will be generated.
+    #     When generating random values, use `Choice` distribution with values
+    #     0, 1, ..., `truncated_at`. Thus, no values from tail (which prob. is
+    #     less then precision) will be generated.
 
-        Parameters
-        ----------
-        size : array size
+    #     Parameters
+    #     ----------
+    #     size : array size
 
-        Returns
-        -------
-        array : np.ndarray
-        """
-        return self._trunc_choice(size)
+    #     Returns
+    #     -------
+    #     array : np.ndarray
+    #     """
+    #     return self._trunc_choice(size)
 
     def __repr__(self):
         if not self._hard_max_value:
@@ -1304,7 +1256,6 @@ class EstStatsMixin:
 
     - `num_stats_samples` property: number of samples should to be used
     in moments estimation.
-    - `_eval()` implementation.
     """
     @property
     def num_stats_samples(self) -> int:
@@ -1318,7 +1269,7 @@ class EstStatsMixin:
         If cache doesn't exist, it will be created`.
         """
         if not hasattr(self, '__stats_samples'):
-            self.__stats_samples = self._eval(self.num_stats_samples)
+            self.__stats_samples = self.__call__(self.num_stats_samples)
         return self.__stats_samples
 
     @lru_cache
@@ -1336,7 +1287,6 @@ class KdePdfMixin:
 
     - `num_kde_samples` property: number of samples should to be used
     in KDE building. Should not be too large since KDE will work VERY slowly.
-    - `_eval()` implementation.
     """
     @property
     def num_kde_samples(self) -> int:
@@ -1345,7 +1295,7 @@ class KdePdfMixin:
     @cached_property
     def _kde(self) -> scipy.stats.gaussian_kde:
         if not hasattr(self, '__kde'):
-            kde_samples = self._eval(self.num_kde_samples)
+            kde_samples = self.__call__(self.num_kde_samples)
             self.__kde = scipy.stats.gaussian_kde(kde_samples)
         return self.__kde
 
@@ -1393,7 +1343,8 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
                  time_dist: Sequence[Distribution],
                  probs: Union[np.ndarray, Sequence[float], int] = 0,
                  num_samples: int = 10000,
-                 num_kde_samples: int = 1000):
+                 num_kde_samples: int = 1000,
+                 factory: RandomsFactory = None):
         """
         Constructor.
 
@@ -1420,6 +1371,7 @@ class SemiMarkovAbsorb(AbsorbMarkovPhasedEvalMixin,
             of KDE built from too large number of samples is very slow.
             By default: 1'000
         """
+        super().__init__(factory)
         # Convert to ndarray and validate transitions matrix:
         if not isinstance(trans, np.ndarray):
             trans = np.asarray(trans)

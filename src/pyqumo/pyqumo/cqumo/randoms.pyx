@@ -63,6 +63,34 @@ cdef class RandomsFactory:
         ret_var = Variable()
         ret_var.set_variable(c_var)
         return ret_var
+    
+    def createAbsorbSemiMarkovVariable(self, vars, p0, trans, absorb_state):
+        cdef vector[CxxRandomVariable*] c_vars
+        cdef vector[double] c_initProbs = p0
+        cdef vector[vector[double]] c_trans = trans
+        cdef int c_absorbState = absorb_state
+
+        # Fill variables:
+        for var in vars:
+            if not isinstance(var, Variable):
+                classname = f"{Variable.__module__}.{Variable.__name__}"
+                raise RuntimeError(f"var type {type(var)} is not {classname}")
+            c_vars.push_back((<Variable>var).get_variable())
+        
+        cdef CxxRandomVariable *c_ret_var = \
+            self.randoms.createAbsorbSemiMarkov(
+                c_vars, c_initProbs, c_trans, c_absorbState
+            )
+        result = Variable()
+        result.set_variable(c_ret_var)
+        return result
+    
+    def createChoiceVariable(self, values, weights):
+        cdef CxxRandomVariable *c_var = \
+            self.randoms.createChoice(values, weights)
+        var = Variable()
+        var.set_variable(c_var)
+        return var    
 
 
 cdef class Variable:

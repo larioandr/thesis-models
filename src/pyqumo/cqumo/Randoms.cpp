@@ -75,6 +75,25 @@ RandomVariable *Randoms::createConstant(double value) {
     return new ConstVariable(engine_, value);
 }
 
+RandomVariable *Randoms::createAbsorbSemiMarkov(
+        const std::vector<RandomVariable*>& vars,
+        const std::vector<double>& initProbs,
+        const std::vector<std::vector<double>>& transitions,
+        int absorbState) {
+    return new AbsorbSemiMarkovVariable(
+        engine_,
+        vars,
+        initProbs,
+        transitions,
+        absorbState
+    );
+}
+
+RandomVariable *Randoms::createChoice(
+        const std::vector<double>& values,
+        const std::vector<double>& weights) {
+    return new ChoiceVariable(engine_, values, weights);
+}
 
 // RandomVariable
 // ---------------------------------------------------------------------------
@@ -191,5 +210,48 @@ double MixtureVariable::eval() {
     return vars_[state]->eval();
 }
 
+// AbsorbSemiMarkovVariable
+// ---------------------------------------------------------------------------
+AbsorbSemiMarkovVariable::AbsorbSemiMarkovVariable(
+      void *engine,
+      const std::vector<RandomVariable*>& vars,
+      const std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& transitions,
+      int absorbState)
+: RandomVariable(engine), vars_(vars), absorbState_(absorbState)
+{
+    initChoices_ = std::discrete_distribution<int>(
+        initProbs.begin(), initProbs.end());
+    for (auto& probs: transitions) {
+        transitions_.push_back(std::discrete_distribution<int>(
+            probs.begin(), probs.end()
+        ));
+    }
+}
+
+double AbsorbSemiMarkovVariable::eval() {
+    auto enginePtr = engine();
+    int state = initChoices_(*enginePtr);
+    double value = 0.0;
+    while (state != absorbState_) {
+        value += vars_[state]->eval();
+        state = transitions_[state](*enginePtr);
+    }
+    return value;
+}
+
+// ChoiceVariable
+// ---------------------------------------------------------------------------
+ChoiceVariable::ChoiceVariable(
+    void *engine,
+    const std::vector<double>& values,
+    const std::vector<double>& weights)
+: RandomVariable(engine), values_(values) {
+    choices_ = std::discrete_distribution<int>(weights.begin(), weights.end());
+}
+
+double ChoiceVariable::eval() {
+    return values_[choices_(*engine())];
+}
 
 }

@@ -37,6 +37,16 @@ class Randoms {
       const std::vector<double>& rates, 
       const std::vector<double>& weights);
 
+    RandomVariable *createAbsorbSemiMarkov(
+      const std::vector<RandomVariable*>& vars,
+      const std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& transitions,
+      int absorbState);
+    
+    RandomVariable *createChoice(
+      const std::vector<double>& values,
+      const std::vector<double>& weights);
+
   private:
     std::default_random_engine *engine_ = nullptr;
 };
@@ -144,7 +154,38 @@ class MixtureVariable : public RandomVariable {
 };
 
 
-// class Markov
+class AbsorbSemiMarkovVariable : public RandomVariable {
+  public:
+    AbsorbSemiMarkovVariable(
+      void *engine,
+      const std::vector<RandomVariable*>& vars,
+      const std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& transitions,
+      int absorbState
+    );
+    ~AbsorbSemiMarkovVariable() override = default;
+
+    double eval() override;
+  private:
+    std::vector<RandomVariable*> vars_;
+    int absorbState_;
+    std::discrete_distribution<int> initChoices_;
+    std::vector<std::discrete_distribution<int>> transitions_;
+};
+
+class ChoiceVariable : public RandomVariable {
+  public:
+    ChoiceVariable(
+      void *engine,
+      const std::vector<double>& values,
+      const std::vector<double>& weights);
+    ~ChoiceVariable() override = default;
+
+    double eval() override;
+  private:
+    std::vector<double> values_;
+    std::discrete_distribution<int> choices_;
+};
 
 }
 

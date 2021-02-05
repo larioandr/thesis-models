@@ -22,3 +22,12 @@ cdef extern from "Randoms.h" namespace "cqumo":
             const vector[double]& rates,
             const vector[double]& weights)
         
+        RandomVariable *createAbsorbSemiMarkov(
+            const vector[RandomVariable*]& vars,
+            const vector[double]& initProbs,
+            const vector[vector[double]]& transitions,
+            int absorbState)
+        
+        RandomVariable *createChoice(
+            const vector[double]& values,
+            const vector[double]& probs)
