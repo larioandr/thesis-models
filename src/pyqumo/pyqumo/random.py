@@ -9,7 +9,7 @@ from scipy.special import ndtr
 
 from pyqumo import stats, cy, cqumo
 from pyqumo.cy.random import Rnd
-from pyqumo.cqumo.randoms import RandomsFactory
+from pyqumo.cqumo.randoms import RandomsFactory, Variable
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
     is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
@@ -103,36 +103,12 @@ class Distribution:
             if size > 1, then returns a 1D array, otherwise a float scalar
         """
         if size == 1:
-            x = self._eval(1)
-            try:
-                return x[0]
-            except IndexError:
-                return x
-            except TypeError:
-                return x
-        return self._eval(size)
-
-    def _eval(self, size: int) -> np.ndarray:
-        """
-        Generate random samples. This method should be defined in inherited
-        classes.
-        """
-        # raise NotImplementedError
-        return np.asarray([0.0] * size)
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
 
     @property
-    def rnd(self):
-        class RndGen:
-            def __init__(self, owner):
-                self.owner = owner
-
-            def eval(self):
-                return self.owner(1)
-
-            def __call__(self, size: int = 1):
-                return self.owner(size)
-
-        return RndGen(self)
+    def rnd(self) -> Variable:
+        raise NotImplementedError
 
     def copy(self) -> 'Distribution':
         raise NotImplementedError
@@ -207,10 +183,11 @@ class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
     @lru_cache
     def _moment(self, n: int) -> float:
         return self._value ** n
-
-    def _eval(self, size: int) -> np.ndarray:
-        return np.asarray([self._value] * size)
-
+    
+    @cached_property
+    def rnd(self) -> Variable:
+        return default_randoms_factory.createConstant(self._value)
+        
     def __repr__(self):
         return f'(Const: value={self._value:g})'
 
@@ -386,7 +363,7 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     @cached_property
     def rnd(self):
-        return self._factory.createExponentialVariable(rate)
+        return self._factory.createExponentialVariable(self.rate)
 
     def __call__(self, size: int = 1):
         if size == 1:
@@ -525,7 +502,8 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
     :math:`f(x) = w_0 f_{xi_0}(x) + ... + w_{N-1} f_{xi_{N-1}}(x)`
     """
     def __init__(self, states: Sequence[Distribution],
-                 weights: Optional[Sequence[float]] = None):
+                 weights: Optional[Sequence[float]] = None,
+                 factory: RandomsFactory = None):
         order = len(states)
         if order == 0:
             raise ValueError("no distributions provided")
@@ -544,6 +522,7 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         # Store distributions as a new tuple:
         self._states = tuple(states)
         self._order = order
+        self._factory = factory or default_randoms_factory
 
     @property
     def states(self) -> Sequence[Distribution]:
@@ -572,10 +551,15 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         fns = [state.cdf for state in self._states]
         return lambda x: sum(p * f(x) for (p, f) in zip(self.probs, fns))
 
-    def _eval(self, size: int) -> np.ndarray:
-        state_indexes = np.random.choice(self.order, size, p=self._probs)
-        values = [self.states[si]() for si in state_indexes]
-        return np.asarray(values)
+    def __call__(self, size: int = 1):
+        if size == 1:
+            return self.rnd.eval()
+        return np.asarray([self.rnd.eval() for _ in range(size)])
+    
+    @cached_property
+    def rnd(self):
+        variables = [state.rnd for state in self.states]
+        return self._factory.createMixtureVariable(variables, self.probs)
 
     def __repr__(self):
         states_str = "[" + ", ".join(str(state) for state in self.states) + "]"
@@ -602,10 +586,10 @@ class HyperExponential(MixtureDistribution):
 
     $X = \\sum_{i=1}^{N}{p_i X_i}$, where $X_i ~ Exp(ai)$
     """
-    def __init__(self, rates: Sequence[float], probs: Sequence[float]):
+    def __init__(self, rates: Sequence[float], probs: Sequence[float],
+                 factory: RandomsFactory = None):
         exponents = [Exponential(rate) for rate in rates]
-        super().__init__(exponents, probs)
-        self._factory = factory or default_randoms_factory
+        super().__init__(exponents, probs, factory)
 
     # noinspection PyUnresolvedReferences
     @cached_property

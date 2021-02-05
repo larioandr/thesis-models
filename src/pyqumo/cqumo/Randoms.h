@@ -23,10 +23,15 @@ class Randoms {
     Randoms(unsigned seed);
     ~Randoms();
 
+    RandomVariable *createConstant(double value);
     RandomVariable *createExponential(double rate);
     RandomVariable *createUniform(double a, double b);
     RandomVariable *createNormal(double mean, double std);
     RandomVariable *createErlang(int shape, double param);
+    
+    RandomVariable *createMixture(
+      const std::vector<RandomVariable*>& vars,
+      const std::vector<double>& weights);
     
     RandomVariable *createHyperExp(
       const std::vector<double>& rates, 
@@ -47,6 +52,17 @@ class RandomVariable {
     virtual double eval() = 0;
   private:
     std::default_random_engine *engine_ = nullptr;
+};
+
+
+class ConstVariable : public RandomVariable {
+  public:
+    ConstVariable(void *engine, double value);
+    ~ConstVariable() override = default;
+
+    double eval() override;
+  private:
+    double value_ = 0.0;
 };
 
 
@@ -109,6 +125,26 @@ class HyperExpVariable : public RandomVariable {
     std::discrete_distribution<int> choices_;
     std::vector<std::exponential_distribution<double>> exponents_;
 };
+
+
+class MixtureVariable : public RandomVariable {
+  public:
+    MixtureVariable(
+      void *engine,
+      const std::vector<RandomVariable*>& vars,
+      const std::vector<double> weights);
+    
+    ~MixtureVariable() override = default;
+
+    double eval() override;
+  private:
+    std::vector<RandomVariable*> vars_;
+    std::vector<double> weights_;
+    std::discrete_distribution<int> choices_;
+};
+
+
+// class Markov
 
 }
 

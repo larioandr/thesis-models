@@ -65,12 +65,32 @@ RandomVariable *Randoms::createHyperExp(
     return new HyperExpVariable(engine_, rates, weights);
 }
 
+RandomVariable *Randoms::createMixture(
+        const std::vector<RandomVariable*>& vars,
+        const std::vector<double>& weights) {
+    return new MixtureVariable(engine_, vars, weights);
+}
+
+RandomVariable *Randoms::createConstant(double value) {
+    return new ConstVariable(engine_, value);
+}
+
 
 // RandomVariable
 // ---------------------------------------------------------------------------
 RandomVariable::RandomVariable(void *engine)
 : engine_(static_cast<std::default_random_engine*>(engine)){}
 
+
+// ConstVariable
+// ---------------------------------------------------------------------------
+ConstVariable::ConstVariable(void *engine, double value)
+: RandomVariable(engine), value_(value)
+{}
+
+double ConstVariable::eval() {
+    return value_;
+}
 
 // ExponentialVariable
 // ---------------------------------------------------------------------------
@@ -152,7 +172,23 @@ double ErlangVariable::eval() {
     for (int i = 0; i < shape_; i++) {
         value += exponent(*enginePtr);
     }
+    
     return value;
+}
+
+// MixtureVariable
+// ---------------------------------------------------------------------------
+MixtureVariable::MixtureVariable(
+    void *engine,
+    const std::vector<RandomVariable*>& vars,
+    const std::vector<double> weights)
+: RandomVariable(engine), vars_(vars), weights_(weights) {
+    choices_ = std::discrete_distribution<int>(weights.begin(), weights.end());
+}
+
+double MixtureVariable::eval() {
+    auto state = static_cast<unsigned>(choices_(*engine()));
+    return vars_[state]->eval();
 }
 
 

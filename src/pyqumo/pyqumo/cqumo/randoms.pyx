@@ -11,6 +11,12 @@ cdef class RandomsFactory:
     def __dealloc__(self):
         del self.randoms
     
+    def createConstantVariable(self, value):
+        cdef CxxRandomVariable *c_var = self.randoms.createConstant(value)
+        var = Variable()
+        var.set_variable(c_var)
+        return var
+    
     def createExponentialVariable(self, rate):
         cdef CxxRandomVariable *c_var = self.randoms.createExponential(rate)
         var = Variable()
@@ -43,6 +49,20 @@ cdef class RandomsFactory:
         var = Variable()
         var.set_variable(c_var)
         return var
+    
+    def createMixtureVariable(self, vars, weights):
+        cdef vector[CxxRandomVariable*] _vars
+        cdef vector[double] _weights = weights
+        for var in vars:
+            if not isinstance(var, Variable):
+                classname = f"{Variable.__module__}.{Variable.__name__}"
+                raise RuntimeError(f"var type {type(var)} is not {classname}")
+            _vars.push_back((<Variable>var).get_variable())
+        cdef CxxRandomVariable *c_var = \
+            self.randoms.createMixture(_vars, _weights)
+        ret_var = Variable()
+        ret_var.set_variable(c_var)
+        return ret_var
 
 
 cdef class Variable:
@@ -56,6 +76,9 @@ cdef class Variable:
     
     cdef set_variable(self, CxxRandomVariable *variable):
         self.variable = variable
+
+    cdef CxxRandomVariable *get_variable(self):
+        return self.variable
     
     cpdef eval(self):
         return self.variable.eval()
