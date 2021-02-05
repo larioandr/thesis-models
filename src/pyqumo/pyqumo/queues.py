@@ -12,18 +12,14 @@ from pyqumo.arrivals import Poisson, MarkovArrival, RandomProcess, \
 class BasicQueueingSystem:
     def __init__(
             self,
-            arrival: Union[Distribution, RandomProcess],
-            service: Union[Distribution, RandomProcess],
+            arrival: Distribution,
+            service: Distribution,
             queue_capacity: int = np.inf,
             precision: float = 1e-9
     ):
         """
         Queueing system constructor.
         """
-        if isinstance(arrival, Distribution):
-            arrival = GIProcess(arrival)
-        if isinstance(service, Distribution):
-            service = GIProcess(service)
         self._arrival = arrival
         self._service = service
         self._queue_capacity = queue_capacity
@@ -290,8 +286,8 @@ class MapPh1NQueue(BasicQueueingSystem):
         if abs(np.math.modf(queue_capacity)[0]) > 1e-12 or queue_capacity <= 0:
             raise ValueError(f"positive integer expected, "
                              f"but {queue_capacity} found")
-        super().__init__(arrival, service, queue_capacity=queue_capacity,
-                         precision=1e-20)
+        super().__init__(arrival, GIProcess(service), 
+                         queue_capacity=queue_capacity, precision=1e-20)
 
     def _get_casted_arrival_and_service(self) \
             -> (MarkovArrival, PhaseType):
