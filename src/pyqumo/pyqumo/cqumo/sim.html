@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Cython: model.pyx</title>
+    <title>Cython: sim.pyx</title>
     <style type="text/css">
     
 body.cython { font-family: courier; font-size: 12; }
@@ -368,14 +368,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <span style="background-color: #FFFF00">Yellow lines</span> hint at Python interaction.<br />
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
-<p>Raw output: <a href="model.cpp">model.cpp</a></p>
+<p>Raw output: <a href="sim.cpp">sim.cpp</a></p>
 <div class="cython"><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: <span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span></pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_numpy, 0, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_np, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">002</span>: <span class="k">from</span> <span class="nn">libcpp.vector</span> <span class="k">cimport</span> <span class="n">vector</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">003</span>: <span class="k">from</span> <span class="nn">pyqumo.csim.model</span> <span class="k">cimport</span> <span class="n">SimData</span><span class="p">,</span> <span class="n">NodeData</span><span class="p">,</span> <span class="n">simMM1</span><span class="p">,</span> <span class="n">VarData</span><span class="p">,</span> <span class="n">simGG1</span><span class="p">,</span> \</pre>
+<pre class="cython line score-0">&#xA0;<span class="">003</span>: <span class="k">from</span> <span class="nn">pyqumo.cqumo.sim</span> <span class="k">cimport</span> <span class="n">SimData</span><span class="p">,</span> <span class="n">NodeData</span><span class="p">,</span> <span class="n">simMM1</span><span class="p">,</span> <span class="n">VarData</span><span class="p">,</span> <span class="n">simGG1</span><span class="p">,</span> \</pre>
 <pre class="cython line score-0">&#xA0;<span class="">004</span>:     <span class="n">makeDblFn</span><span class="p">,</span> <span class="n">DblFn</span></pre>
 <pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">005</span>: <span class="k">from</span> <span class="nn">pyqumo.sim.helpers</span> <span class="k">import</span> <span class="n">Statistics</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_1 = <span class='py_c_api'>PyList_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)</span>
@@ -430,7 +430,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class="cython line score-0">&#xA0;<span class="">009</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">010</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
 <pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>: <span class="k">cdef</span> <span class="nf">vector_asarray</span><span class="p">(</span><span class="n">vector</span><span class="p">[</span><span class="n">double</span><span class="p">]</span> <span class="n">vect</span><span class="p">):</span></pre>
-<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector&lt;double&gt;  __pyx_v_vect) {
+<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(std::vector&lt;double&gt;  __pyx_v_vect) {
   int __pyx_v_n;
   PyObject *__pyx_v_ret = NULL;
   int __pyx_v_i;
@@ -444,7 +444,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.vector_asarray", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.vector_asarray", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_ret);
@@ -499,7 +499,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre><pre class="cython line score-0">&#xA0;<span class="">017</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">018</span>: </pre>
 <pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>: <span class="k">cdef</span> <span class="nf">_build_statistics</span><span class="p">(</span><span class="n">VarData</span><span class="o">*</span> <span class="n">cs</span><span class="p">):</span></pre>
-<pre class='cython code score-5 '>static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *__pyx_v_cs) {
+<pre class='cython code score-5 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_statistics(cqumo::VarData *__pyx_v_cs) {
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
   <span class='refnanny'>__Pyx_RefNannySetupContext</span>("_build_statistics", 0);
@@ -509,7 +509,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model._build_statistics", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._build_statistics", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
@@ -549,7 +549,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class="cython line score-0">&#xA0;<span class="">022</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">023</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
 <pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>: <span class="k">cdef</span> <span class="nf">_build_results</span><span class="p">(</span><span class="n">const</span> <span class="n">SimData</span><span class="o">&amp;</span> <span class="n">sim_data</span><span class="p">):</span></pre>
-<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData const &amp;__pyx_v_sim_data) {
+<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_results(cqumo::SimData const &amp;__pyx_v_sim_data) {
   CYTHON_UNUSED int __pyx_v_addr;
   cqumo::NodeData __pyx_v_data;
   PyObject *__pyx_v_results = NULL;
@@ -563,7 +563,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model._build_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._build_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_results);
@@ -608,7 +608,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_system_size, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 28, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">systemSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
-<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.systemSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
+<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.systemSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -634,7 +634,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_queue_size, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 31, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">queueSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
-<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.queueSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)</span>
+<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.queueSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -660,7 +660,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_busy, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 34, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">serverSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
-<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.serverSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)</span>
+<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.serverSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -685,17 +685,17 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_loss_prob, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 37, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:     <span class="n">results</span><span class="o">.</span><span class="n">departures</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">departures</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&amp;__pyx_v_data.departures));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)</span>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.departures));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_departures, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 38, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:     <span class="n">results</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">responseTime</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&amp;__pyx_v_data.responseTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)</span>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.responseTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_response_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 39, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:     <span class="n">results</span><span class="o">.</span><span class="n">wait_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">waitTime</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&amp;__pyx_v_data.waitTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)</span>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.waitTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_wait_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 40, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
@@ -712,7 +712,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre><pre class="cython line score-0">&#xA0;<span class="">043</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">044</span>: </pre>
 <pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>: <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">_call_pyobject</span><span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="n">context</span><span class="p">):</span></pre>
-<pre class='cython code score-6 '>static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context) {
+<pre class='cython code score-6 '>static double __pyx_f_6pyqumo_5cqumo_3sim__call_pyobject(void *__pyx_v_context) {
   PyObject *__pyx_v_evaluable = NULL;
   double __pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -723,7 +723,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_6);
-  <span class='pyx_c_api'>__Pyx_WriteUnraisable</span>("pyqumo.csim.model._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  <span class='pyx_c_api'>__Pyx_WriteUnraisable</span>("pyqumo.cqumo.sim._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_evaluable);
@@ -788,7 +788,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       goto __pyx_L7_try_return;
 </pre><pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:     <span class="k">except</span><span class="p">:</span></pre>
 <pre class='cython code score-4 '>    /*except:*/ {
-      <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (<span class='pyx_c_api'>__Pyx_GetException</span>(&amp;__pyx_t_4, &amp;__pyx_t_5, &amp;__pyx_t_6) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 50, __pyx_L5_except_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
@@ -804,7 +804,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre><pre class="cython line score-0">&#xA0;<span class="">052</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">053</span>: </pre>
 <pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>: <span class="k">cdef</span> <span class="nf">call_simGG1</span><span class="p">(</span></pre>
-<pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArrival, void *__pyx_v_pyService, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
+<pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(void *__pyx_v_pyArrival, void *__pyx_v_pyService, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::DblFn __pyx_v_cArrival;
   cqumo::DblFn __pyx_v_cService;
   cqumo::SimData __pyx_v_c_ret;
@@ -816,7 +816,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   /* function exit code */
   __pyx_L1_error:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.call_simGG1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.call_simGG1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_result);
@@ -829,14 +829,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class="cython line score-0">&#xA0;<span class="">057</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">058</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
 <pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cArrival</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyArrival</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_4csim_5model__call_pyobject, __pyx_v_pyArrival);
+<pre class='cython code score-0 '>  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyArrival);
 </pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cService</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyService</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_v_cService = cqumo::makeDblFn(__pyx_f_6pyqumo_4csim_5model__call_pyobject, __pyx_v_pyService);
+<pre class='cython code score-0 '>  __pyx_v_cService = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyService);
 </pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simGG1</span><span class="p">(</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_ret = cqumo::simGG1(__pyx_v_cArrival, __pyx_v_cService, __pyx_v_queue_capacity, __pyx_v_max_packets);
 </pre><pre class="cython line score-0">&#xA0;<span class="">062</span>:         <span class="n">cArrival</span><span class="p">,</span> <span class="n">cService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
 <pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)</span>
+<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -848,7 +848,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre><pre class="cython line score-0">&#xA0;<span class="">065</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">066</span>: </pre>
 <pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>: <span class="k">cdef</span> <span class="nf">call_simMM1</span><span class="p">(</span></pre>
-<pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival_rate, double __pyx_v_service_rate, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
+<pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(double __pyx_v_arrival_rate, double __pyx_v_service_rate, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::SimData __pyx_v_c_ret;
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
@@ -858,7 +858,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   /* function exit code */
   __pyx_L1_error:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.call_simMM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.call_simMM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_result);
@@ -874,7 +874,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class='cython code score-0 '>  __pyx_v_c_ret = cqumo::simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
 </pre><pre class="cython line score-0">&#xA0;<span class="">073</span>:         <span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
 <pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)</span>
+<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -887,10 +887,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class="cython line score-0">&#xA0;<span class="">077</span>: </pre>
 <pre class="cython line score-70" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>: <span class="k">def</span> <span class="nf">simulate_mm1n</span><span class="p">(</span></pre>
 <pre class='cython code score-70 '>/* Python wrapper */
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_4csim_5model_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
-static PyMethodDef __pyx_mdef_6pyqumo_4csim_5model_1simulate_mm1n = {"simulate_mm1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_4csim_5model_simulate_mm1n};
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n = {"simulate_mm1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n};
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_arrival_rate;
   double __pyx_v_service_rate;
   PyObject *__pyx_v_queue_capacity = 0;
@@ -964,11 +964,11 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L3_error)</span>
   __pyx_L3_error:;
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(__pyx_self, __pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
+  __pyx_r = __pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(__pyx_self, __pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -978,7 +978,7 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_se
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
   <span class='refnanny'>__Pyx_RefNannySetupContext</span>("simulate_mm1n", 0);
@@ -986,7 +986,7 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   /* function exit code */
   __pyx_L1_error:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
@@ -998,11 +998,11 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple_);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple_);
 /* … */
-  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_4csim_5model_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_csim_model);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
+  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_mm1n, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_codeobj__2 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_csim_model_pyx, __pyx_n_s_simulate_mm1n, 78, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
+  __pyx_codeobj__2 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_mm1n, 78, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:         <span class="n">arrival_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">080</span>:         <span class="n">service_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">081</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
@@ -1030,19 +1030,19 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
 <pre class='cython code score-15 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_1 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 102, __pyx_L1_error)</span>
   __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_2 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 102, __pyx_L1_error)</span>
-  __pyx_t_3 = __pyx_f_6pyqumo_4csim_5model_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)</span>
+  __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">103</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">104</span>: </pre>
-<pre class="cython line score-48" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>: <span class="k">def</span> <span class="nf">simulate_gg1n</span><span class="p">(</span></pre>
-<pre class='cython code score-48 '>/* Python wrapper */
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_4csim_5model_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -&gt; double`\n    service : callable `() -&gt; double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
-static PyMethodDef __pyx_mdef_6pyqumo_4csim_5model_3simulate_gg1n = {"simulate_gg1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_4csim_5model_2simulate_gg1n};
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+<pre class="cython line score-51" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>: <span class="k">def</span> <span class="nf">simulate_gg1n</span><span class="p">(</span></pre>
+<pre class='cython code score-51 '>/* Python wrapper */
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -&gt; double`\n    service : callable `() -&gt; double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n = {"simulate_gg1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n};
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_arrival = 0;
   PyObject *__pyx_v_service = 0;
   PyObject *__pyx_v_queue_capacity = 0;
@@ -1116,11 +1116,11 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L3_error)</span>
   __pyx_L3_error:;
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(__pyx_self, __pyx_v_arrival, __pyx_v_service, __pyx_v_queue_capacity, __pyx_v_max_packets);
+  __pyx_r = __pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(__pyx_self, __pyx_v_arrival, __pyx_v_service, __pyx_v_queue_capacity, __pyx_v_max_packets);
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1130,19 +1130,22 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_se
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
   void *__pyx_v_pyArrival;
   void *__pyx_v_pyService;
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
   <span class='refnanny'>__Pyx_RefNannySetupContext</span>("simulate_gg1n", 0);
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_queue_capacity);
 /* … */
   /* function exit code */
   __pyx_L1_error:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.csim.model.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_2);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_queue_capacity);
   <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
@@ -1152,7 +1155,7 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyOb
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__3);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__3);
 /* … */
-  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_4csim_5model_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_csim_model);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)</span>
+  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_gg1n, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
@@ -1189,11 +1192,27 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyOb
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_pyService = ((void *)__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:     <span class="k">return</span> <span class="n">call_simGG1</span><span class="p">(</span><span class="n">pyArrival</span><span class="p">,</span> <span class="n">pyService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:     <span class="k">if</span> <span class="n">queue_capacity</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span></pre>
+<pre class='cython code score-14 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_inf);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = <span class='py_c_api'>PyObject_RichCompare</span>(__pyx_v_queue_capacity, __pyx_t_2, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_IsTrue</span>(__pyx_t_1); if (unlikely(__pyx_t_3 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 131, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_3) {
+/* … */
+  }
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">132</span>:         <span class="n">queue_capacity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1</span></pre>
+<pre class='cython code score-2 '>    <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_int_neg_1);
+    <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_queue_capacity, __pyx_int_neg_1);
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">133</span>:     <span class="k">return</span> <span class="n">call_simGG1</span><span class="p">(</span><span class="n">pyArrival</span><span class="p">,</span> <span class="n">pyService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
 <pre class='cython code score-15 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_2 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 131, __pyx_L1_error)</span>
-  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_3 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 131, __pyx_L1_error)</span>
-  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_2, __pyx_t_3);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_4 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 133, __pyx_L1_error)</span>
+  __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_5 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 133, __pyx_L1_error)</span>
+  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_4, __pyx_t_5);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;

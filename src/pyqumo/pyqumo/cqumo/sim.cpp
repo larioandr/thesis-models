@@ -21,9 +21,9 @@
             "cqumo/tandem"
         ],
         "language": "c++",
-        "name": "pyqumo.csim.model",
+        "name": "pyqumo.cqumo.sim",
         "sources": [
-            "pyqumo/csim/model.pyx",
+            "pyqumo/cqumo/sim.pyx",
             "cqumo/Base.cpp",
             "cqumo/Functions.cpp",
             "cqumo/tandem/Components.cpp",
@@ -33,7 +33,7 @@
             "cqumo/tandem/System.cpp"
         ]
     },
-    "module_name": "pyqumo.csim.model"
+    "module_name": "pyqumo.cqumo.sim"
 }
 END: Cython Metadata */
 
@@ -653,8 +653,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__pyqumo__csim__model
-#define __PYX_HAVE_API__pyqumo__csim__model
+#define __PYX_HAVE__pyqumo__cqumo__sim
+#define __PYX_HAVE_API__pyqumo__cqumo__sim
 /* Early includes */
 #include "ios"
 #include "new"
@@ -886,7 +886,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "pyqumo/csim/model.pyx",
+  "pyqumo/cqumo/sim.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1280,21 +1280,22 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'libcpp.functional' */
 
-/* Module declarations from 'pyqumo.csim.model' */
-static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double> ); /*proto*/
-static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *); /*proto*/
-static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData const &); /*proto*/
-static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *); /*proto*/
-static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *, void *, int, int); /*proto*/
-static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double, double, int, int); /*proto*/
-#define __Pyx_MODULE_NAME "pyqumo.csim.model"
-extern int __pyx_module_is_main_pyqumo__csim__model;
-int __pyx_module_is_main_pyqumo__csim__model = 0;
+/* Module declarations from 'pyqumo.cqumo.sim' */
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(std::vector<double> ); /*proto*/
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_statistics(cqumo::VarData *); /*proto*/
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_results(cqumo::SimData const &); /*proto*/
+static double __pyx_f_6pyqumo_5cqumo_3sim__call_pyobject(void *); /*proto*/
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(void *, void *, int, int); /*proto*/
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(double, double, int, int); /*proto*/
+#define __Pyx_MODULE_NAME "pyqumo.cqumo.sim"
+extern int __pyx_module_is_main_pyqumo__cqumo__sim;
+int __pyx_module_is_main_pyqumo__cqumo__sim = 0;
 
-/* Implementation of 'pyqumo.csim.model' */
+/* Implementation of 'pyqumo.cqumo.sim' */
 static PyObject *__pyx_builtin_range;
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_avg[] = "avg";
+static const char __pyx_k_inf[] = "inf";
 static const char __pyx_k_rnd[] = "rnd";
 static const char __pyx_k_std[] = "std";
 static const char __pyx_k_var[] = "var";
@@ -1330,11 +1331,11 @@ static const char __pyx_k_simulate_gg1n[] = "simulate_gg1n";
 static const char __pyx_k_simulate_mm1n[] = "simulate_mm1n";
 static const char __pyx_k_pyqumo_sim_gg1[] = "pyqumo.sim.gg1";
 static const char __pyx_k_queue_capacity[] = "queue_capacity";
-static const char __pyx_k_pyqumo_csim_model[] = "pyqumo.csim.model";
+static const char __pyx_k_pyqumo_cqumo_sim[] = "pyqumo.cqumo.sim";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_pyqumo_sim_helpers[] = "pyqumo.sim.helpers";
+static const char __pyx_k_pyqumo_cqumo_sim_pyx[] = "pyqumo/cqumo/sim.pyx";
 static const char __pyx_k_CountableDistribution[] = "CountableDistribution";
-static const char __pyx_k_pyqumo_csim_model_pyx[] = "pyqumo/csim/model.pyx";
 static PyObject *__pyx_n_s_CountableDistribution;
 static PyObject *__pyx_n_s_Exponential;
 static PyObject *__pyx_n_s_Results;
@@ -1348,6 +1349,7 @@ static PyObject *__pyx_n_s_count;
 static PyObject *__pyx_n_s_departures;
 static PyObject *__pyx_n_s_eval;
 static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_n_s_inf;
 static PyObject *__pyx_n_s_loss_prob;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_max_packets;
@@ -1356,8 +1358,8 @@ static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_pyArrival;
 static PyObject *__pyx_n_s_pyService;
-static PyObject *__pyx_n_s_pyqumo_csim_model;
-static PyObject *__pyx_kp_s_pyqumo_csim_model_pyx;
+static PyObject *__pyx_n_s_pyqumo_cqumo_sim;
+static PyObject *__pyx_kp_s_pyqumo_cqumo_sim_pyx;
 static PyObject *__pyx_n_s_pyqumo_random;
 static PyObject *__pyx_n_s_pyqumo_sim_gg1;
 static PyObject *__pyx_n_s_pyqumo_sim_helpers;
@@ -1377,16 +1379,17 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_var;
 static PyObject *__pyx_n_s_wait_time;
 static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets); /* proto */
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets); /* proto */
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets); /* proto */
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets); /* proto */
 static PyObject *__pyx_int_100000;
+static PyObject *__pyx_int_neg_1;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_codeobj__2;
 static PyObject *__pyx_codeobj__4;
 /* Late includes */
 
-/* "pyqumo/csim/model.pyx":11
+/* "pyqumo/cqumo/sim.pyx":11
  * 
  * # noinspection PyUnresolvedReferences
  * cdef vector_asarray(vector[double] vect):             # <<<<<<<<<<<<<<
@@ -1394,7 +1397,7 @@ static PyObject *__pyx_codeobj__4;
  *     ret = np.zeros(n)
  */
 
-static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>  __pyx_v_vect) {
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(std::vector<double>  __pyx_v_vect) {
   int __pyx_v_n;
   PyObject *__pyx_v_ret = NULL;
   int __pyx_v_i;
@@ -1412,7 +1415,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("vector_asarray", 0);
 
-  /* "pyqumo/csim/model.pyx":12
+  /* "pyqumo/cqumo/sim.pyx":12
  * # noinspection PyUnresolvedReferences
  * cdef vector_asarray(vector[double] vect):
  *     cdef int n = vect.size()             # <<<<<<<<<<<<<<
@@ -1421,7 +1424,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
  */
   __pyx_v_n = __pyx_v_vect.size();
 
-  /* "pyqumo/csim/model.pyx":13
+  /* "pyqumo/cqumo/sim.pyx":13
  * cdef vector_asarray(vector[double] vect):
  *     cdef int n = vect.size()
  *     ret = np.zeros(n)             # <<<<<<<<<<<<<<
@@ -1454,7 +1457,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   __pyx_v_ret = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":14
+  /* "pyqumo/cqumo/sim.pyx":14
  *     cdef int n = vect.size()
  *     ret = np.zeros(n)
  *     for i in range(n):             # <<<<<<<<<<<<<<
@@ -1466,7 +1469,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "pyqumo/csim/model.pyx":15
+    /* "pyqumo/cqumo/sim.pyx":15
  *     ret = np.zeros(n)
  *     for i in range(n):
  *         ret[i] = vect[i]             # <<<<<<<<<<<<<<
@@ -1479,7 +1482,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "pyqumo/csim/model.pyx":16
+  /* "pyqumo/cqumo/sim.pyx":16
  *     for i in range(n):
  *         ret[i] = vect[i]
  *     return ret             # <<<<<<<<<<<<<<
@@ -1491,7 +1494,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   __pyx_r = __pyx_v_ret;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":11
+  /* "pyqumo/cqumo/sim.pyx":11
  * 
  * # noinspection PyUnresolvedReferences
  * cdef vector_asarray(vector[double] vect):             # <<<<<<<<<<<<<<
@@ -1505,7 +1508,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("pyqumo.csim.model.vector_asarray", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.vector_asarray", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ret);
@@ -1514,7 +1517,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":19
+/* "pyqumo/cqumo/sim.pyx":19
  * 
  * 
  * cdef _build_statistics(VarData* cs):             # <<<<<<<<<<<<<<
@@ -1522,7 +1525,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_vector_asarray(std::vector<double>
  * 
  */
 
-static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *__pyx_v_cs) {
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_statistics(cqumo::VarData *__pyx_v_cs) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1533,7 +1536,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_build_statistics", 0);
 
-  /* "pyqumo/csim/model.pyx":20
+  /* "pyqumo/cqumo/sim.pyx":20
  * 
  * cdef _build_statistics(VarData* cs):
  *     return Statistics(avg=cs.mean, std=cs.std, var=cs.var, count=cs.count)             # <<<<<<<<<<<<<<
@@ -1569,7 +1572,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":19
+  /* "pyqumo/cqumo/sim.pyx":19
  * 
  * 
  * cdef _build_statistics(VarData* cs):             # <<<<<<<<<<<<<<
@@ -1582,7 +1585,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("pyqumo.csim.model._build_statistics", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim._build_statistics", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1590,7 +1593,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":24
+/* "pyqumo/cqumo/sim.pyx":24
  * 
  * # noinspection PyUnresolvedReferences
  * cdef _build_results(const SimData& sim_data):             # <<<<<<<<<<<<<<
@@ -1598,7 +1601,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_statistics(cqumo::VarData *
  *     cdef NodeData data = sim_data.nodeData.at(0)
  */
 
-static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData const &__pyx_v_sim_data) {
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_results(cqumo::SimData const &__pyx_v_sim_data) {
   CYTHON_UNUSED int __pyx_v_addr;
   cqumo::NodeData __pyx_v_data;
   PyObject *__pyx_v_results = NULL;
@@ -1614,7 +1617,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_build_results", 0);
 
-  /* "pyqumo/csim/model.pyx":25
+  /* "pyqumo/cqumo/sim.pyx":25
  * # noinspection PyUnresolvedReferences
  * cdef _build_results(const SimData& sim_data):
  *     cdef int addr = 0             # <<<<<<<<<<<<<<
@@ -1623,7 +1626,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
  */
   __pyx_v_addr = 0;
 
-  /* "pyqumo/csim/model.pyx":26
+  /* "pyqumo/cqumo/sim.pyx":26
  * cdef _build_results(const SimData& sim_data):
  *     cdef int addr = 0
  *     cdef NodeData data = sim_data.nodeData.at(0)             # <<<<<<<<<<<<<<
@@ -1638,7 +1641,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   }
   __pyx_v_data = __pyx_t_1;
 
-  /* "pyqumo/csim/model.pyx":27
+  /* "pyqumo/cqumo/sim.pyx":27
  *     cdef int addr = 0
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()             # <<<<<<<<<<<<<<
@@ -1665,7 +1668,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __pyx_v_results = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":28
+  /* "pyqumo/cqumo/sim.pyx":28
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()
  *     results.system_size = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1675,14 +1678,14 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "pyqumo/csim/model.pyx":29
+  /* "pyqumo/cqumo/sim.pyx":29
  *     results = Results()
  *     results.system_size = CountableDistribution(
  *         vector_asarray(data.systemSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.queue_size = CountableDistribution(
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.systemSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.systemSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1701,7 +1704,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "pyqumo/csim/model.pyx":28
+  /* "pyqumo/cqumo/sim.pyx":28
  *     cdef NodeData data = sim_data.nodeData.at(0)
  *     results = Results()
  *     results.system_size = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1711,7 +1714,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_system_size, __pyx_t_2) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":31
+  /* "pyqumo/cqumo/sim.pyx":31
  *         vector_asarray(data.systemSize.pmf())
  *     )
  *     results.queue_size = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1721,14 +1724,14 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "pyqumo/csim/model.pyx":32
+  /* "pyqumo/cqumo/sim.pyx":32
  *     )
  *     results.queue_size = CountableDistribution(
  *         vector_asarray(data.queueSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.busy = CountableDistribution(
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.queueSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.queueSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1747,7 +1750,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "pyqumo/csim/model.pyx":31
+  /* "pyqumo/cqumo/sim.pyx":31
  *         vector_asarray(data.systemSize.pmf())
  *     )
  *     results.queue_size = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1757,7 +1760,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_queue_size, __pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":34
+  /* "pyqumo/cqumo/sim.pyx":34
  *         vector_asarray(data.queueSize.pmf())
  *     )
  *     results.busy = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1767,14 +1770,14 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_CountableDistribution); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "pyqumo/csim/model.pyx":35
+  /* "pyqumo/cqumo/sim.pyx":35
  *     )
  *     results.busy = CountableDistribution(
  *         vector_asarray(data.serverSize.pmf())             # <<<<<<<<<<<<<<
  *     )
  *     results.loss_prob = data.lossProb
  */
-  __pyx_t_4 = __pyx_f_6pyqumo_4csim_5model_vector_asarray(__pyx_v_data.serverSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.serverSize.pmf()); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -1793,7 +1796,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "pyqumo/csim/model.pyx":34
+  /* "pyqumo/cqumo/sim.pyx":34
  *         vector_asarray(data.queueSize.pmf())
  *     )
  *     results.busy = CountableDistribution(             # <<<<<<<<<<<<<<
@@ -1803,7 +1806,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_busy, __pyx_t_2) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":37
+  /* "pyqumo/cqumo/sim.pyx":37
  *         vector_asarray(data.serverSize.pmf())
  *     )
  *     results.loss_prob = data.lossProb             # <<<<<<<<<<<<<<
@@ -1815,43 +1818,43 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_loss_prob, __pyx_t_2) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":38
+  /* "pyqumo/cqumo/sim.pyx":38
  *     )
  *     results.loss_prob = data.lossProb
  *     results.departures = _build_statistics(&data.departures)             # <<<<<<<<<<<<<<
  *     results.response_time = _build_statistics(&data.responseTime)
  *     results.wait_time = _build_statistics(&data.waitTime)
  */
-  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&__pyx_v_data.departures)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&__pyx_v_data.departures)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_departures, __pyx_t_2) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":39
+  /* "pyqumo/cqumo/sim.pyx":39
  *     results.loss_prob = data.lossProb
  *     results.departures = _build_statistics(&data.departures)
  *     results.response_time = _build_statistics(&data.responseTime)             # <<<<<<<<<<<<<<
  *     results.wait_time = _build_statistics(&data.waitTime)
  *     results.real_time = sim_data.realTimeMs
  */
-  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&__pyx_v_data.responseTime)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&__pyx_v_data.responseTime)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_response_time, __pyx_t_2) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":40
+  /* "pyqumo/cqumo/sim.pyx":40
  *     results.departures = _build_statistics(&data.departures)
  *     results.response_time = _build_statistics(&data.responseTime)
  *     results.wait_time = _build_statistics(&data.waitTime)             # <<<<<<<<<<<<<<
  *     results.real_time = sim_data.realTimeMs
  *     return results
  */
-  __pyx_t_2 = __pyx_f_6pyqumo_4csim_5model__build_statistics((&__pyx_v_data.waitTime)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&__pyx_v_data.waitTime)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_wait_time, __pyx_t_2) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":41
+  /* "pyqumo/cqumo/sim.pyx":41
  *     results.response_time = _build_statistics(&data.responseTime)
  *     results.wait_time = _build_statistics(&data.waitTime)
  *     results.real_time = sim_data.realTimeMs             # <<<<<<<<<<<<<<
@@ -1863,7 +1866,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_results, __pyx_n_s_real_time, __pyx_t_2) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":42
+  /* "pyqumo/cqumo/sim.pyx":42
  *     results.wait_time = _build_statistics(&data.waitTime)
  *     results.real_time = sim_data.realTimeMs
  *     return results             # <<<<<<<<<<<<<<
@@ -1875,7 +1878,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __pyx_r = __pyx_v_results;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":24
+  /* "pyqumo/cqumo/sim.pyx":24
  * 
  * # noinspection PyUnresolvedReferences
  * cdef _build_results(const SimData& sim_data):             # <<<<<<<<<<<<<<
@@ -1889,7 +1892,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("pyqumo.csim.model._build_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim._build_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_results);
@@ -1898,7 +1901,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":45
+/* "pyqumo/cqumo/sim.pyx":45
  * 
  * 
  * cdef double _call_pyobject(void *context):             # <<<<<<<<<<<<<<
@@ -1906,7 +1909,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model__build_results(cqumo::SimData cons
  *     try:
  */
 
-static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context) {
+static double __pyx_f_6pyqumo_5cqumo_3sim__call_pyobject(void *__pyx_v_context) {
   PyObject *__pyx_v_evaluable = NULL;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -1922,7 +1925,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_call_pyobject", 0);
 
-  /* "pyqumo/csim/model.pyx":47
+  /* "pyqumo/cqumo/sim.pyx":47
  * cdef double _call_pyobject(void *context):
  *     # noinspection PyBroadException
  *     try:             # <<<<<<<<<<<<<<
@@ -1938,7 +1941,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "pyqumo/csim/model.pyx":48
+      /* "pyqumo/cqumo/sim.pyx":48
  *     # noinspection PyBroadException
  *     try:
  *         evaluable = <object>context             # <<<<<<<<<<<<<<
@@ -1950,7 +1953,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
       __pyx_v_evaluable = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "pyqumo/csim/model.pyx":49
+      /* "pyqumo/cqumo/sim.pyx":49
  *     try:
  *         evaluable = <object>context
  *         return evaluable.eval()             # <<<<<<<<<<<<<<
@@ -1979,7 +1982,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
       __pyx_r = __pyx_t_7;
       goto __pyx_L7_try_return;
 
-      /* "pyqumo/csim/model.pyx":47
+      /* "pyqumo/cqumo/sim.pyx":47
  * cdef double _call_pyobject(void *context):
  *     # noinspection PyBroadException
  *     try:             # <<<<<<<<<<<<<<
@@ -1992,7 +1995,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "pyqumo/csim/model.pyx":50
+    /* "pyqumo/cqumo/sim.pyx":50
  *         evaluable = <object>context
  *         return evaluable.eval()
  *     except:             # <<<<<<<<<<<<<<
@@ -2000,13 +2003,13 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("pyqumo.csim.model._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("pyqumo.cqumo.sim._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_5, &__pyx_t_6) < 0) __PYX_ERR(0, 50, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
 
-      /* "pyqumo/csim/model.pyx":51
+      /* "pyqumo/cqumo/sim.pyx":51
  *         return evaluable.eval()
  *     except:
  *         return -1             # <<<<<<<<<<<<<<
@@ -2021,7 +2024,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
     }
     __pyx_L5_except_error:;
 
-    /* "pyqumo/csim/model.pyx":47
+    /* "pyqumo/cqumo/sim.pyx":47
  * cdef double _call_pyobject(void *context):
  *     # noinspection PyBroadException
  *     try:             # <<<<<<<<<<<<<<
@@ -2047,7 +2050,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
     goto __pyx_L0;
   }
 
-  /* "pyqumo/csim/model.pyx":45
+  /* "pyqumo/cqumo/sim.pyx":45
  * 
  * 
  * cdef double _call_pyobject(void *context):             # <<<<<<<<<<<<<<
@@ -2060,7 +2063,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_WriteUnraisable("pyqumo.csim.model._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("pyqumo.cqumo.sim._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_evaluable);
@@ -2068,7 +2071,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":54
+/* "pyqumo/cqumo/sim.pyx":54
  * 
  * 
  * cdef call_simGG1(             # <<<<<<<<<<<<<<
@@ -2076,7 +2079,7 @@ static double __pyx_f_6pyqumo_4csim_5model__call_pyobject(void *__pyx_v_context)
  *         void* pyService,
  */
 
-static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArrival, void *__pyx_v_pyService, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(void *__pyx_v_pyArrival, void *__pyx_v_pyService, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::DblFn __pyx_v_cArrival;
   cqumo::DblFn __pyx_v_cService;
   cqumo::SimData __pyx_v_c_ret;
@@ -2089,25 +2092,25 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("call_simGG1", 0);
 
-  /* "pyqumo/csim/model.pyx":59
+  /* "pyqumo/cqumo/sim.pyx":59
  *         int queue_capacity,
  *         int max_packets):
  *     cdef DblFn cArrival = makeDblFn(_call_pyobject, pyArrival)             # <<<<<<<<<<<<<<
  *     cdef DblFn cService = makeDblFn(_call_pyobject, pyService)
  *     cdef SimData c_ret = simGG1(
  */
-  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_4csim_5model__call_pyobject, __pyx_v_pyArrival);
+  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyArrival);
 
-  /* "pyqumo/csim/model.pyx":60
+  /* "pyqumo/cqumo/sim.pyx":60
  *         int max_packets):
  *     cdef DblFn cArrival = makeDblFn(_call_pyobject, pyArrival)
  *     cdef DblFn cService = makeDblFn(_call_pyobject, pyService)             # <<<<<<<<<<<<<<
  *     cdef SimData c_ret = simGG1(
  *         cArrival, cService, queue_capacity, max_packets)
  */
-  __pyx_v_cService = cqumo::makeDblFn(__pyx_f_6pyqumo_4csim_5model__call_pyobject, __pyx_v_pyService);
+  __pyx_v_cService = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyService);
 
-  /* "pyqumo/csim/model.pyx":61
+  /* "pyqumo/cqumo/sim.pyx":61
  *     cdef DblFn cArrival = makeDblFn(_call_pyobject, pyArrival)
  *     cdef DblFn cService = makeDblFn(_call_pyobject, pyService)
  *     cdef SimData c_ret = simGG1(             # <<<<<<<<<<<<<<
@@ -2116,19 +2119,19 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
  */
   __pyx_v_c_ret = cqumo::simGG1(__pyx_v_cArrival, __pyx_v_cService, __pyx_v_queue_capacity, __pyx_v_max_packets);
 
-  /* "pyqumo/csim/model.pyx":63
+  /* "pyqumo/cqumo/sim.pyx":63
  *     cdef SimData c_ret = simGG1(
  *         cArrival, cService, queue_capacity, max_packets)
  *     result: Results = _build_results(c_ret)             # <<<<<<<<<<<<<<
  *     return result
  * 
  */
-  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model__build_results(__pyx_v_c_ret); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":64
+  /* "pyqumo/cqumo/sim.pyx":64
  *         cArrival, cService, queue_capacity, max_packets)
  *     result: Results = _build_results(c_ret)
  *     return result             # <<<<<<<<<<<<<<
@@ -2140,7 +2143,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":54
+  /* "pyqumo/cqumo/sim.pyx":54
  * 
  * 
  * cdef call_simGG1(             # <<<<<<<<<<<<<<
@@ -2151,7 +2154,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("pyqumo.csim.model.call_simGG1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.call_simGG1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_result);
@@ -2160,7 +2163,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":67
+/* "pyqumo/cqumo/sim.pyx":67
  * 
  * 
  * cdef call_simMM1(             # <<<<<<<<<<<<<<
@@ -2168,7 +2171,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simGG1(void *__pyx_v_pyArriva
  *         double service_rate,
  */
 
-static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival_rate, double __pyx_v_service_rate, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
+static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(double __pyx_v_arrival_rate, double __pyx_v_service_rate, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::SimData __pyx_v_c_ret;
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
@@ -2179,7 +2182,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("call_simMM1", 0);
 
-  /* "pyqumo/csim/model.pyx":72
+  /* "pyqumo/cqumo/sim.pyx":72
  *         int queue_capacity,
  *         int max_packets):
  *     cdef SimData c_ret = simMM1(             # <<<<<<<<<<<<<<
@@ -2188,19 +2191,19 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
  */
   __pyx_v_c_ret = cqumo::simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
 
-  /* "pyqumo/csim/model.pyx":74
+  /* "pyqumo/cqumo/sim.pyx":74
  *     cdef SimData c_ret = simMM1(
  *         arrival_rate, service_rate, queue_capacity, max_packets)
  *     result: Results = _build_results(c_ret)             # <<<<<<<<<<<<<<
  *     return result
  * 
  */
-  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model__build_results(__pyx_v_c_ret); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":75
+  /* "pyqumo/cqumo/sim.pyx":75
  *         arrival_rate, service_rate, queue_capacity, max_packets)
  *     result: Results = _build_results(c_ret)
  *     return result             # <<<<<<<<<<<<<<
@@ -2212,7 +2215,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":67
+  /* "pyqumo/cqumo/sim.pyx":67
  * 
  * 
  * cdef call_simMM1(             # <<<<<<<<<<<<<<
@@ -2223,7 +2226,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("pyqumo.csim.model.call_simMM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.call_simMM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_result);
@@ -2232,7 +2235,7 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":78
+/* "pyqumo/cqumo/sim.pyx":78
  * 
  * 
  * def simulate_mm1n(             # <<<<<<<<<<<<<<
@@ -2241,10 +2244,10 @@ static PyObject *__pyx_f_6pyqumo_4csim_5model_call_simMM1(double __pyx_v_arrival
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_4csim_5model_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -> Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
-static PyMethodDef __pyx_mdef_6pyqumo_4csim_5model_1simulate_mm1n = {"simulate_mm1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_4csim_5model_simulate_mm1n};
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -> Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n = {"simulate_mm1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n};
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_arrival_rate;
   double __pyx_v_service_rate;
   PyObject *__pyx_v_queue_capacity = 0;
@@ -2321,18 +2324,18 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_1simulate_mm1n(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("simulate_mm1n", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 78, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("pyqumo.csim.model.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(__pyx_self, __pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
+  __pyx_r = __pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(__pyx_self, __pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_arrival_rate, double __pyx_v_service_rate, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2343,7 +2346,7 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("simulate_mm1n", 0);
 
-  /* "pyqumo/csim/model.pyx":102
+  /* "pyqumo/cqumo/sim.pyx":102
  *     results : Results
  *     """
  *     return call_simMM1(arrival_rate, service_rate, queue_capacity, max_packets)             # <<<<<<<<<<<<<<
@@ -2353,13 +2356,13 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_queue_capacity); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 102, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_max_packets); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 102, __pyx_L1_error)
-  __pyx_t_3 = __pyx_f_6pyqumo_4csim_5model_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":78
+  /* "pyqumo/cqumo/sim.pyx":78
  * 
  * 
  * def simulate_mm1n(             # <<<<<<<<<<<<<<
@@ -2370,7 +2373,7 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("pyqumo.csim.model.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2378,7 +2381,7 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "pyqumo/csim/model.pyx":105
+/* "pyqumo/cqumo/sim.pyx":105
  * 
  * 
  * def simulate_gg1n(             # <<<<<<<<<<<<<<
@@ -2387,10 +2390,10 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_simulate_mm1n(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_4csim_5model_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -> Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -> double`\n    service : callable `() -> double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
-static PyMethodDef __pyx_mdef_6pyqumo_4csim_5model_3simulate_gg1n = {"simulate_gg1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_4csim_5model_2simulate_gg1n};
-static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -> Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -> double`\n    service : callable `() -> double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n = {"simulate_gg1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n};
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_arrival = 0;
   PyObject *__pyx_v_service = 0;
   PyObject *__pyx_v_queue_capacity = 0;
@@ -2467,68 +2470,108 @@ static PyObject *__pyx_pw_6pyqumo_4csim_5model_3simulate_gg1n(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("simulate_gg1n", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 105, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("pyqumo.csim.model.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(__pyx_self, __pyx_v_arrival, __pyx_v_service, __pyx_v_queue_capacity, __pyx_v_max_packets);
+  __pyx_r = __pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(__pyx_self, __pyx_v_arrival, __pyx_v_service, __pyx_v_queue_capacity, __pyx_v_max_packets);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_service, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
   void *__pyx_v_pyArrival;
   void *__pyx_v_pyService;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
+  PyObject *__pyx_t_2 = NULL;
   int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("simulate_gg1n", 0);
+  __Pyx_INCREF(__pyx_v_queue_capacity);
 
-  /* "pyqumo/csim/model.pyx":129
+  /* "pyqumo/cqumo/sim.pyx":129
  *     results : Results
  *     """
  *     cdef void* pyArrival = <void*>arrival.rnd             # <<<<<<<<<<<<<<
  *     cdef void* pyService = <void*>service.rnd
- *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)
+ *     if queue_capacity == np.inf:
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_arrival, __pyx_n_s_rnd); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_pyArrival = ((void *)__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":130
+  /* "pyqumo/cqumo/sim.pyx":130
  *     """
  *     cdef void* pyArrival = <void*>arrival.rnd
  *     cdef void* pyService = <void*>service.rnd             # <<<<<<<<<<<<<<
- *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)
+ *     if queue_capacity == np.inf:
+ *         queue_capacity = -1
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_service, __pyx_n_s_rnd); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_pyService = ((void *)__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":131
+  /* "pyqumo/cqumo/sim.pyx":131
  *     cdef void* pyArrival = <void*>arrival.rnd
  *     cdef void* pyService = <void*>service.rnd
+ *     if queue_capacity == np.inf:             # <<<<<<<<<<<<<<
+ *         queue_capacity = -1
+ *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_queue_capacity, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_3) {
+
+    /* "pyqumo/cqumo/sim.pyx":132
+ *     cdef void* pyService = <void*>service.rnd
+ *     if queue_capacity == np.inf:
+ *         queue_capacity = -1             # <<<<<<<<<<<<<<
+ *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)
+ */
+    __Pyx_INCREF(__pyx_int_neg_1);
+    __Pyx_DECREF_SET(__pyx_v_queue_capacity, __pyx_int_neg_1);
+
+    /* "pyqumo/cqumo/sim.pyx":131
+ *     cdef void* pyArrival = <void*>arrival.rnd
+ *     cdef void* pyService = <void*>service.rnd
+ *     if queue_capacity == np.inf:             # <<<<<<<<<<<<<<
+ *         queue_capacity = -1
+ *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)
+ */
+  }
+
+  /* "pyqumo/cqumo/sim.pyx":133
+ *     if queue_capacity == np.inf:
+ *         queue_capacity = -1
  *     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_queue_capacity); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_max_packets); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_6pyqumo_4csim_5model_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_queue_capacity); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_max_packets); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyqumo/csim/model.pyx":105
+  /* "pyqumo/cqumo/sim.pyx":105
  * 
  * 
  * def simulate_gg1n(             # <<<<<<<<<<<<<<
@@ -2539,9 +2582,11 @@ static PyObject *__pyx_pf_6pyqumo_4csim_5model_2simulate_gg1n(CYTHON_UNUSED PyOb
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("pyqumo.csim.model.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("pyqumo.cqumo.sim.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_queue_capacity);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2554,17 +2599,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_model(PyObject* module); /*proto*/
+static int __pyx_pymod_exec_sim(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_model},
+  {Py_mod_exec, (void*)__pyx_pymod_exec_sim},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "model",
+    "sim",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -2606,6 +2651,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_departures, __pyx_k_departures, sizeof(__pyx_k_departures), 0, 0, 1, 1},
   {&__pyx_n_s_eval, __pyx_k_eval, sizeof(__pyx_k_eval), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_n_s_inf, __pyx_k_inf, sizeof(__pyx_k_inf), 0, 0, 1, 1},
   {&__pyx_n_s_loss_prob, __pyx_k_loss_prob, sizeof(__pyx_k_loss_prob), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_max_packets, __pyx_k_max_packets, sizeof(__pyx_k_max_packets), 0, 0, 1, 1},
@@ -2614,8 +2660,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_n_s_pyArrival, __pyx_k_pyArrival, sizeof(__pyx_k_pyArrival), 0, 0, 1, 1},
   {&__pyx_n_s_pyService, __pyx_k_pyService, sizeof(__pyx_k_pyService), 0, 0, 1, 1},
-  {&__pyx_n_s_pyqumo_csim_model, __pyx_k_pyqumo_csim_model, sizeof(__pyx_k_pyqumo_csim_model), 0, 0, 1, 1},
-  {&__pyx_kp_s_pyqumo_csim_model_pyx, __pyx_k_pyqumo_csim_model_pyx, sizeof(__pyx_k_pyqumo_csim_model_pyx), 0, 0, 1, 0},
+  {&__pyx_n_s_pyqumo_cqumo_sim, __pyx_k_pyqumo_cqumo_sim, sizeof(__pyx_k_pyqumo_cqumo_sim), 0, 0, 1, 1},
+  {&__pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_k_pyqumo_cqumo_sim_pyx, sizeof(__pyx_k_pyqumo_cqumo_sim_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_pyqumo_random, __pyx_k_pyqumo_random, sizeof(__pyx_k_pyqumo_random), 0, 0, 1, 1},
   {&__pyx_n_s_pyqumo_sim_gg1, __pyx_k_pyqumo_sim_gg1, sizeof(__pyx_k_pyqumo_sim_gg1), 0, 0, 1, 1},
   {&__pyx_n_s_pyqumo_sim_helpers, __pyx_k_pyqumo_sim_helpers, sizeof(__pyx_k_pyqumo_sim_helpers), 0, 0, 1, 1},
@@ -2648,7 +2694,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "pyqumo/csim/model.pyx":78
+  /* "pyqumo/cqumo/sim.pyx":78
  * 
  * 
  * def simulate_mm1n(             # <<<<<<<<<<<<<<
@@ -2658,9 +2704,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple_ = PyTuple_Pack(4, __pyx_n_s_arrival_rate, __pyx_n_s_service_rate, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_csim_model_pyx, __pyx_n_s_simulate_mm1n, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_mm1n, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 78, __pyx_L1_error)
 
-  /* "pyqumo/csim/model.pyx":105
+  /* "pyqumo/cqumo/sim.pyx":105
  * 
  * 
  * def simulate_gg1n(             # <<<<<<<<<<<<<<
@@ -2670,7 +2716,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__3 = PyTuple_Pack(6, __pyx_n_s_arrival, __pyx_n_s_service, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets, __pyx_n_s_pyArrival, __pyx_n_s_pyService); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_csim_model_pyx, __pyx_n_s_simulate_gg1n, 105, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_gg1n, 105, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2681,6 +2727,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_100000 = PyInt_FromLong(100000L); if (unlikely(!__pyx_int_100000)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2769,11 +2816,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC initmodel(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC initmodel(void)
+__Pyx_PyMODINIT_FUNC initsim(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC initsim(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit_model(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit_model(void)
+__Pyx_PyMODINIT_FUNC PyInit_sim(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit_sim(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -2840,7 +2887,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec_model(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec_sim(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -2853,7 +2900,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_model(PyObject *__pyx_pyinit_modul
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module 'model' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module 'sim' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -2868,7 +2915,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_model(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_sim(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -2907,7 +2954,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("model", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("sim", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -2925,14 +2972,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_pyqumo__csim__model) {
+  if (__pyx_module_is_main_pyqumo__cqumo__sim) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "pyqumo.csim.model")) {
-      if (unlikely(PyDict_SetItemString(modules, "pyqumo.csim.model", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "pyqumo.cqumo.sim")) {
+      if (unlikely(PyDict_SetItemString(modules, "pyqumo.cqumo.sim", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -2953,18 +3000,18 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "pyqumo/csim/model.pyx":1
+  /* "pyqumo/cqumo/sim.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * from libcpp.vector cimport vector
- * from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
+ * from pyqumo.cqumo.sim cimport SimData, NodeData, simMM1, VarData, simGG1, \
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":5
- * from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
+  /* "pyqumo/cqumo/sim.pyx":5
+ * from pyqumo.cqumo.sim cimport SimData, NodeData, simMM1, VarData, simGG1, \
  *     makeDblFn, DblFn
  * from pyqumo.sim.helpers import Statistics             # <<<<<<<<<<<<<<
  * from pyqumo.sim.gg1 import Results
@@ -2984,7 +3031,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":6
+  /* "pyqumo/cqumo/sim.pyx":6
  *     makeDblFn, DblFn
  * from pyqumo.sim.helpers import Statistics
  * from pyqumo.sim.gg1 import Results             # <<<<<<<<<<<<<<
@@ -3005,7 +3052,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyqumo/csim/model.pyx":7
+  /* "pyqumo/cqumo/sim.pyx":7
  * from pyqumo.sim.helpers import Statistics
  * from pyqumo.sim.gg1 import Results
  * from pyqumo.random import CountableDistribution, Exponential             # <<<<<<<<<<<<<<
@@ -3033,34 +3080,34 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":78
+  /* "pyqumo/cqumo/sim.pyx":78
  * 
  * 
  * def simulate_mm1n(             # <<<<<<<<<<<<<<
  *         arrival_rate: float,
  *         service_rate: float,
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_4csim_5model_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_csim_model); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_cqumo_sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_simulate_mm1n, __pyx_t_2) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":105
+  /* "pyqumo/cqumo/sim.pyx":105
  * 
  * 
  * def simulate_gg1n(             # <<<<<<<<<<<<<<
  *         arrival,
  *         service,
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_4csim_5model_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_csim_model); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_cqumo_sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_simulate_gg1n, __pyx_t_2) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyqumo/csim/model.pyx":1
+  /* "pyqumo/cqumo/sim.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * from libcpp.vector cimport vector
- * from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
+ * from pyqumo.cqumo.sim cimport SimData, NodeData, simMM1, VarData, simGG1, \
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3075,11 +3122,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init pyqumo.csim.model", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init pyqumo.cqumo.sim", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init pyqumo.csim.model");
+    PyErr_SetString(PyExc_ImportError, "init pyqumo.cqumo.sim");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

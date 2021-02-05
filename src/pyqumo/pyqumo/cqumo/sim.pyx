@@ -1,6 +1,6 @@
 import numpy as np
 from libcpp.vector cimport vector
-from pyqumo.csim.model cimport SimData, NodeData, simMM1, VarData, simGG1, \
+from pyqumo.cqumo.sim cimport SimData, NodeData, simMM1, VarData, simGG1, \
     makeDblFn, DblFn
 from pyqumo.sim.helpers import Statistics
 from pyqumo.sim.gg1 import Results
@@ -128,4 +128,6 @@ def simulate_gg1n(
     """
     cdef void* pyArrival = <void*>arrival.rnd
     cdef void* pyService = <void*>service.rnd
+    if queue_capacity == np.inf:
+        queue_capacity = -1
     return call_simGG1(pyArrival, pyService, queue_capacity, max_packets)

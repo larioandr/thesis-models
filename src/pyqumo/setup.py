@@ -7,8 +7,8 @@ os.environ['CXX'] = 'g++'
 
 extensions = [
     Extension(
-        "pyqumo.csim.model", [
-            "pyqumo/csim/model.pyx",
+        "pyqumo.cqumo.sim", [
+            "pyqumo/cqumo/sim.pyx",
             "cqumo/Base.cpp",
             "cqumo/Functions.cpp",
             "cqumo/tandem/Components.cpp",
