@@ -61,3 +61,9 @@ cdef extern from "Simulation.h" namespace "cqumo":
             DblFn service,
             int queueCapacity,
             int maxPackets)
+    
+    SimData simTandem(
+            DblFn arrival,
+            vector[DblFn]& services,
+            int queueCapacity,
+            int maxPackets)

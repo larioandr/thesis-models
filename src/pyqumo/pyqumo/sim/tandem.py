@@ -133,14 +133,17 @@ class Results:
 
     To pretty print the results one can make use of `tabulate()` method.
     """
-    def __init__(self, records: Records):
+    def __init__(self, records: Optional[Records] = None, 
+                 num_stations: Optional[int] = None):
         """
         Create results.
 
         Parameters
         ----------
-        records : Records
+        records : Records, optional
+        num_stations: int, optional
         """
+        self.real_time = 0.0
         self.system_size: List[CountableDistribution] = []
         self.queue_size: List[CountableDistribution] = []
         self.busy: List[CountableDistribution] = []
@@ -152,7 +155,11 @@ class Results:
         self.response_time: List[Statistics] = []
         self.delivery_delays: List[Statistics] = []
 
-        self._num_stations = records.num_stations
+        self._num_stations = records.num_stations if records is not None \
+            else num_stations
+
+        if records is None:
+            return
 
         def idiv(x: int, y: int, default: float = 0.0) -> float:
             return x / y if y != 0 else default

@@ -20,6 +20,7 @@
 #include <sstream>
 #include <vector>
 
+// #define DEBUG 1
 #ifdef DEBUG
 #define debug(...) printf(__VA_ARGS__)
 #else

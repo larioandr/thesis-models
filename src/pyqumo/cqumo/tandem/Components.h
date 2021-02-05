@@ -358,6 +358,11 @@ Network *buildOneHopeNetwork(
         const DblFn &service,
         int queueCapacity);
 
+Network *buildTandemNetwork(
+    const DblFn& arrival,
+    const std::vector<DblFn>& services,
+    int queueCapacity);
+
 }
 
 #endif //CQUMO_TANDEM_COMPONENTS_H

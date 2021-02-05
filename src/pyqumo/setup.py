@@ -16,6 +16,7 @@ extensions = [
             "cqumo/tandem/Simulation.cpp",
             "cqumo/tandem/Statistics.cpp",
             "cqumo/tandem/System.cpp",
+            "cqumo/tandem/Marshal.cpp",
         ],
         include_dirs=['cqumo', 'cqumo/tandem'],
         language="c++",

@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <utility>
+#include <iostream>
 
 namespace cqumo {
 
@@ -196,6 +197,26 @@ Network *buildOneHopeNetwork(
     auto node = new Node(0, queue, server, source);
     auto network = new Network;
     network->addNode(node);
+    return network;
+}
+
+Network *buildTandemNetwork(
+        const DblFn& arrival,
+        const std::vector<DblFn>& services,
+        int queueCapacity) {
+    auto network = new Network;
+    int numNodes = static_cast<int>(services.size());
+    for (int i = 0; i < static_cast<int>(services.size()); ++i){
+        auto queue = new Queue(queueCapacity);
+        auto server = new Server(services[i]);
+        auto source = i == 0 ? new Source(arrival, numNodes - 1) : nullptr;
+        auto node = new Node(i, queue, server, source);
+        network->addNode(node);
+    }
+    for (unsigned i = 1; i < services.size(); ++i) {
+        network->node(i - 1)->setNextHop(network->node(i));
+    }
+    // std::cout << network->toString() << std::endl;
     return network;
 }
 

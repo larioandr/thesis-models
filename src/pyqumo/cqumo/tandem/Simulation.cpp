@@ -2,6 +2,7 @@
  * @author Andrey Larionov
  */
 #include "Simulation.h"
+#include "Marshal.h"
 #include <chrono>
 #include <random>
 #include <iostream>
@@ -107,6 +108,39 @@ SimData simGG1(
     double realTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - startedAt).count();
     auto simData = SimData(*journal, system->time(), realTimeMs);
+
+    // Clear
+    delete network;
+    delete journal;
+    delete system;
+    return simData;
+}
+
+
+// TODO: refactor, remove duplicated code
+SimData simTandem(
+        DblFn arrival,
+        const std::vector<DblFn>& services,
+        int queueCapacity,
+        int maxPackets) {
+    auto startedAt = std::chrono::system_clock::now();
+    auto network = buildTandemNetwork(arrival, services, queueCapacity);
+    auto journal = new NetworkJournal;
+    for (auto &addrNodePair: network->nodes()) {
+        journal->addNodeJournal(addrNodePair.second);
+    }
+    auto system = new System;
+
+    // Execute main loop
+    runMainLoop(network, system, journal, maxPackets);
+    journal->commit();
+
+    // Build node data
+    double realTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now() - startedAt).count();
+    auto simData = SimData(*journal, system->time(), realTimeMs);
+
+    // std::cout << toYaml(simData) << std::endl;
 
     // Clear
     delete network;

@@ -162,6 +162,12 @@ SimData simGG1(
         int queueCapacity = -1,
         int maxPackets = MAX_PACKETS);
 
+SimData simTandem(
+    DblFn arrival,
+    const std::vector<DblFn>& services,
+    int queueCapacity = -1,
+    int maxPackets = MAX_PACKETS);
+
 }
 
 #endif //CQUMO_TANDEM_SIMULATION_H

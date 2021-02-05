@@ -391,7 +391,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_Statistics, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 5, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>: <span class="k">from</span> <span class="nn">pyqumo.sim.gg1</span> <span class="k">import</span> <span class="n">Results</span></pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>: <span class="k">from</span> <span class="nn">pyqumo.sim.gg1</span> <span class="k">import</span> <span class="n">Results</span> <span class="k">as</span> <span class="n">GG1Results</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_2 = <span class='py_c_api'>PyList_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_Results);
@@ -402,34 +402,48 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_1, __pyx_n_s_Results);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_Results, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 6, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_GG1Results, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 6, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>: <span class="k">from</span> <span class="nn">pyqumo.random</span> <span class="k">import</span> <span class="n">CountableDistribution</span><span class="p">,</span> <span class="n">Exponential</span></pre>
-<pre class='cython code score-29 '>  __pyx_t_1 = <span class='py_c_api'>PyList_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>: <span class="k">from</span> <span class="nn">pyqumo.sim.tandem</span> <span class="k">import</span> <span class="n">Results</span> <span class="k">as</span> <span class="n">TandemResults</span></pre>
+<pre class='cython code score-19 '>  __pyx_t_1 = <span class='py_c_api'>PyList_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_CountableDistribution);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_n_s_CountableDistribution);
-  <span class='py_macro_api'>PyList_SET_ITEM</span>(__pyx_t_1, 0, __pyx_n_s_CountableDistribution);
-  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_Exponential);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_n_s_Exponential);
-  <span class='py_macro_api'>PyList_SET_ITEM</span>(__pyx_t_1, 1, __pyx_n_s_Exponential);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_pyqumo_random, __pyx_t_1, 0);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_Results);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_n_s_Results);
+  <span class='py_macro_api'>PyList_SET_ITEM</span>(__pyx_t_1, 0, __pyx_n_s_Results);
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_pyqumo_sim_tandem, __pyx_t_1, 0);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_2, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_2, __pyx_n_s_Results);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_CountableDistribution, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 7, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_2, __pyx_n_s_Exponential);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_Exponential, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 7, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_TandemResults, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 7, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">008</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">009</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">010</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
-<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>: <span class="k">cdef</span> <span class="nf">vector_asarray</span><span class="p">(</span><span class="n">vector</span><span class="p">[</span><span class="n">double</span><span class="p">]</span> <span class="n">vect</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">008</span>: <span class="k">from</span> <span class="nn">pyqumo.random</span> <span class="k">import</span> <span class="n">CountableDistribution</span><span class="p">,</span> <span class="n">Exponential</span></pre>
+<pre class='cython code score-29 '>  __pyx_t_2 = <span class='py_c_api'>PyList_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_CountableDistribution);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_n_s_CountableDistribution);
+  <span class='py_macro_api'>PyList_SET_ITEM</span>(__pyx_t_2, 0, __pyx_n_s_CountableDistribution);
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_n_s_Exponential);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_n_s_Exponential);
+  <span class='py_macro_api'>PyList_SET_ITEM</span>(__pyx_t_2, 1, __pyx_n_s_Exponential);
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_pyqumo_random, __pyx_t_2, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_1, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_CountableDistribution, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_ImportFrom</span>(__pyx_t_1, __pyx_n_s_Exponential);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_Exponential, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 8, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">009</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">010</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">011</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
+<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>: <span class="k">cdef</span> <span class="nf">vector_asarray</span><span class="p">(</span><span class="n">vector</span><span class="p">[</span><span class="n">double</span><span class="p">]</span> <span class="n">vect</span><span class="p">):</span></pre>
 <pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(std::vector&lt;double&gt;  __pyx_v_vect) {
   int __pyx_v_n;
   PyObject *__pyx_v_ret = NULL;
@@ -452,15 +466,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">n</span> <span class="o">=</span> <span class="n">vect</span><span class="o">.</span><span class="n">size</span><span class="p">()</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">n</span> <span class="o">=</span> <span class="n">vect</span><span class="o">.</span><span class="n">size</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_n = __pyx_v_vect.size();
-</pre><pre class="cython line score-22" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:     <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></pre>
-<pre class='cython code score-22 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_2, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)</span>
+</pre><pre class="cython line score-22" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:     <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></pre>
+<pre class='cython code score-22 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_2, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_2, __pyx_n_s_zeros);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_2, __pyx_n_s_zeros);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_n);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_n);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -475,30 +489,30 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) <span class='error_goto'>__PYX_ERR(0, 13, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_1)) <span class='error_goto'>__PYX_ERR(0, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_ret = __pyx_t_1;
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_5 = __pyx_v_n;
   __pyx_t_6 = __pyx_t_5;
   for (__pyx_t_7 = 0; __pyx_t_7 &lt; __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
-</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vect</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></pre>
-<pre class='cython code score-8 '>    __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>((__pyx_v_vect[__pyx_v_i]));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)</span>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">016</span>:         <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vect</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></pre>
+<pre class='cython code score-8 '>    __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>((__pyx_v_vect[__pyx_v_i]));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-    if (unlikely(<span class='pyx_c_api'>__Pyx_SetItemInt</span>(__pyx_v_ret, __pyx_v_i, __pyx_t_1, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 15, __pyx_L1_error)</span>
+    if (unlikely(<span class='pyx_c_api'>__Pyx_SetItemInt</span>(__pyx_v_ret, __pyx_v_i, __pyx_t_1, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 16, __pyx_L1_error)</span>
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">016</span>:     <span class="k">return</span> <span class="n">ret</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>:     <span class="k">return</span> <span class="n">ret</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_ret);
   __pyx_r = __pyx_v_ret;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">017</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">018</span>: </pre>
-<pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>: <span class="k">cdef</span> <span class="nf">_build_statistics</span><span class="p">(</span><span class="n">VarData</span><span class="o">*</span> <span class="n">cs</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">018</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">019</span>: </pre>
+<pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>: <span class="k">cdef</span> <span class="nf">_build_statistics</span><span class="p">(</span><span class="n">VarData</span><span class="o">*</span> <span class="n">cs</span><span class="p">):</span></pre>
 <pre class='cython code score-5 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_statistics(cqumo::VarData *__pyx_v_cs) {
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -516,46 +530,46 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-50" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>:     <span class="k">return</span> <span class="n">Statistics</span><span class="p">(</span><span class="n">avg</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">var</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">count</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-50" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:     <span class="k">return</span> <span class="n">Statistics</span><span class="p">(</span><span class="n">avg</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">var</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">count</span><span class="p">)</span></pre>
 <pre class='cython code score-50 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
-  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_Statistics);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_Statistics);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(4);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(4);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;mean);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;mean);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_avg, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 20, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_avg, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;std);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;std);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_std, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 20, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_std, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_cs-&gt;var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_var, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 20, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_var, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_From_unsigned_int</span>(__pyx_v_cs-&gt;count);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_From_unsigned_int</span>(__pyx_v_cs-&gt;count);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_count, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 20, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_count, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">021</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">022</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">023</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
-<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>: <span class="k">cdef</span> <span class="nf">_build_results</span><span class="p">(</span><span class="n">const</span> <span class="n">SimData</span><span class="o">&amp;</span> <span class="n">sim_data</span><span class="p">):</span></pre>
-<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_results(cqumo::SimData const &amp;__pyx_v_sim_data) {
+</pre><pre class="cython line score-0">&#xA0;<span class="">022</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">023</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">024</span>: <span class="c"># noinspection PyUnresolvedReferences</span></pre>
+<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>: <span class="k">cdef</span> <span class="nf">_build_gg1_results</span><span class="p">(</span><span class="n">const</span> <span class="n">SimData</span><span class="o">&amp;</span> <span class="n">sim_data</span><span class="p">):</span></pre>
+<pre class='cython code score-7 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_gg1_results(cqumo::SimData const &amp;__pyx_v_sim_data) {
   CYTHON_UNUSED int __pyx_v_addr;
   cqumo::NodeData __pyx_v_data;
   PyObject *__pyx_v_results = NULL;
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
-  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("_build_results", 0);
+  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("_build_gg1_results", 0);
 /* … */
   /* function exit code */
   __pyx_L1_error:;
@@ -563,7 +577,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5);
-  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._build_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._build_gg1_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_results);
@@ -571,18 +585,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">addr</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">addr</span> <span class="o">=</span> <span class="mf">0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_addr = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:     <span class="k">cdef</span> <span class="kt">NodeData</span> <span class="nf">data</span> <span class="o">=</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">nodeData</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">0</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:     <span class="k">cdef</span> <span class="kt">NodeData</span> <span class="nf">data</span> <span class="o">=</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">nodeData</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">0</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  try {
     __pyx_t_1 = __pyx_v_sim_data.nodeData.at(0);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    <span class='error_goto'>__PYX_ERR(0, 26, __pyx_L1_error)</span>
+    <span class='error_goto'>__PYX_ERR(0, 27, __pyx_L1_error)</span>
   }
   __pyx_v_data = __pyx_t_1;
-</pre><pre class="cython line score-18" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:     <span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span></pre>
-<pre class='cython code score-18 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_Results);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)</span>
+</pre><pre class="cython line score-18" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:     <span class="n">results</span> <span class="o">=</span> <span class="n">GG1Results</span><span class="p">()</span></pre>
+<pre class='cython code score-18 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_GG1Results);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -596,19 +610,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   }
   __pyx_t_2 = (__pyx_t_4) ? <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_4) : <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 27, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 28, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_results = __pyx_t_2;
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:     <span class="n">results</span><span class="o">.</span><span class="n">system_size</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
-<pre class='cython code score-5 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)</span>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:     <span class="n">results</span><span class="o">.</span><span class="n">system_size</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
+<pre class='cython code score-5 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
 /* … */
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_system_size, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 28, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_system_size, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 29, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">systemSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
-<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.systemSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">systemSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">()))</span></pre>
+<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.systemSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -623,17 +637,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 28, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 29, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">030</span>:     <span class="p">)</span></pre>
-<pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:     <span class="n">results</span><span class="o">.</span><span class="n">queue_size</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:     <span class="n">results</span><span class="o">.</span><span class="n">queue_size</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
 <pre class='cython code score-5 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
 /* … */
   if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_queue_size, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 31, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">queueSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">queueSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">()))</span></pre>
 <pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.queueSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -652,15 +665,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 31, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">033</span>:     <span class="p">)</span></pre>
-<pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:     <span class="n">results</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
-<pre class='cython code score-5 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)</span>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:     <span class="n">results</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="n">CountableDistribution</span><span class="p">(</span></pre>
+<pre class='cython code score-5 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
 /* … */
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_busy, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 34, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_busy, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 33, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">serverSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())</span></pre>
-<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.serverSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)</span>
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:         <span class="n">vector_asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">serverSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">()))</span></pre>
+<pre class='cython code score-15 '>  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_data.serverSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -675,43 +687,240 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 34, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 33, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">036</span>:     <span class="p">)</span></pre>
-<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:     <span class="n">results</span><span class="o">.</span><span class="n">loss_prob</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">lossProb</span></pre>
-<pre class='cython code score-8 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_data.lossProb);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)</span>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:     <span class="n">results</span><span class="o">.</span><span class="n">loss_prob</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">lossProb</span></pre>
+<pre class='cython code score-8 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_data.lossProb);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_loss_prob, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 37, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_loss_prob, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 35, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:     <span class="n">results</span><span class="o">.</span><span class="n">departures</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">departures</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.departures));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)</span>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:     <span class="n">results</span><span class="o">.</span><span class="n">departures</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">departures</span><span class="p">)</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.departures));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_departures, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 38, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_departures, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 36, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:     <span class="n">results</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">responseTime</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.responseTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)</span>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:     <span class="n">results</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">responseTime</span><span class="p">)</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.responseTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_response_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 39, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_response_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 37, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:     <span class="n">results</span><span class="o">.</span><span class="n">wait_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">waitTime</span><span class="p">)</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.waitTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)</span>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:     <span class="n">results</span><span class="o">.</span><span class="n">wait_time</span> <span class="o">=</span> <span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">.</span><span class="n">waitTime</span><span class="p">)</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_data.waitTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_wait_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 40, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_wait_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 38, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">041</span>:     <span class="n">results</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">realTimeMs</span></pre>
-<pre class='cython code score-8 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_sim_data.realTimeMs);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)</span>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:     <span class="n">results</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">realTimeMs</span></pre>
+<pre class='cython code score-8 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_sim_data.realTimeMs);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_real_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 41, __pyx_L1_error)</span>
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_real_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 39, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">042</span>:     <span class="k">return</span> <span class="n">results</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:     <span class="k">return</span> <span class="n">results</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_results);
   __pyx_r = __pyx_v_results;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">043</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">044</span>: </pre>
-<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>: <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">_call_pyobject</span><span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="n">context</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">041</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">042</span>: </pre>
+<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>: <span class="k">cdef</span> <span class="nf">_build_tandem_results</span><span class="p">(</span><span class="n">const</span> <span class="n">SimData</span><span class="o">&amp;</span> <span class="n">simData</span><span class="p">,</span> <span class="nb">int</span> <span class="n">numStations</span><span class="p">):</span></pre>
+<pre class='cython code score-8 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim__build_tandem_results(cqumo::SimData const &amp;__pyx_v_simData, int __pyx_v_numStations) {
+  int __pyx_v_addr;
+  cqumo::NodeData __pyx_v_nodeData;
+  PyObject *__pyx_v_results = NULL;
+  PyObject *__pyx_r = NULL;
+  <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
+  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("_build_tandem_results", 0);
+/* … */
+  /* function exit code */
+  __pyx_L1_error:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_2);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_3);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_8);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_9);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._build_tandem_results", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_results);
+  <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
+  <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
+  return __pyx_r;
+}
+</pre><pre class="cython line score-0">&#xA0;<span class="">044</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">addr</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">045</span>:     <span class="k">cdef</span> <span class="kt">NodeData</span> <span class="nf">nodeData</span></pre>
+<pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:     <span class="n">results</span> <span class="o">=</span> <span class="n">TandemResults</span><span class="p">(</span><span class="n">num_stations</span><span class="o">=</span><span class="n">numStations</span><span class="p">)</span></pre>
+<pre class='cython code score-16 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_TandemResults);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_numStations);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_num_stations, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 46, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_results = __pyx_t_3;
+  __pyx_t_3 = 0;
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:     <span class="k">for</span> <span class="n">addr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numStations</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_4 = __pyx_v_numStations;
+  __pyx_t_5 = __pyx_t_4;
+  for (__pyx_t_6 = 0; __pyx_t_6 &lt; __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_addr = __pyx_t_6;
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:         <span class="n">nodeData</span> <span class="o">=</span> <span class="n">simData</span><span class="o">.</span><span class="n">nodeData</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span></pre>
+<pre class='cython code score-0 '>    try {
+      __pyx_t_7 = __pyx_v_simData.nodeData.at(__pyx_v_addr);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      <span class='error_goto'>__PYX_ERR(0, 48, __pyx_L1_error)</span>
+    }
+    __pyx_v_nodeData = __pyx_t_7;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         <span class="n">results</span><span class="o">.</span><span class="n">system_size</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_system_size);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+/* … */
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 49, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:             <span class="n">CountableDistribution</span><span class="p">(</span><span class="n">vector_asarray</span><span class="p">(</span><span class="n">nodeData</span><span class="o">.</span><span class="n">systemSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())))</span></pre>
+<pre class='cython code score-17 '>    <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+    __pyx_t_8 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_nodeData.systemSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 50, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_8);
+    __pyx_t_9 = NULL;
+    if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_1))) {
+      __pyx_t_9 = <span class='py_macro_api'>PyMethod_GET_SELF</span>(__pyx_t_1);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = <span class='py_macro_api'>PyMethod_GET_FUNCTION</span>(__pyx_t_1);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_9);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(function);
+        <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_t_1, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_9, __pyx_t_8) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_1, __pyx_t_8);
+    <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_9); __pyx_t_9 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_8); __pyx_t_8 = 0;
+    if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 50, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         <span class="n">results</span><span class="o">.</span><span class="n">queue_size</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_queue_size);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+/* … */
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_2, __pyx_t_3);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 51, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:             <span class="n">CountableDistribution</span><span class="p">(</span><span class="n">vector_asarray</span><span class="p">(</span><span class="n">nodeData</span><span class="o">.</span><span class="n">queueSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())))</span></pre>
+<pre class='cython code score-17 '>    <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+    __pyx_t_8 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_nodeData.queueSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 52, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_8);
+    __pyx_t_9 = NULL;
+    if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_1))) {
+      __pyx_t_9 = <span class='py_macro_api'>PyMethod_GET_SELF</span>(__pyx_t_1);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = <span class='py_macro_api'>PyMethod_GET_FUNCTION</span>(__pyx_t_1);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_9);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(function);
+        <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_t_1, function);
+      }
+    }
+    __pyx_t_3 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_9, __pyx_t_8) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_1, __pyx_t_8);
+    <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_9); __pyx_t_9 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_8); __pyx_t_8 = 0;
+    if (unlikely(!__pyx_t_3)) <span class='error_goto'>__PYX_ERR(0, 52, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">053</span>:         <span class="n">results</span><span class="o">.</span><span class="n">busy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_busy);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+/* … */
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 53, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:             <span class="n">CountableDistribution</span><span class="p">(</span><span class="n">vector_asarray</span><span class="p">(</span><span class="n">nodeData</span><span class="o">.</span><span class="n">serverSize</span><span class="o">.</span><span class="n">pmf</span><span class="p">())))</span></pre>
+<pre class='cython code score-17 '>    <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_CountableDistribution);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+    __pyx_t_8 = __pyx_f_6pyqumo_5cqumo_3sim_vector_asarray(__pyx_v_nodeData.serverSize.pmf());<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 54, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_8);
+    __pyx_t_9 = NULL;
+    if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_1))) {
+      __pyx_t_9 = <span class='py_macro_api'>PyMethod_GET_SELF</span>(__pyx_t_1);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = <span class='py_macro_api'>PyMethod_GET_FUNCTION</span>(__pyx_t_1);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_9);
+        <span class='pyx_macro_api'>__Pyx_INCREF</span>(function);
+        <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_t_1, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_9, __pyx_t_8) : <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_1, __pyx_t_8);
+    <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_9); __pyx_t_9 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_8); __pyx_t_8 = 0;
+    if (unlikely(!__pyx_t_2)) <span class='error_goto'>__PYX_ERR(0, 54, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         <span class="n">results</span><span class="o">.</span><span class="n">drop_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodeData</span><span class="o">.</span><span class="n">dropProb</span><span class="p">)</span></pre>
+<pre class='cython code score-11 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_drop_prob);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_3 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_nodeData.dropProb);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_2, __pyx_t_3);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 55, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+</pre><pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:         <span class="n">results</span><span class="o">.</span><span class="n">delivery_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodeData</span><span class="o">.</span><span class="n">deliveryProb</span><span class="p">)</span></pre>
+<pre class='cython code score-11 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_delivery_prob);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_nodeData.deliveryProb);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 56, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         <span class="n">results</span><span class="o">.</span><span class="n">departures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nodeData</span><span class="o">.</span><span class="n">departures</span><span class="p">))</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_departures);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_nodeData.departures));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_2, __pyx_t_3);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 57, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:         <span class="n">results</span><span class="o">.</span><span class="n">wait_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nodeData</span><span class="o">.</span><span class="n">waitTime</span><span class="p">))</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_wait_time);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_nodeData.waitTime));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 58, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:         <span class="n">results</span><span class="o">.</span><span class="n">response_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nodeData</span><span class="o">.</span><span class="n">responseTime</span><span class="p">))</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_response_time);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_nodeData.responseTime));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_2, __pyx_t_3);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 59, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:         <span class="n">results</span><span class="o">.</span><span class="n">delivery_delays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_build_statistics</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nodeData</span><span class="o">.</span><span class="n">delays</span><span class="p">))</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_results, __pyx_n_s_delivery_delays);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
+    __pyx_t_2 = __pyx_f_6pyqumo_5cqumo_3sim__build_statistics((&amp;__pyx_v_nodeData.delays));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+    __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_Append</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 60, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  }
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:     <span class="n">results</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="n">simData</span><span class="o">.</span><span class="n">realTimeMs</span></pre>
+<pre class='cython code score-8 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_simData.realTimeMs);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='pyx_c_api'>__Pyx_PyObject_SetAttrStr</span>(__pyx_v_results, __pyx_n_s_real_time, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 61, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:     <span class="k">return</span> <span class="n">results</span></pre>
+<pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_results);
+  __pyx_r = __pyx_v_results;
+  goto __pyx_L0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">063</span>: </pre>
+<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>: <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">_call_pyobject</span><span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="n">context</span><span class="p">):</span></pre>
 <pre class='cython code score-6 '>static double __pyx_f_6pyqumo_5cqumo_3sim__call_pyobject(void *__pyx_v_context) {
   PyObject *__pyx_v_evaluable = NULL;
   double __pyx_r;
@@ -730,8 +939,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">046</span>:     <span class="c"># noinspection PyBroadException</span></pre>
-<pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:     <span class="k">try</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">065</span>:     <span class="c"># noinspection PyBroadException</span></pre>
+<pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:     <span class="k">try</span><span class="p">:</span></pre>
 <pre class='cython code score-9 '>  {
     /*try:*/ {
 /* … */
@@ -759,13 +968,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <span class='pyx_c_api'>__Pyx_ExceptionReset</span>(__pyx_t_1, __pyx_t_2, __pyx_t_3);
     goto __pyx_L0;
   }
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:         <span class="n">evaluable</span> <span class="o">=</span> <span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;</span><span class="n">context</span></pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         <span class="n">evaluable</span> <span class="o">=</span> <span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;</span><span class="n">context</span></pre>
 <pre class='cython code score-1 '>      __pyx_t_4 = ((PyObject *)__pyx_v_context);
       <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_4);
       __pyx_v_evaluable = __pyx_t_4;
       __pyx_t_4 = 0;
-</pre><pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         <span class="k">return</span> <span class="n">evaluable</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></pre>
-<pre class='cython code score-29 '>      __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_evaluable, __pyx_n_s_eval);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L3_error)</span>
+</pre><pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:         <span class="k">return</span> <span class="n">evaluable</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></pre>
+<pre class='cython code score-29 '>      __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_evaluable, __pyx_n_s_eval);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 68, __pyx_L3_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
       __pyx_t_6 = NULL;
       if (CYTHON_UNPACK_METHODS &amp;&amp; likely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_5))) {
@@ -779,21 +988,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       }
       __pyx_t_4 = (__pyx_t_6) ? <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_5, __pyx_t_6) : <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(__pyx_t_5);
       <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_4)) <span class='error_goto'>__PYX_ERR(0, 49, __pyx_L3_error)</span>
+      if (unlikely(!__pyx_t_4)) <span class='error_goto'>__PYX_ERR(0, 68, __pyx_L3_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_7 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_4); if (unlikely((__pyx_t_7 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 49, __pyx_L3_error)</span>
+      __pyx_t_7 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_4); if (unlikely((__pyx_t_7 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 68, __pyx_L3_error)</span>
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_7;
       goto __pyx_L7_try_return;
-</pre><pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:     <span class="k">except</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:     <span class="k">except</span><span class="p">:</span></pre>
 <pre class='cython code score-4 '>    /*except:*/ {
       <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim._call_pyobject", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (<span class='pyx_c_api'>__Pyx_GetException</span>(&amp;__pyx_t_4, &amp;__pyx_t_5, &amp;__pyx_t_6) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 50, __pyx_L5_except_error)</span>
+      if (<span class='pyx_c_api'>__Pyx_GetException</span>(&amp;__pyx_t_4, &amp;__pyx_t_5, &amp;__pyx_t_6) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 69, __pyx_L5_except_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_6);
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         <span class="k">return</span> <span class="o">-</span><span class="mf">1</span></pre>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:         <span class="k">return</span> <span class="o">-</span><span class="mf">1</span></pre>
 <pre class='cython code score-3 '>      __pyx_r = -1.0;
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
@@ -801,9 +1010,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       goto __pyx_L6_except_return;
     }
     __pyx_L5_except_error:;
-</pre><pre class="cython line score-0">&#xA0;<span class="">052</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">053</span>: </pre>
-<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>: <span class="k">cdef</span> <span class="nf">call_simGG1</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">071</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">072</span>: </pre>
+<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>: <span class="k">cdef</span> <span class="nf">call_simGG1</span><span class="p">(</span></pre>
 <pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(void *__pyx_v_pyArrival, void *__pyx_v_pyService, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::DblFn __pyx_v_cArrival;
   cqumo::DblFn __pyx_v_cService;
@@ -824,30 +1033,30 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">055</span>:         <span class="n">void</span><span class="o">*</span> <span class="n">pyArrival</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">056</span>:         <span class="n">void</span><span class="o">*</span> <span class="n">pyService</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">057</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">058</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cArrival</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyArrival</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">074</span>:         <span class="n">void</span><span class="o">*</span> <span class="n">pyArrival</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">075</span>:         <span class="n">void</span><span class="o">*</span> <span class="n">pyService</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">076</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">077</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cArrival</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyArrival</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyArrival);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cService</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyService</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">079</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cService</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyService</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_cService = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyService);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simGG1</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">080</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simGG1</span><span class="p">(</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_ret = cqumo::simGG1(__pyx_v_cArrival, __pyx_v_cService, __pyx_v_queue_capacity, __pyx_v_max_packets);
-</pre><pre class="cython line score-0">&#xA0;<span class="">062</span>:         <span class="n">cArrival</span><span class="p">,</span> <span class="n">cService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">081</span>:         <span class="n">cArrival</span><span class="p">,</span> <span class="n">cService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_gg1_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_gg1_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>:     <span class="k">return</span> <span class="n">result</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">083</span>:     <span class="k">return</span> <span class="n">result</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_result);
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">065</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">066</span>: </pre>
-<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>: <span class="k">cdef</span> <span class="nf">call_simMM1</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">084</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">085</span>: </pre>
+<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">086</span>: <span class="k">cdef</span> <span class="nf">call_simMM1</span><span class="p">(</span></pre>
 <pre class='cython code score-4 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(double __pyx_v_arrival_rate, double __pyx_v_service_rate, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
   cqumo::SimData __pyx_v_c_ret;
   PyObject *__pyx_v_result = NULL;
@@ -866,29 +1075,81 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">068</span>:         <span class="n">double</span> <span class="n">arrival_rate</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">069</span>:         <span class="n">double</span> <span class="n">service_rate</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">070</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">071</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">072</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simMM1</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">087</span>:         <span class="n">double</span> <span class="n">arrival_rate</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">088</span>:         <span class="n">double</span> <span class="n">service_rate</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">089</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">090</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simMM1</span><span class="p">(</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_ret = cqumo::simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_v_queue_capacity, __pyx_v_max_packets);
-</pre><pre class="cython line score-0">&#xA0;<span class="">073</span>:         <span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
-<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">092</span>:         <span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">093</span>:     <span class="n">result</span><span class="p">:</span> <span class="n">Results</span> <span class="o">=</span> <span class="n">_build_gg1_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">)</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim__build_gg1_results(__pyx_v_c_ret);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">075</span>:     <span class="k">return</span> <span class="n">result</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">094</span>:     <span class="k">return</span> <span class="n">result</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_result);
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">076</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">077</span>: </pre>
-<pre class="cython line score-70" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>: <span class="k">def</span> <span class="nf">simulate_mm1n</span><span class="p">(</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">095</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">096</span>: </pre>
+<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>: <span class="k">cdef</span> <span class="nf">call_simTandem</span><span class="p">(</span></pre>
+<pre class='cython code score-3 '>static PyObject *__pyx_f_6pyqumo_5cqumo_3sim_call_simTandem(void *__pyx_v_pyArrival, std::vector&lt;void *&gt;  __pyx_v_pyServices, int __pyx_v_queue_capacity, int __pyx_v_max_packets) {
+  cqumo::DblFn __pyx_v_cArrival;
+  std::vector&lt;cqumo::DblFn&gt;  __pyx_v_cServices;
+  unsigned int __pyx_v_i;
+  cqumo::SimData __pyx_v_c_ret;
+  PyObject *__pyx_r = NULL;
+  <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
+  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("call_simTandem", 0);
+/* … */
+  /* function exit code */
+  __pyx_L1_error:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_4);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.call_simTandem", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
+  <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
+  return __pyx_r;
+}
+</pre><pre class="cython line score-0">&#xA0;<span class="">098</span>:         <span class="n">void</span><span class="o">*</span> <span class="n">pyArrival</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">099</span>:         <span class="n">vector</span><span class="p">[</span><span class="n">void</span><span class="o">*</span><span class="p">]</span> <span class="n">pyServices</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">100</span>:         <span class="nb">int</span> <span class="n">queue_capacity</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">101</span>:         <span class="nb">int</span> <span class="n">max_packets</span><span class="p">):</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">102</span>:     <span class="k">cdef</span> <span class="kt">DblFn</span> <span class="nf">cArrival</span> <span class="o">=</span> <span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyArrival</span><span class="p">)</span></pre>
+<pre class='cython code score-0 '>  __pyx_v_cArrival = cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, __pyx_v_pyArrival);
+</pre><pre class="cython line score-0">&#xA0;<span class="">103</span>:     <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">DblFn</span>] <span class="nf">cServices</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">104</span>:     <span class="k">cdef</span> <span class="kt">unsigned</span> <span class="nf">i</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pyServices</span><span class="o">.</span><span class="n">size</span><span class="p">()):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_1 = __pyx_v_pyServices.size();
+  __pyx_t_2 = __pyx_t_1;
+  for (__pyx_t_3 = 0; __pyx_t_3 &lt; __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_i = __pyx_t_3;
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">106</span>:         <span class="n">cServices</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">makeDblFn</span><span class="p">(</span><span class="n">_call_pyobject</span><span class="p">,</span> <span class="n">pyServices</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></pre>
+<pre class='cython code score-0 '>    try {
+      __pyx_v_cServices.push_back(cqumo::makeDblFn(__pyx_f_6pyqumo_5cqumo_3sim__call_pyobject, (__pyx_v_pyServices[__pyx_v_i])));
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      <span class='error_goto'>__PYX_ERR(0, 106, __pyx_L1_error)</span>
+    }
+  }
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">107</span>:     <span class="k">cdef</span> <span class="kt">SimData</span> <span class="nf">c_ret</span> <span class="o">=</span> <span class="n">simTandem</span><span class="p">(</span></pre>
+<pre class='cython code score-0 '>  __pyx_v_c_ret = cqumo::simTandem(__pyx_v_cArrival, __pyx_v_cServices, __pyx_v_queue_capacity, __pyx_v_max_packets);
+</pre><pre class="cython line score-0">&#xA0;<span class="">108</span>:         <span class="n">cArrival</span><span class="p">,</span> <span class="n">cServices</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+<pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:     <span class="k">return</span> <span class="n">_build_tandem_results</span><span class="p">(</span><span class="n">c_ret</span><span class="p">,</span> <span class="n">pyServices</span><span class="o">.</span><span class="n">size</span><span class="p">())</span></pre>
+<pre class='cython code score-1 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
+  __pyx_t_4 = __pyx_f_6pyqumo_5cqumo_3sim__build_tandem_results(__pyx_v_c_ret, __pyx_v_pyServices.size());<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
+  goto __pyx_L0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">110</span>: </pre>
+<pre class="cython line score-70" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>: <span class="k">def</span> <span class="nf">simulate_mm1n</span><span class="p">(</span></pre>
 <pre class='cython code score-70 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static char __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n[] = "simulate_mm1n(double arrival_rate: float, double service_rate: float, queue_capacity: int, max_packets: int = 100000) -&gt; GG1Results\n\n    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival_rate : float\n    service_rate : float\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
 static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n = {"simulate_mm1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_simulate_mm1n};
 static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_arrival_rate;
@@ -926,13 +1187,13 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_sel
         case  1:
         if (likely((values[1] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_service_rate)) != 0)) kw_args--;
         else {
-          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, 1); <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L3_error)</span>
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, 1); <span class='error_goto'>__PYX_ERR(0, 111, __pyx_L3_error)</span>
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_queue_capacity)) != 0)) kw_args--;
         else {
-          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, 2); <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L3_error)</span>
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, 2); <span class='error_goto'>__PYX_ERR(0, 111, __pyx_L3_error)</span>
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -942,7 +1203,7 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_sel
         }
       }
       if (unlikely(kw_args &gt; 0)) {
-        if (unlikely(<span class='pyx_c_api'>__Pyx_ParseOptionalKeywords</span>(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "simulate_mm1n") &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L3_error)</span>
+        if (unlikely(<span class='pyx_c_api'>__Pyx_ParseOptionalKeywords</span>(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "simulate_mm1n") &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 111, __pyx_L3_error)</span>
       }
     } else {
       switch (<span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)) {
@@ -955,14 +1216,14 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_1simulate_mm1n(PyObject *__pyx_sel
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_arrival_rate = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(values[0]); if (unlikely((__pyx_v_arrival_rate == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 79, __pyx_L3_error)</span>
-    __pyx_v_service_rate = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(values[1]); if (unlikely((__pyx_v_service_rate == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 80, __pyx_L3_error)</span>
+    __pyx_v_arrival_rate = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(values[0]); if (unlikely((__pyx_v_arrival_rate == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 112, __pyx_L3_error)</span>
+    __pyx_v_service_rate = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(values[1]); if (unlikely((__pyx_v_service_rate == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 113, __pyx_L3_error)</span>
     __pyx_v_queue_capacity = values[2];
     __pyx_v_max_packets = values[3];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L3_error)</span>
+  <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_mm1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 111, __pyx_L3_error)</span>
   __pyx_L3_error:;
   <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_mm1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
@@ -994,53 +1255,53 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_simulate_mm1n(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple_ = <span class='py_c_api'>PyTuple_Pack</span>(4, __pyx_n_s_arrival_rate, __pyx_n_s_service_rate, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets);<span class='error_goto'> if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
+  __pyx_tuple_ = <span class='py_c_api'>PyTuple_Pack</span>(4, __pyx_n_s_arrival_rate, __pyx_n_s_service_rate, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets);<span class='error_goto'> if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 111, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple_);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple_);
 /* … */
-  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_mm1n, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_codeobj__2 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_mm1n, 78, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:         <span class="n">arrival_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">080</span>:         <span class="n">service_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">081</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">082</span>:         <span class="n">max_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">100000</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">083</span>: <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Results</span><span class="p">:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">084</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">085</span>: <span class="sd">    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">086</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">087</span>: <span class="sd">    Returns results in the same dataclass as defined for G/G/1 model</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">088</span>: <span class="sd">    in `pyqumo.sim.gg1.Results`.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">089</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">090</span>: <span class="sd">    Parameters</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">091</span>: <span class="sd">    ----------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">092</span>: <span class="sd">    arrival_rate : float</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">093</span>: <span class="sd">    service_rate : float</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">094</span>: <span class="sd">    queue_capacity : int</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">095</span>: <span class="sd">    max_packets : int, optional</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">096</span>: <span class="sd">        By default 100&#39;000</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">097</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">098</span>: <span class="sd">    Returns</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">099</span>: <span class="sd">    -------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">100</span>: <span class="sd">    results : Results</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">101</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
-<pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">102</span>:     <span class="k">return</span> <span class="n">call_simMM1</span><span class="p">(</span><span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+  __pyx_t_1 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_1simulate_mm1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_mm1n, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 111, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_codeobj__2 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_mm1n, 111, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 111, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">112</span>:         <span class="n">arrival_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">113</span>:         <span class="n">service_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">114</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">115</span>:         <span class="n">max_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">100000</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">116</span>: <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GG1Results</span><span class="p">:</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">117</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">118</span>: <span class="sd">    Wrapper for C++ implementation of M/M/1/N or M/M/1 model.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">119</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">120</span>: <span class="sd">    Returns results in the same dataclass as defined for G/G/1 model</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">121</span>: <span class="sd">    in `pyqumo.sim.gg1.Results`.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">122</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">123</span>: <span class="sd">    Parameters</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">124</span>: <span class="sd">    ----------</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">125</span>: <span class="sd">    arrival_rate : float</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">126</span>: <span class="sd">    service_rate : float</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">127</span>: <span class="sd">    queue_capacity : int</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">128</span>: <span class="sd">    max_packets : int, optional</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">129</span>: <span class="sd">        By default 100&#39;000</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">130</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">131</span>: <span class="sd">    Returns</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">132</span>: <span class="sd">    -------</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">133</span>: <span class="sd">    results : Results</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">134</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+<pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">135</span>:     <span class="k">return</span> <span class="n">call_simMM1</span><span class="p">(</span><span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
 <pre class='cython code score-15 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_1 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 102, __pyx_L1_error)</span>
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_2 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 102, __pyx_L1_error)</span>
-  __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_1 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 135, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_2 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 135, __pyx_L1_error)</span>
+  __pyx_t_3 = __pyx_f_6pyqumo_5cqumo_3sim_call_simMM1(__pyx_v_arrival_rate, __pyx_v_service_rate, __pyx_t_1, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">103</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">104</span>: </pre>
-<pre class="cython line score-51" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>: <span class="k">def</span> <span class="nf">simulate_gg1n</span><span class="p">(</span></pre>
-<pre class='cython code score-51 '>/* Python wrapper */
+</pre><pre class="cython line score-0">&#xA0;<span class="">136</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">137</span>: </pre>
+<pre class="cython line score-53" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">138</span>: <span class="k">def</span> <span class="nf">simulate_gg1n</span><span class="p">(</span></pre>
+<pre class='cython code score-53 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -&gt; Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -&gt; double`\n    service : callable `() -&gt; double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
+static char __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n[] = "simulate_gg1n(arrival, service, queue_capacity: int, max_packets: int = 100000) -&gt; GG1Results\n\n    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.\n\n    Returns results in the same dataclass as defined for G/G/1 model\n    in `pyqumo.sim.gg1.Results`.\n\n    Parameters\n    ----------\n    arrival : callable `() -&gt; double`\n    service : callable `() -&gt; double`\n    queue_capacity : int\n    max_packets : int, optional\n        By default 100'000\n\n    Returns\n    -------\n    results : Results\n    ";
 static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n = {"simulate_gg1n", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_2simulate_gg1n};
 static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_arrival = 0;
@@ -1078,13 +1339,13 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_sel
         case  1:
         if (likely((values[1] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_service)) != 0)) kw_args--;
         else {
-          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, 1); <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L3_error)</span>
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, 1); <span class='error_goto'>__PYX_ERR(0, 138, __pyx_L3_error)</span>
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_queue_capacity)) != 0)) kw_args--;
         else {
-          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, 2); <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L3_error)</span>
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, 2); <span class='error_goto'>__PYX_ERR(0, 138, __pyx_L3_error)</span>
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -1094,7 +1355,7 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_sel
         }
       }
       if (unlikely(kw_args &gt; 0)) {
-        if (unlikely(<span class='pyx_c_api'>__Pyx_ParseOptionalKeywords</span>(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "simulate_gg1n") &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L3_error)</span>
+        if (unlikely(<span class='pyx_c_api'>__Pyx_ParseOptionalKeywords</span>(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "simulate_gg1n") &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 138, __pyx_L3_error)</span>
       }
     } else {
       switch (<span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)) {
@@ -1114,7 +1375,7 @@ static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_3simulate_gg1n(PyObject *__pyx_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L3_error)</span>
+  <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_gg1n", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 138, __pyx_L3_error)</span>
   __pyx_L3_error:;
   <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_gg1n", __pyx_clineno, __pyx_lineno, __pyx_filename);
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
@@ -1151,70 +1412,253 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_2simulate_gg1n(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__3 = <span class='py_c_api'>PyTuple_Pack</span>(6, __pyx_n_s_arrival, __pyx_n_s_service, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets, __pyx_n_s_pyArrival, __pyx_n_s_pyService);<span class='error_goto'> if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 105, __pyx_L1_error)</span>
+  __pyx_tuple__3 = <span class='py_c_api'>PyTuple_Pack</span>(6, __pyx_n_s_arrival, __pyx_n_s_service, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets, __pyx_n_s_pyArrival, __pyx_n_s_pyService);<span class='error_goto'> if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 138, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__3);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__3);
 /* … */
-  __pyx_t_2 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_gg1n, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 105, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">106</span>:         <span class="n">arrival</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">107</span>:         <span class="n">service</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">108</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">109</span>:         <span class="n">max_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">100000</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">110</span>: <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Results</span><span class="p">:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">111</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">112</span>: <span class="sd">    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">113</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">114</span>: <span class="sd">    Returns results in the same dataclass as defined for G/G/1 model</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">115</span>: <span class="sd">    in `pyqumo.sim.gg1.Results`.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">116</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">117</span>: <span class="sd">    Parameters</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">118</span>: <span class="sd">    ----------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">119</span>: <span class="sd">    arrival : callable `() -&gt; double`</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">120</span>: <span class="sd">    service : callable `() -&gt; double`</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">121</span>: <span class="sd">    queue_capacity : int</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">122</span>: <span class="sd">    max_packets : int, optional</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">123</span>: <span class="sd">        By default 100&#39;000</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">124</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">125</span>: <span class="sd">    Returns</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">126</span>: <span class="sd">    -------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">127</span>: <span class="sd">    results : Results</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">128</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
-<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">129</span>:     <span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">pyArrival</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">arrival</span><span class="o">.</span><span class="n">rnd</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_arrival, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)</span>
+  __pyx_t_1 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_3simulate_gg1n, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_gg1n, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 138, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_codeobj__4 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyqumo_cqumo_sim_pyx, __pyx_n_s_simulate_gg1n, 138, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 138, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">139</span>:         <span class="n">arrival</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">140</span>:         <span class="n">service</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">141</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">142</span>:         <span class="n">max_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">100000</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">143</span>: <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GG1Results</span><span class="p">:</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">144</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">145</span>: <span class="sd">    Wrapper for C++ implementation of G/G/1/N or G/G/1 model.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">146</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">147</span>: <span class="sd">    Returns results in the same dataclass as defined for G/G/1 model</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">148</span>: <span class="sd">    in `pyqumo.sim.gg1.Results`.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">149</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">150</span>: <span class="sd">    Parameters</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">151</span>: <span class="sd">    ----------</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">152</span>: <span class="sd">    arrival : callable `() -&gt; double`</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">153</span>: <span class="sd">    service : callable `() -&gt; double`</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">154</span>: <span class="sd">    queue_capacity : int</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">155</span>: <span class="sd">    max_packets : int, optional</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">156</span>: <span class="sd">        By default 100&#39;000</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">157</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">158</span>: <span class="sd">    Returns</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">159</span>: <span class="sd">    -------</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">160</span>: <span class="sd">    results : Results</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">161</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">162</span>:     <span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">pyArrival</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">arrival</span><span class="o">.</span><span class="n">rnd</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_arrival, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_pyArrival = ((void *)__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">130</span>:     <span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">pyService</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">service</span><span class="o">.</span><span class="n">rnd</span></pre>
-<pre class='cython code score-3 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_service, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)</span>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">163</span>:     <span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">pyService</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">service</span><span class="o">.</span><span class="n">rnd</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_service, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_v_pyService = ((void *)__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:     <span class="k">if</span> <span class="n">queue_capacity</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span></pre>
-<pre class='cython code score-14 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">164</span>:     <span class="k">if</span> <span class="n">queue_capacity</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span></pre>
+<pre class='cython code score-14 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_inf);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_inf);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = <span class='py_c_api'>PyObject_RichCompare</span>(__pyx_v_queue_capacity, __pyx_t_2, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='py_c_api'>PyObject_RichCompare</span>(__pyx_v_queue_capacity, __pyx_t_2, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_IsTrue</span>(__pyx_t_1); if (unlikely(__pyx_t_3 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 131, __pyx_L1_error)</span>
+  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_IsTrue</span>(__pyx_t_1); if (unlikely(__pyx_t_3 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 164, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 /* … */
   }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">132</span>:         <span class="n">queue_capacity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">165</span>:         <span class="n">queue_capacity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1</span></pre>
 <pre class='cython code score-2 '>    <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_int_neg_1);
     <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_queue_capacity, __pyx_int_neg_1);
-</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">133</span>:     <span class="k">return</span> <span class="n">call_simGG1</span><span class="p">(</span><span class="n">pyArrival</span><span class="p">,</span> <span class="n">pyService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">166</span>:     <span class="k">return</span> <span class="n">call_simGG1</span><span class="p">(</span><span class="n">pyArrival</span><span class="p">,</span> <span class="n">pyService</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
 <pre class='cython code score-15 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
-  __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_4 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 133, __pyx_L1_error)</span>
-  __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_5 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 133, __pyx_L1_error)</span>
-  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_4, __pyx_t_5);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)</span>
+  __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_4 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 166, __pyx_L1_error)</span>
+  __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_5 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 166, __pyx_L1_error)</span>
+  __pyx_t_1 = __pyx_f_6pyqumo_5cqumo_3sim_call_simGG1(__pyx_v_pyArrival, __pyx_v_pyService, __pyx_t_4, __pyx_t_5);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
+  goto __pyx_L0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">167</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">168</span>: </pre>
+<pre class="cython line score-51" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">169</span>: <span class="k">def</span> <span class="nf">simulate_tandem</span><span class="p">(</span></pre>
+<pre class='cython code score-51 '>/* Python wrapper */
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_5simulate_tandem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pyqumo_5cqumo_3sim_4simulate_tandem[] = "simulate_tandem(arrival, services, queue_capacity: int, max_packets: int = 100000) -&gt; TandemResults";
+static PyMethodDef __pyx_mdef_6pyqumo_5cqumo_3sim_5simulate_tandem = {"simulate_tandem", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pyqumo_5cqumo_3sim_5simulate_tandem, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pyqumo_5cqumo_3sim_4simulate_tandem};
+static PyObject *__pyx_pw_6pyqumo_5cqumo_3sim_5simulate_tandem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_arrival = 0;
+  PyObject *__pyx_v_services = 0;
+  PyObject *__pyx_v_queue_capacity = 0;
+  PyObject *__pyx_v_max_packets = 0;
+  PyObject *__pyx_r = 0;
+  <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
+  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("simulate_tandem (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&amp;__pyx_n_s_arrival,&amp;__pyx_n_s_services,&amp;__pyx_n_s_queue_capacity,&amp;__pyx_n_s_max_packets,0};
+    PyObject* values[4] = {0,0,0,0};
+    values[3] = ((PyObject *)__pyx_int_100000);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = <span class='py_c_api'>PyDict_Size</span>(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_arrival)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_services)) != 0)) kw_args--;
+        else {
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_tandem", 0, 3, 4, 1); <span class='error_goto'>__PYX_ERR(0, 169, __pyx_L3_error)</span>
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_queue_capacity)) != 0)) kw_args--;
+        else {
+          <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_tandem", 0, 3, 4, 2); <span class='error_goto'>__PYX_ERR(0, 169, __pyx_L3_error)</span>
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (kw_args &gt; 0) {
+          PyObject* value = <span class='pyx_c_api'>__Pyx_PyDict_GetItemStr</span>(__pyx_kwds, __pyx_n_s_max_packets);
+          if (value) { values[3] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args &gt; 0)) {
+        if (unlikely(<span class='pyx_c_api'>__Pyx_ParseOptionalKeywords</span>(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "simulate_tandem") &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 169, __pyx_L3_error)</span>
+      }
+    } else {
+      switch (<span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)) {
+        case  4: values[3] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 2);
+        values[1] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 1);
+        values[0] = <span class='py_macro_api'>PyTuple_GET_ITEM</span>(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_arrival = values[0];
+    __pyx_v_services = values[1];
+    __pyx_v_queue_capacity = values[2];
+    __pyx_v_max_packets = values[3];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  <span class='pyx_c_api'>__Pyx_RaiseArgtupleInvalid</span>("simulate_tandem", 0, 3, 4, <span class='py_macro_api'>PyTuple_GET_SIZE</span>(__pyx_args)); <span class='error_goto'>__PYX_ERR(0, 169, __pyx_L3_error)</span>
+  __pyx_L3_error:;
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_tandem", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_6pyqumo_5cqumo_3sim_4simulate_tandem(__pyx_self, __pyx_v_arrival, __pyx_v_services, __pyx_v_queue_capacity, __pyx_v_max_packets);
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* function exit code */
+  <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6pyqumo_5cqumo_3sim_4simulate_tandem(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arrival, PyObject *__pyx_v_services, PyObject *__pyx_v_queue_capacity, PyObject *__pyx_v_max_packets) {
+  void *__pyx_v_pyArrival;
+  std::vector&lt;void *&gt;  __pyx_v_pyServices;
+  unsigned int __pyx_v_i;
+  PyObject *__pyx_r = NULL;
+  <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
+  <span class='refnanny'>__Pyx_RefNannySetupContext</span>("simulate_tandem", 0);
+  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_queue_capacity);
+/* … */
+  /* function exit code */
+  __pyx_L1_error:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1);
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_5);
+  <span class='pyx_c_api'>__Pyx_AddTraceback</span>("pyqumo.cqumo.sim.simulate_tandem", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_queue_capacity);
+  <span class='refnanny'>__Pyx_XGIVEREF</span>(__pyx_r);
+  <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
+  return __pyx_r;
+}
+/* … */
+  __pyx_tuple__5 = <span class='py_c_api'>PyTuple_Pack</span>(7, __pyx_n_s_arrival, __pyx_n_s_services, __pyx_n_s_queue_capacity, __pyx_n_s_max_packets, __pyx_n_s_pyArrival, __pyx_n_s_pyServices, __pyx_n_s_i);<span class='error_goto'> if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 169, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__5);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__5);
+/* … */
+  __pyx_t_1 = PyCFunction_NewEx(&amp;__pyx_mdef_6pyqumo_5cqumo_3sim_5simulate_tandem, NULL, __pyx_n_s_pyqumo_cqumo_sim);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_simulate_tandem, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 169, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">170</span>:         <span class="n">arrival</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">171</span>:         <span class="n">services</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">172</span>:         <span class="n">queue_capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">173</span>:         <span class="n">max_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">100000</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">174</span>: <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TandemResults</span><span class="p">:</span></pre>
+<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">175</span>:     <span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">pyArrival</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">arrival</span><span class="o">.</span><span class="n">rnd</span></pre>
+<pre class='cython code score-3 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_arrival, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  __pyx_v_pyArrival = ((void *)__pyx_t_1);
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">176</span>:     <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">void</span>*] <span class="nf">pyServices</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">177</span>:     <span class="k">cdef</span> <span class="kt">unsigned</span> <span class="nf">i</span> <span class="o">=</span> <span class="mf">0</span></pre>
+<pre class='cython code score-0 '>  __pyx_v_i = 0;
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">178</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">services</span><span class="p">)):</span></pre>
+<pre class='cython code score-5 '>  __pyx_t_2 = <span class='py_c_api'>PyObject_Length</span>(__pyx_v_services);<span class='error_goto'> if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 178, __pyx_L1_error)</span>
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 &lt; __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">179</span>:         <span class="n">pyServices</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span><span class="n">services</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">rnd</span><span class="p">)</span></pre>
+<pre class='cython code score-6 '>    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_v_services, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+    __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_rnd);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 179, __pyx_L1_error)</span>
+    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+    try {
+      __pyx_v_pyServices.push_back(((void *)__pyx_t_5));
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      <span class='error_goto'>__PYX_ERR(0, 179, __pyx_L1_error)</span>
+    }
+    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
+  }
+</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">180</span>:     <span class="k">if</span> <span class="n">queue_capacity</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span></pre>
+<pre class='cython code score-14 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_5, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_5, __pyx_n_s_inf);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = <span class='py_c_api'>PyObject_RichCompare</span>(__pyx_v_queue_capacity, __pyx_t_1, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_5);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_6 = <span class='pyx_c_api'>__Pyx_PyObject_IsTrue</span>(__pyx_t_5); if (unlikely(__pyx_t_6 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
+  if (__pyx_t_6) {
+/* … */
+  }
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">181</span>:         <span class="n">queue_capacity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1</span></pre>
+<pre class='cython code score-2 '>    <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_int_neg_1);
+    <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_queue_capacity, __pyx_int_neg_1);
+</pre><pre class="cython line score-15" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">182</span>:     <span class="k">return</span> <span class="n">call_simTandem</span><span class="p">(</span><span class="n">pyArrival</span><span class="p">,</span> <span class="n">pyServices</span><span class="p">,</span> <span class="n">queue_capacity</span><span class="p">,</span> <span class="n">max_packets</span><span class="p">)</span></pre>
+<pre class='cython code score-15 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
+  __pyx_t_7 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_queue_capacity); if (unlikely((__pyx_t_7 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 182, __pyx_L1_error)</span>
+  __pyx_t_8 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_max_packets); if (unlikely((__pyx_t_8 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 182, __pyx_L1_error)</span>
+  __pyx_t_5 = __pyx_f_6pyqumo_5cqumo_3sim_call_simTandem(__pyx_v_pyArrival, __pyx_v_pyServices, __pyx_t_7, __pyx_t_8);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 182, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
+  __pyx_r = __pyx_t_5;
+  __pyx_t_5 = 0;
   goto __pyx_L0;
 </pre></div></body></html>
