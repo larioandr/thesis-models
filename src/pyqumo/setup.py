@@ -23,11 +23,6 @@ extensions = [
         extra_link_args=["-std=c++14"]
     ),
     Extension(
-        "pyqumo.cy.random", ["pyqumo/cy/random.pyx"],
-        language="c++",
-        extra_compile_args=["-std=c++14", "-Wno-deprecated", "-O3"]
-    ),
-    Extension(
         "pyqumo.cqumo.randoms", [
             "pyqumo/cqumo/randoms.pyx",
             "cqumo/Functions.cpp",

@@ -95,6 +95,18 @@ RandomVariable *Randoms::createChoice(
     return new ChoiceVariable(engine_, values, weights);
 }
 
+RandomVariable *Randoms::createSemiMarkovArrival(
+        const std::vector<RandomVariable*>& vars,
+        std::vector<double>& initProbs,
+        const std::vector<std::vector<double>>& allTransProbs) {
+    return new SemiMarkovArrivalVariable(
+        engine_, 
+        vars, 
+        initProbs, 
+        allTransProbs
+    );
+}
+
 // RandomVariable
 // ---------------------------------------------------------------------------
 RandomVariable::RandomVariable(void *engine)
@@ -252,6 +264,45 @@ ChoiceVariable::ChoiceVariable(
 
 double ChoiceVariable::eval() {
     return values_[choices_(*engine())];
+}
+
+// SemiMarkovArrivalVariable
+// ---------------------------------------------------------------------------
+SemiMarkovArrivalVariable::SemiMarkovArrivalVariable(
+      void *engine,
+      const std::vector<RandomVariable*>& vars,
+      std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& allTransProbs)
+: RandomVariable(engine), vars_(vars)
+{
+    initChoices_ = std::discrete_distribution<int>(
+        initProbs.begin(), initProbs.end());
+    for (auto& probs: allTransProbs) {
+        allTransChoices_.push_back(std::discrete_distribution<int>(
+            probs.begin(), probs.end()
+        ));
+    }
+    state_ = initChoices_(*(this->engine()));
+    order_ = static_cast<int>(initProbs.size());
+}
+
+double SemiMarkovArrivalVariable::eval() {
+    const int MAX_ITERS = 10000000;
+    auto enginePtr = engine();
+    int pktType = 0;
+    double value = 0.0;
+    int nIter = 0;
+    while (pktType == 0 && nIter < MAX_ITERS) {
+        value += vars_[state_]->eval();
+        int nextState = allTransChoices_[state_](*enginePtr);
+        pktType = nextState / order_;
+        state_ = nextState % order_;
+        nIter++;
+    }
+    if (nIter >= MAX_ITERS) {
+        throw std::runtime_error("too many iterations in MAP generator");
+    }
+    return value;
 }
 
 }

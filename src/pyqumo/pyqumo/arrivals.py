@@ -4,9 +4,8 @@ from typing import Union, Sequence
 
 import numpy as np
 
-from pyqumo import cy
+from pyqumo.cqumo.randoms import Variable, RandomsFactory
 from pyqumo.chains import ContinuousTimeMarkovChain, DiscreteTimeMarkovChain
-from pyqumo.cy.random import Rnd
 from pyqumo.matrix import cbdiag, order_of, \
     check_markovian_arrival, fix_markovian_arrival, str_array
 from pyqumo.random import Distribution, Exponential
@@ -63,7 +62,7 @@ class GIProcess(RandomProcess):
 
     Poisson process is an example of GI-process with exponential arrivals.
     """
-    def __init__(self, dist: Distribution):
+    def __init__(self, dist: Distribution, factory: RandomsFactory = None):
         """
         Constructor.
 
@@ -71,6 +70,7 @@ class GIProcess(RandomProcess):
         ----------
         dist : random distribution
         """
+        super().__init__(factory)
         if dist is None:
             raise ValueError('distribution required')
         self._dist = dist
@@ -97,6 +97,10 @@ class GIProcess(RandomProcess):
     @cached_property
     def cv(self) -> float:
         return self._dist.std / self._dist.mean
+    
+    @property
+    def rnd(self) -> Variable:
+        return self._dist.rnd
 
     def _moment(self, n: int) -> float:
         return self._dist.moment(n)
@@ -111,14 +115,14 @@ class GIProcess(RandomProcess):
         return GIProcess(self._dist.copy())
 
     def __repr__(self):
-        return f'(GI: f={self.dist})'
+        return f'(GI: f={self.dist})'    
 
 
 class Poisson(GIProcess):
     """
     Custom case of GI-process with exponential arrivals.
     """
-    def __init__(self, rate: float):
+    def __init__(self, rate: float, factory: RandomsFactory = None):
         """
         Constructor.
 
@@ -129,7 +133,7 @@ class Poisson(GIProcess):
         """
         if rate <= 0.0:
             raise ValueError(f"positive rate expected, {rate} found")
-        super().__init__(Exponential(rate))
+        super().__init__(Exponential(rate), factory)
 
     def __repr__(self):
         return f'(Poisson: r={self.rate:.3g})'
@@ -144,7 +148,8 @@ class MarkovArrival(RandomProcess):
             d0: Union[np.ndarray, Sequence[Sequence[float]]],
             d1: Union[np.ndarray, Sequence[Sequence[float]]],
             safe: bool = False,
-            tol: float = 1e-3):
+            tol: float = 1e-3,
+            factory: RandomsFactory = None):
         """
         Create MAP process with the given D0 and D1 matrices.
 
@@ -178,7 +183,7 @@ class MarkovArrival(RandomProcess):
             try to fix errors those are less then `tol`. If `safe = True`
             this parameter is ignored. Default: 1e-3.
         """
-        super().__init__()
+        super().__init__(factory)
         need_copy = [False, False]
         matrices = [d0, d1]
 
@@ -232,6 +237,10 @@ class MarkovArrival(RandomProcess):
             -self._inv_d0.dot(self.d1),
             safe=True
         )
+        self._states = [
+            Exponential(rate, factory=factory) 
+            for rate in self._rates
+        ]
 
         # Define random variables generators:
         # -----------------------------------
@@ -383,11 +392,20 @@ class MarkovArrival(RandomProcess):
         return self._dtmc
 
     @cached_property
-    def rnd(self):
-        return cy.random.MarkovArrival(self.d0, self.d1, self.dtmc.steady_pmf)
-
-    def __call__(self, size: int = 1):
-        return self.rnd(size)
+    def rnd(self) -> Variable:
+        # 2) Then, we need to store cumulative transition probabilities P.
+        #    We store them in a stochastic matrix of shape N x (K*N):
+        #      P[I, J] is a probability, that:
+        #      - new state will be J (mod N), and
+        #      - if J < N, then no packet is generated, or
+        #      - if J >= N, then packet of type J // N is generated.
+        vars = [state.rnd for state in self._states]
+        trans_pmf = np.hstack((
+            self._matrices[0] + np.diag(self._rates),
+            self._matrices[1]
+        )) / self._rates[:, None]
+        return self.factory.createSemiMarkovArrivalVariable(
+            vars, self.dtmc.steady_pmf, trans_pmf)
 
     # def _eval(self, size: int) -> np.ndarray:
     #     intervals = np.zeros(size)

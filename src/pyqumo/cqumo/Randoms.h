@@ -46,6 +46,11 @@ class Randoms {
     RandomVariable *createChoice(
       const std::vector<double>& values,
       const std::vector<double>& weights);
+    
+    RandomVariable *createSemiMarkovArrival(
+      const std::vector<RandomVariable*>& vars,
+      std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& allTransProbs);
 
   private:
     std::default_random_engine *engine_ = nullptr;
@@ -185,6 +190,35 @@ class ChoiceVariable : public RandomVariable {
   private:
     std::vector<double> values_;
     std::discrete_distribution<int> choices_;
+};
+
+class SemiMarkovArrivalVariable : public RandomVariable {
+  public:
+    /**
+     * Build SemiMarkovArrivalVariable.
+     * 
+     * @param engine
+     * @param vars random variables for time in each state
+     * @param initProbs initial probabilities of size N
+     * @param allTransProbs concatenated matrix of shape N x kN, where
+     *    k is the number of packet types + 1 (k = 2 for regular MAP).
+     *    Looks like [D0 - diag(D0) | D1] / diag(D0).
+     */
+    SemiMarkovArrivalVariable(
+      void *engine,
+      const std::vector<RandomVariable*>& vars,
+      std::vector<double>& initProbs,
+      const std::vector<std::vector<double>>& allTransProbs
+    );
+    ~SemiMarkovArrivalVariable() override = default;
+
+    double eval() override;
+  private:
+    std::vector<RandomVariable*> vars_;
+    std::discrete_distribution<int> initChoices_;
+    std::vector<std::discrete_distribution<int>> allTransChoices_;
+    int state_;
+    int order_;
 };
 
 }

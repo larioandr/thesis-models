@@ -7,8 +7,7 @@ from scipy import linalg, integrate
 import scipy.stats
 from scipy.special import ndtr
 
-from pyqumo import stats, cy, cqumo
-from pyqumo.cy.random import Rnd
+from pyqumo import stats, cqumo
 from pyqumo.cqumo.randoms import RandomsFactory, Variable
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
@@ -583,7 +582,7 @@ class HyperExponential(MixtureDistribution):
                f"rates={str_array(self.rates)})"
 
     @staticmethod
-    def fit(avg: float, std: float, skew: float) -> 'HyperExponential':
+    def fit(avg: float, std: float, skew: float = 0) -> 'HyperExponential':
         """
         Fit hyperexponential distribution with average, std and skewness.
 

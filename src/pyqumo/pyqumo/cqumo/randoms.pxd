@@ -31,3 +31,8 @@ cdef extern from "Randoms.h" namespace "cqumo":
         RandomVariable *createChoice(
             const vector[double]& values,
             const vector[double]& probs)
+        
+        RandomVariable *createSemiMarkovArrival(
+            const vector[RandomVariable*]& vars,
+            const vector[double]& initProbs,
+            const vector[vector[double]]& allTransProbs)
