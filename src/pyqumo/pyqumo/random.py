@@ -1016,7 +1016,7 @@ class CountableDistribution(DiscreteDistributionMixin,
             # Treat `prob` as array_like defining a probability mass function:
             self._pmf = np.asarray(list(prob))
             if not is_pmf(self._pmf):
-                self._pmf = fix_stochastic(self._pmf, tol=precision)[0]
+                self._pmf = fix_stochastic(self._pmf, tol=0.1)[0]
             self._max_value = len(self._pmf) - 1
             self._truncated_at = self._max_value
             self._hard_max_value = True

@@ -427,7 +427,10 @@ def fix_stochastic(mat: ndarray, tol: float = 1e-3) -> Tuple[ndarray, float]:
             row, col, el, error=error, tol=tol, lower=0.0, upper=1.0)
 
     # Now all new_mat elements should be non-negative:
-    assert (new_mat >= -1e-11).all()
+    if (new_mat < -1e-5).any():
+        print(new_mat)
+        assert False
+    # assert (new_mat >= -1e-5).all()
 
     # Iterate over all rows and find deviations from 1:
     row_sums = new_mat.sum(axis=1)
