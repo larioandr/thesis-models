@@ -71,6 +71,7 @@ setup(
         'numpy',
         'scipy',
         'tabulate',
+        'Cython',
     ],
     include_package_data=True,
     zip_safe=False,

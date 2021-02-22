@@ -27,15 +27,12 @@ setup(name='pycsmaca',
       scripts=[],
       install_requires=[
           'scipy',
-          'pydesim',
           'pyqumo',
       ],
       dependency_links=[
-          'git+https://github.com/larioandr/pydesim.git#egg=pydesim',
-          'git+https://github.com/larioandr/pyqumo.git#egg=pyqumo',
       ],
       include_package_data=True,
       zip_safe=False,
       setup_requires=["pytest-runner", "pytest-repeat"],
-      tests_require=["pytest", 'pyqumo', 'pydesim'],
+      tests_require=["pytest", 'pyqumo'],
     )

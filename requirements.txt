@@ -4,7 +4,6 @@
 -e src/rfidlib
 -e src/rfidsim
 -e src/rfidam
--e src/pdesim
 -e src/pycsmaca
 click~=7.1.2
 numpy==1.19.4
@@ -15,9 +14,7 @@ matplotlib==3.3.3
 seaborn==0.11.1
 scipy==1.5.4
 setuptools~=41.2.0
-pyons~=1.0
 pytest~=6.1.2
-rfidsim~=1.0
 tqdm==4.54.1
 Cython==0.29.21
 tabulate~=0.8.7
