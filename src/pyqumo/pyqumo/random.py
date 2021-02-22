@@ -18,6 +18,20 @@ from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
 default_randoms_factory = RandomsFactory()
 
 
+def get_cv(m1: float, m2: float) -> float:
+    """Compute coefficient of variation.
+    """
+    return (m2 - m1**2)**0.5 / m1
+
+
+def get_skewness(m1: float, m2: float, m3: float) -> float:
+    """Compute skewness.
+    """
+    var = m2 - m1**2
+    std = var**0.5
+    return (m3 - 3*m1*var - m1**3) / (var * std)
+
+
 class Distribution:
     def __init__(self, factory: RandomsFactory = None):
         self._factory = factory or default_randoms_factory
@@ -63,6 +77,13 @@ class Distribution:
         Get coefficient of variation (relation of std.dev. to mean value)
         """
         return self.std / self.mean
+    
+    @cached_property
+    def skewness(self) -> float:
+        """
+        Get skewness.
+        """
+        return get_skewness(self.mean, self._moment(2), self._moment(3))
 
     def moment(self, n: int) -> float:
         """
