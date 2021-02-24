@@ -13,7 +13,7 @@ from pyqumo.fitting.acph2 import get_acph2_m2_min, get_acph2_m3_bounds
     (1, 1.21, 7.4),
     (1, 1, 6)
 ])
-def test_fit_acph2_with_good_data(m1, cv2, m3):
+def test_fit_acph2__with_good_data(m1, cv2, m3):
     """
     Test fit_acph2 with good data obtained from Telek and Heindl paper.
 
@@ -89,7 +89,7 @@ def test_acph2_m3_bounds():
     ([4, 35.36, 460], "m3 = 460 is out of bounds for m1 = 4, m2 = 35.36"),
     ([2, 5, 10], "m2 = 5 is out of bounds for m1 = 2")
 ])
-def test_fit_acph2_raise_error_for_bad_values_in_strict_mode(moments, err_str):
+def test_fit_acph2__srtict__raise_error_for_bad_values(moments, err_str):
     with pytest.raises(BoundsError) as err:
         fit_acph2(moments, strict=True)
     assert str(err.value).startswith(err_str)
@@ -101,7 +101,7 @@ def test_fit_acph2_raise_error_for_bad_values_in_strict_mode(moments, err_str):
     ([1, 2, -3], "Expected m3 > 0, but m3 = -3"),
     ([2, 3, 10], "Expected pow(CV, 2) > 0, but pow(CV, 2) = -0.25")
 ])
-def test_fit_acph2_raise_error_for_very_bad_moments(moments, err_str):
+def test_fit_acph2__non_strict__raise_error_for_bad_moments(moments, err_str):
     """
     No matter of strict = True, if any moment is non-positive or CV <= 0,
     raise ValueError indicating failed moment (or CV).
@@ -111,13 +111,13 @@ def test_fit_acph2_raise_error_for_very_bad_moments(moments, err_str):
     assert str(err.value) == err_str
 
 
-def test_fit_acph2_strict_raise_error_if_less_then_three_moments_given():
+def test_fit_acph2__strict__raise_error_if_less_then_three_moments_given():
     with pytest.raises(ValueError) as err:
         fit_acph2([1, 2], strict=True)
     assert str(err.value) == "Expected three moments, but 2 found"
 
 
-def test_fit_acph2_non_strict_finds_ph_for_m1():
+def test_fit_acph2__non_strict__finds_ph_for_m1():
     """If only M1 is provided, get exponential distribution in ACPH(2) form.
     """
     ph, _ = fit_acph2([1], strict=False)
@@ -126,7 +126,7 @@ def test_fit_acph2_non_strict_finds_ph_for_m1():
     assert_allclose(ph.moment(3), 6)
 
 
-def test_fit_acph2_non_strict_finds_ph_for_m1_and_m2():
+def test_fit_acph2__non_strict__finds_ph_for_m1_and_m2():
     """If only M1 and M2 are provided, take some M3 and find ACPH(2)
     when strict = False.
     """
@@ -159,7 +159,7 @@ def test_fit_acph2_non_strict_finds_ph_for_m1_and_m2():
     ([2.00001, 8.00001, 34], (0, 0, 0.412), "M3 very close to exp. (left)"),
     ([1.99999, 8.00001, 34], (0, 0, 0.569), "M3 very close to exp. (right)"),
 ])
-def test_fit_acph2_non_strict_finds_approx_solution(moments, errors, comment):
+def test_fit_acph2__non_strict__finds_approx_solution(moments, errors, comment):
     """
     Validate that fit_acph2() with strict = False tries to fit moments even
     if they are out of the bounds, and put relative errors into the result.
@@ -173,7 +173,7 @@ def test_fit_acph2_non_strict_finds_approx_solution(moments, errors, comment):
         assert_allclose(ph.moment(i+1), m, rtol=rtol, err_msg=comment)
 
 
-def test_fit_acph2_strict_compute_errors_for_all_moments_passed():
+def test_fit_acph2__strict__compute_errors_for_all_moments_passed():
     """
     Validate that when more then three moments passed to fit_acph2() with
     strict = True, errors will be computed for all of them.

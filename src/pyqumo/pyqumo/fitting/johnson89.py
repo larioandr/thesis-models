@@ -12,6 +12,7 @@ from typing import Sequence, Tuple
 import numpy as np
 
 from pyqumo.random import PhaseType, get_cv, get_skewness
+from pyqumo.errors import BoundsError
 
 
 def fit_mern2(
@@ -27,10 +28,28 @@ def fit_mern2(
     moments : sequence of float
         Only the first three moments are taken into account
     """
+    # [X] TODO: add boundaries checks (strict mode)
+    # [ ] TODO: add errors estimation
+    # [ ] TODO: allow incomplete moments set in non-strict mode
+    # [ ] TODO: allow moments or order tuning in non-strict mode
+    # [ ] TODO: allow out-of-bounds moments in non-strict mode
+    # [ ] TODO: allow user to select the degree of freedom in non-strict mode
+    # [ ] TODO: write good documentation
+
+    if (n := len(moments)) < 3:
+        raise ValueError(f"Expected three moments, but {n} found")
+
     m1, m2, m3 = moments[:3]
     
     cv = get_cv(m1, m2)
     gamma = get_skewness(m1, m2, m3)
+
+    # Check boundaries and raise BoundsError if fail:
+    if (min_skew := cv - 1/cv) >= gamma:
+        raise BoundsError(
+            f"Skewness = {gamma:g} is too small for CV = {cv:g}\n"
+            f"\tmin. skewness = {min_skew:g}\n"
+            f"\tm1 = {m1:g}, m2 = {m2:g}, m3 = {m3:g}")
 
     # Compute N:
     n = int(max(
@@ -66,5 +85,11 @@ def fit_mern2(
     probs = np.zeros(2*n)
     probs[0] = p1
     probs[n] = 1 - p1
+    ph = PhaseType(mat, probs)
 
-    return PhaseType(mat, probs), np.zeros(len(moments))
+    # Estimate errors:
+    errors = np.asarray([
+        abs(m - ph.moment(i+1)) / abs(m) for i, m in enumerate(moments)
+    ])
+
+    return ph, errors
