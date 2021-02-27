@@ -13,33 +13,20 @@ from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
     is_subinfinitesimal, fix_infinitesimal, is_square, is_substochastic, \
     str_array
+from pyqumo.stats import get_skewness
 
 
 default_randoms_factory = RandomsFactory()
 
 
-def get_cv(m1: float, m2: float) -> float:
-    """Compute coefficient of variation.
-    """
-    return (m2 - m1**2)**0.5 / m1
-
-
-def get_skewness(m1: float, m2: float, m3: float) -> float:
-    """Compute skewness.
-    """
-    var = m2 - m1**2
-    std = var**0.5
-    return (m3 - 3*m1*var - m1**3) / (var * std)
-
-
 class Distribution:
     def __init__(self, factory: RandomsFactory = None):
         self._factory = factory or default_randoms_factory
-    
+
     @property
     def factory(self) -> RandomsFactory:
         return self._factory
-    
+
     """
     Base class for all continuous distributions.
     """
@@ -77,7 +64,7 @@ class Distribution:
         Get coefficient of variation (relation of std.dev. to mean value)
         """
         return self.std / self.mean
-    
+
     @cached_property
     def skewness(self) -> float:
         """
@@ -211,11 +198,11 @@ class Const(ContinuousDistributionMixin, DiscreteDistributionMixin,
     @lru_cache
     def _moment(self, n: int) -> float:
         return self._value ** n
-    
+
     @cached_property
     def rnd(self) -> Variable:
         return self.factory.createConstantVariable(self._value)
-        
+
     def __repr__(self):
         return f'(Const: value={self._value:g})'
 
@@ -241,7 +228,7 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
 
     Variance :math:`Var(x) = (b - a)^2 / 12.
     """
-    def __init__(self, a: float = 0, b: float = 1, 
+    def __init__(self, a: float = 0, b: float = 1,
                  factory: RandomsFactory = None):
         super().__init__(factory)
         self._a, self._b = a, b
@@ -270,11 +257,11 @@ class Uniform(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         a, b = self.min, self.max
         k = 1 / (b - a)
         return lambda x: 0 if x < a else 1 if x > b else k * (x - a)
-    
+
     @cached_property
     def rnd(self) -> Variable:
         return self.factory.createUniformVariable(self.min, self.max)
-    
+
     def __repr__(self):
         return f'(Uniform: a={self.min:g}, b={self.max:g})'
 
@@ -330,7 +317,7 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     def cdf(self) -> Callable[[float], float]:
         k = 1 / (self.std * 2**0.5)
         return lambda x: 0.5 * (1 + np.math.erf(k * (x - self.mean)))
-    
+
     @cached_property
     def rnd(self) -> Variable:
         return self.factory.createNormalVariable(self.mean, self.std)
@@ -410,7 +397,7 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         f(x; k, l) = l^k x^(k-1) e^(-l * x) / (k-1)!
     """
 
-    def __init__(self, shape: int, param: float, 
+    def __init__(self, shape: int, param: float,
                  factory: RandomsFactory = None):
         super().__init__(factory)
         if (shape <= 0 or shape == np.inf or
@@ -673,12 +660,12 @@ class AbsorbMarkovPhasedEvalMixin:
         if size == 1:
             return self.rnd.eval()
         return np.asarray([self.rnd.eval() for _ in range(size)])
-    
+
     @cached_property
     def rnd(self) -> Variable:
         variables = [state.rnd for state in self.states]
         return self.factory.createAbsorbSemiMarkovVariable(
-            variables, 
+            variables,
             self.init_probs,
             self.trans_probs,
             self.order)
@@ -728,7 +715,7 @@ class PhaseType(ContinuousDistributionMixin,
             -self._subgenerator.sum(axis=1)[:, None]
         )) / self._rates[:, None]
         self._states = [Exponential(r) for r in self._rates]
-    
+
     @staticmethod
     def exponential(rate: float) -> 'PhaseType':
         sub = np.asarray([[-rate]])
@@ -946,7 +933,7 @@ class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
     @lru_cache
     def _moment(self, n: int) -> float:
         return (self.values**n).dot(self.probs).sum()
-    
+
     @cached_property
     def rnd(self):
         return self.factory.createChoiceVariable(self.values, self.probs)
@@ -1228,7 +1215,7 @@ class CountableDistribution(DiscreteDistributionMixin,
             p = self.get_prob_at(i)
             total_prob += p
             yield i, p
-    
+
     @cached_property
     def rnd(self) -> Variable:
         return self._trunc_choice.rnd

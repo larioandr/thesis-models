@@ -4,6 +4,7 @@ from numpy.testing import assert_allclose
 
 from pyqumo.fitting import fit_mern2
 from pyqumo.errors import BoundsError
+from pyqumo.stats import get_skewness
 
 
 #
@@ -20,7 +21,6 @@ def get_m3(m1, c, gamma):
     """
     Helper: get M3 value from M1, Cv and skewness.
     """
-    m2 = get_m2(m1, c)
     std = c * m1
     var = std**2
     return gamma * var * std + 3 * m1 * var + m1**3
@@ -30,7 +30,7 @@ def get_boundary_gamma(c):
     return c - 1/c
 
 
-# 
+#
 # TESTS FOR fit_mern2()
 # ----------------------------------------------------------------------------
 @pytest.mark.parametrize('m1, cv, gamma', [
@@ -39,7 +39,7 @@ def get_boundary_gamma(c):
     (20, 1.5, 1.8),  # the same as above, but with another mean
     (1, 1.1, 0.2),
     (1, 10, 12),
-    
+
     # Close to exponential distribution:
     (1, 1, 0.01),  # very small skewness
     (2, 1, 100),  # large skewness
@@ -66,18 +66,18 @@ def test_fit_mern2__strict__good_data(m1, cv, gamma):
     assert_allclose(ph.cv, cv)
     assert_allclose(ph.skewness, gamma)
 
-    # Validate errors are close to zero:    
+    # Validate errors are close to zero:
     assert_allclose(errors, np.zeros(3), atol=1e-5)
 
 
 @pytest.mark.parametrize('m1, cv, gamma, err_str', [
-    (1.0, 1.0, -0.01, "Skewness = -0.01 is too small for CV = 1"), 
+    (1.0, 1.0, -0.01, "Skewness = -0.01 is too small for CV = 1"),
     (1.0, 2.0, 1.4, "Skewness = 1.4 is too small for CV = 2"),
     (1.0, 0.2, -5, "Skewness = -5 is too small for CV = 0.2"),
 ])
 def test_fit_mern2__strict__infeasible_raise_error(m1, cv, gamma, err_str):
     """
-    Test that for values in infeasible region (see Fig. 1 in [1]) 
+    Test that for values in infeasible region (see Fig. 1 in [1])
     `BoundsError` exception is raised.
     """
     m2, m3 = get_m2(m1, cv), get_m3(m1, cv, gamma)
@@ -87,8 +87,8 @@ def test_fit_mern2__strict__infeasible_raise_error(m1, cv, gamma, err_str):
 
 
 @pytest.mark.parametrize('moments, err_str', [
-    ([1.0], "Expected three moments, but 1 found"),
-    ([1.0, 2.0], "Expected three moments, but 2 found"),
+    ([1.0], "Expected 3 moments, but 1 found"),
+    ([1.0, 2.0], "Expected 3 moments, but 2 found"),
 ])
 def test_fit_mern2__strict__require_at_least_three_moments(moments, err_str):
     """
@@ -110,3 +110,40 @@ def test_fit_mern2__strict__compute_errors(moments, min_errors, comment):
     """
     ph, real_errors = fit_mern2(moments)
     assert all(real_errors >= min_errors)
+
+
+@pytest.mark.parametrize('mean', [1.0, 0.5, 3.0])
+def test_fit_mern2__non_strict__one_moment_leads_to_cv_0(mean):
+    """
+    Validate that fit_mern2() returns a PH distribution with positive
+    skewness and zero CV and number of phases less or equal to 10.
+    """
+    ph, err = fit_mern2([mean], strict=False)
+    assert_allclose(ph.mean, mean)
+    assert_allclose(ph.cv, 1.0, rtol=1e-2)
+    assert ph.skewness > 0
+    assert ph.order <= 10
+
+
+@pytest.mark.parametrize('m1, m2', [
+    (1.0, 2.0), (1.0, 1.5), (1.0, 3.0),
+    (10.0, 200.0), (10.0, 160.0), (10.0, 800.0),
+    (0.5, 0.5), (0.5, 0.4), (0.5, 2.0)
+])
+def test_fit_mern2__non_strict__two_moments(m1, m2):
+    """
+    Validate that fit_mern2() finds some M3 value when fitting with only
+    two moments in non-strict mode.
+    """
+    ph, err = fit_mern2([m1, m2], strict=False)
+    assert_allclose(ph.mean, m1, rtol=1e-5)
+    assert_allclose(ph.moment(2), m2, rtol=1e-5)
+
+    cv = pow(m2 - m1**2, 0.5) / m1
+    skew_baseline = cv - 1 / cv
+    if cv < 1 - 1e-5:
+        assert_allclose(ph.skewness, skew_baseline / 2, rtol=1e-2)
+    elif cv < 1 + 1e-5:
+        assert_allclose(ph.skewness, 2.0, rtol=1e-2)
+    else:
+        assert_allclose(ph.skewness, skew_baseline + 0.5, rtol=1e-2)
