@@ -30,12 +30,6 @@ def fit_mern2(
     moments : sequence of float
         Only the first three moments are taken into account
     """
-    # [X] TODO: add boundaries checks (strict mode)
-    # [X] TODO: add errors estimation
-    # [.] TODO: allow incomplete moments set in non-strict mode
-    # [ ] TODO: allow moments or order tuning in non-strict mode
-    # [ ] TODO: allow out-of-bounds moments in non-strict mode
-    # [ ] TODO: allow user to select the degree of freedom in non-strict mode
     # [ ] TODO: write good documentation
 
     if (num_moments := len(moments)) == 3:
@@ -64,27 +58,39 @@ def fit_mern2(
             f"\tm1 = {m1:g}, m2 = {m2:g}, m3 = {m3:g}")
 
     # Compute N:
-    n = int(max(
+    n_floor = int(max(
         np.ceil(1 / cv**2),
         np.ceil((-gamma + 1/cv**3 + 1/cv + 2*cv) / (gamma - (cv - 1/cv)))
     )) + (2 if cv <= 1 else 0)
 
-    # Compute auxiliary variables:
-    x = m1 * m3 - (n + 2) / (n + 1) * pow(m2, 2)
-    y = m2 - (n + 1) / n * pow(m1, 2)
-    C = m1 * x
-    B = -(
-        n * x +
-        n * (n+2) / (n+1) * pow(y, 2) +
-        (n+2) * pow(m1, 2) * y
-    )
-    A = n * (n+2) * m1 * y
-    D = (B**2 - 4*A*C)**0.5
+    def get_mern_props(m1_, m2_, m3_, n_):
+        # Compute auxiliary variables:
+        x = m1_ * m3_ - (n_ + 2) / (n_ + 1) * pow(m2_, 2)
+        y = m2_ - (n_ + 1) / n_ * pow(m1_, 2)
+        C = m1_ * x
+        B = -(
+            n_ * x +
+            n_ * (n_+2) / (n_+1) * pow(y, 2) +
+            (n_+2) * pow(m1_, 2) * y
+        )
+        A = n_ * (n_+2) * m1_ * y
+        D = (B**2 - 4*A*C)**0.5
 
-    # Compute Erlang mixture parameters:
-    em1, em2 = (-B - D) / (2*A), (-B + D) / (2*A)
-    p1 = (m1/n - em2) / (em1 - em2)
-    l1, l2 = 1/em1, 1/em2
+        # Compute Erlang mixture parameters:
+        em1, em2 = (-B - D) / (2*A), (-B + D) / (2*A)
+        p1_ = (m1_/n_ - em2) / (em1 - em2)
+        l1_, l2_ = 1/em1, 1/em2
+        return (l1_, l2_), p1_
+
+    (l1_0, l2_0), p1_0 = get_mern_props(m1, m2, m3, n_floor)
+    n = n_floor
+    r0 = l2_0 / l1_0 if l1_0 > 0 else np.inf
+
+    if r0 < 1e-3 or r0 > 1000 or p1_0 < 1e-3 or p1_0 > (1 - 1e-3):
+        n += 1
+        (l1, l2), p1 = get_mern_props(m1, m2, m3, n)
+    else:
+        l1, l2, p1 = l1_0, l2_0, p1_0
 
     # Build PH matrix and initial prob. dist.:
     mat = np.zeros((2*n, 2*n))
