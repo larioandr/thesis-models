@@ -141,8 +141,31 @@ def test_fit_mern2__non_strict__two_moments(m1, m2):
     cv = pow(m2 - m1**2, 0.5) / m1
     skew_baseline = cv - 1 / cv
     if cv < 1 - 1e-5:
-        assert_allclose(ph.skewness, skew_baseline / 2, rtol=1e-2)
+        assert_allclose(ph.skewness, skew_baseline * 0.8, rtol=1e-2)
     elif cv < 1 + 1e-5:
         assert_allclose(ph.skewness, 2.0, rtol=1e-2)
     else:
-        assert_allclose(ph.skewness, skew_baseline + 0.5, rtol=1e-2)
+        assert_allclose(ph.skewness, skew_baseline * 1.2, rtol=1e-2)
+
+
+@pytest.mark.parametrize('m1, cv, gamma, err_str', [
+    (1.0, 1.0, -0.01, "Skewness = -0.01 is too small for CV = 1"),
+    (1.0, 2.0, 1.4, "Skewness = 1.4 is too small for CV = 2"),
+    (1.0, 0.2, -5, "Skewness = -5 is too small for CV = 0.2"),
+])
+def test_fit_mern2__non_strict__infeasible_fitted(m1, cv, gamma, err_str):
+    """
+    Test that for values in infeasible region (see Fig. 1 in [1])
+    `BoundsError` exception is raised.
+    """
+    m2, m3 = get_m2(m1, cv), get_m3(m1, cv, gamma)
+    dist, err = fit_mern2([m1, m2, m3], strict=False)
+    real_gamma = dist.skewness
+    min_gamma = cv - 1/cv
+    if min_gamma > 0:
+        expected_gamma = min_gamma * 1.2
+    elif min_gamma == 0:
+        expected_gamma = 2
+    else:
+        expected_gamma = 0.8 * min_gamma
+    assert_allclose(real_gamma, expected_gamma, rtol=1e-2)
