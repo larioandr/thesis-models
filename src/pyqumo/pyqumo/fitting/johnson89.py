@@ -11,7 +11,7 @@ The method is defined in paper [1].
 from typing import Sequence, Tuple
 import numpy as np
 
-from pyqumo.random import PhaseType
+from pyqumo.random import HyperErlang
 from pyqumo.stats import get_cv, get_skewness, get_noncentral_m3
 from pyqumo.errors import BoundsError
 
@@ -19,7 +19,7 @@ from pyqumo.errors import BoundsError
 def fit_mern2(
     moments: Sequence[float],
     strict: bool = True
-) -> Tuple[PhaseType, np.ndarray]:
+) -> Tuple[HyperErlang, np.ndarray]:
     """
     Fit moments with a mixture of two Erlang distributions with common order.
 
@@ -73,26 +73,14 @@ def fit_mern2(
 
     n = shape_base
     l1, l2, p1 = get_mern2_props(m1, m2, m3, n)
-
-    # Build PH matrix and initial prob. dist.:
-    mat = np.zeros((2*n, 2*n))
-    for i in range(n):
-        mat[i, i] = -l1
-        mat[n+i, n+i] = -l2
-        if i < n-1:
-            mat[i, i+1] = l1
-            mat[n+i, n+i+1] = l2
-    probs = np.zeros(2*n)
-    probs[0] = p1
-    probs[n] = 1 - p1
-    ph = PhaseType(mat, probs)
+    dist = HyperErlang([l1, l2], [n, n], [p1, 1 - p1])
 
     # Estimate errors:
     errors = np.asarray([
-        abs(m - ph.moment(i+1)) / abs(m) for i, m in enumerate(moments)
+        abs(m - dist.moment(i+1)) / abs(m) for i, m in enumerate(moments)
     ])
 
-    return ph, errors
+    return dist, errors
 
 
 def get_mern2_props(

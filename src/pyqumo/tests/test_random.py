@@ -3,8 +3,8 @@ import pytest
 from numpy.testing import assert_allclose
 
 from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
-    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb, MixtureDistribution, \
-    CountableDistribution, HyperErlang
+    HyperExponential, PhaseType, Choice, SemiMarkovAbsorb, \
+    MixtureDistribution, CountableDistribution, HyperErlang
 
 
 #
@@ -43,7 +43,7 @@ from pyqumo.random import Const, Exponential, Uniform, Normal, Erlang, \
     (Const(3), 3, 9, 27, 81, '(Const: value=3)', 1e-2, 2e-2),
     # Uniform distribution:
     (Uniform(0, 1), 0.5, 1/3, 1/4, 1/5, '(Uniform: a=0, b=1)', 1e-2, 2e-2),
-    (Uniform(2, 10), 6, 124/3, 312, 2499.2, '(Uniform: a=2, b=10)', 1e-2, 2e-2),
+    (Uniform(2, 10), 6, 124/3, 312, 2499.2, '(Uniform: a=2, b=10)', .01, .02),
     # Normal distribution:
     (Normal(0, 1), 0, 1, 0, 3, '(Normal: mean=0, std=1)', 1e-2, 2e-2),
     (

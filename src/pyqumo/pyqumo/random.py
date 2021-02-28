@@ -293,7 +293,8 @@ class Normal(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
     Normal random distribution.
     """
-    def __init__(self, mean: float, std: float, factory: RandomsFactory = None):
+    def __init__(self, mean: float, std: float,
+                 factory: RandomsFactory = None):
         super().__init__(factory)
         self._mean, self._std = mean, std
 
@@ -1368,8 +1369,11 @@ class CountableDistribution(DiscreteDistributionMixin,
 
     def __repr__(self):
         if not self._hard_max_value:
-            values = ', '.join([f"{self.get_prob_at(x):.3g}" for x in range(5)])
-            return f"(Countable: p=[{values}, ...], precision={self.precision})"
+            values = ', '.join([
+                f"{self.get_prob_at(x):.3g}" for x in range(5)
+            ])
+            return f"(Countable: p=[{values}, ...], "\
+                   f"precision={self.precision})"
         return f"(Countable: p={str_array(self._pmf)})"
 
     def copy(self) -> 'CountableDistribution':
