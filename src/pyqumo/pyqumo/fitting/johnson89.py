@@ -58,39 +58,21 @@ def fit_mern2(
             f"\tm1 = {m1:g}, m2 = {m2:g}, m3 = {m3:g}")
 
     # Compute N:
-    n_floor = int(max(
+    shape_base = int(max(
         np.ceil(1 / cv**2),
         np.ceil((-gamma + 1/cv**3 + 1/cv + 2*cv) / (gamma - (cv - 1/cv)))
     )) + (2 if cv <= 1 else 0)
 
-    def get_mern_props(m1_, m2_, m3_, n_):
-        # Compute auxiliary variables:
-        x = m1_ * m3_ - (n_ + 2) / (n_ + 1) * pow(m2_, 2)
-        y = m2_ - (n_ + 1) / n_ * pow(m1_, 2)
-        C = m1_ * x
-        B = -(
-            n_ * x +
-            n_ * (n_+2) / (n_+1) * pow(y, 2) +
-            (n_+2) * pow(m1_, 2) * y
-        )
-        A = n_ * (n_+2) * m1_ * y
-        D = (B**2 - 4*A*C)**0.5
+    def get_ratio(l1_, l2_):
+        """
+        Helper to get ratio between Erlang rates. Always return value >= 1.
+        """
+        if l2_ >= l1_ > 0:
+            return l2_ / l1_
+        return l1_ / l2_ if l1_ > l2_ > 0 else np.inf
 
-        # Compute Erlang mixture parameters:
-        em1, em2 = (-B - D) / (2*A), (-B + D) / (2*A)
-        p1_ = (m1_/n_ - em2) / (em1 - em2)
-        l1_, l2_ = 1/em1, 1/em2
-        return (l1_, l2_), p1_
-
-    (l1_0, l2_0), p1_0 = get_mern_props(m1, m2, m3, n_floor)
-    n = n_floor
-    r0 = l2_0 / l1_0 if l1_0 > 0 else np.inf
-
-    if r0 < 1e-3 or r0 > 1000 or p1_0 < 1e-3 or p1_0 > (1 - 1e-3):
-        n += 1
-        (l1, l2), p1 = get_mern_props(m1, m2, m3, n)
-    else:
-        l1, l2, p1 = l1_0, l2_0, p1_0
+    n = shape_base
+    l1, l2, p1 = get_mern2_props(m1, m2, m3, n)
 
     # Build PH matrix and initial prob. dist.:
     mat = np.zeros((2*n, 2*n))
@@ -111,3 +93,68 @@ def fit_mern2(
     ])
 
     return ph, errors
+
+
+def get_mern2_props(
+        m1: float,
+        m2: float,
+        m3: float,
+        n: int) -> Tuple[float, float, float]:
+    """
+    Helper function to estimate Erlang distributions rates and
+    probabilities from the given moments and Erlang shape (n).
+
+    See theorem 3 in [1] for details about A, B, C, p1, x, y and lambdas
+    computation.
+
+    Parameters
+    ----------
+    m1 : float
+        mean value
+    m2 : float
+        second non-central moment
+    m3 : float
+        third non-central moment
+    n : int
+        shape of the Erlang distributions
+
+    Returns
+    -------
+    l1 : float
+        parameter of the first Erlang distribution
+    l2 : float
+        parameter of the second Erlang distribution
+    n : int
+        shape of the Erlang distributions
+
+    Raises
+    ------
+    BoundsError
+        raise this if skewness is below CV - 1/CV (CV - coef. of variation)
+    """
+    # Check boundaries:
+    cv = get_cv(m1, m2)
+    gamma = get_skewness(m1, m2, m3)
+    if (min_skew := cv - 1/cv) >= gamma:
+        raise BoundsError(
+            f"Skewness = {gamma:g} is too small for CV = {cv:g}\n"
+            f"\tmin. skewness = {min_skew:g}\n"
+            f"\tm1 = {m1:g}, m2 = {m2:g}, m3 = {m3:g}")
+
+    # Compute auxiliary variables:
+    x = m1 * m3 - (n + 2) / (n + 1) * pow(m2, 2)
+    y = m2 - (n + 1) / n * pow(m1, 2)
+    c = m1 * x
+    b = -(
+        n * x +
+        n * (n + 2) / (n + 1) * pow(y, 2) +
+        (n + 2) * pow(m1, 2) * y
+    )
+    a = n * (n + 2) * m1 * y
+    d = pow(b**2 - 4 * a * c, 0.5)
+
+    # Compute Erlang mixture parameters:
+    em1, em2 = (-b - d) / (2*a), (-b + d) / (2*a)
+    p1 = (m1 / n - em2) / (em1 - em2)
+    l1, l2 = 1 / em1, 1 / em2
+    return l1, l2, p1

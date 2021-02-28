@@ -16,12 +16,18 @@ def get_skewness(m1: float, m2: float, m3: float) -> float:
 
 
 def get_noncentral_m3(mean: float, cv: float, skew: float) -> float:
-    """Compute non-center third moment if mean, CV and skew provided.
+    """Compute non-central third moment if mean, CV and skew provided.
     """
     m1 = mean
     std = cv * mean
     var = std**2
     return skew * var * std + 3 * m1 * var + m1**3
+
+
+def get_noncentral_m2(mean: float, cv: float) -> float:
+    """Compute non-central from the mean value and coef. of variation.
+    """
+    return (mean * cv)**2 + mean**2
 
 
 def moment(source, maxn=1, minn=1):

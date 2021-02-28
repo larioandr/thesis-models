@@ -286,6 +286,80 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.cython .hll { background-color: #ffffcc }
+.cython { background: #f8f8f8; }
+.cython .c { color: #408080; font-style: italic } /* Comment */
+.cython .err { border: 1px solid #FF0000 } /* Error */
+.cython .k { color: #008000; font-weight: bold } /* Keyword */
+.cython .o { color: #666666 } /* Operator */
+.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cython .cp { color: #BC7A00 } /* Comment.Preproc */
+.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
+.cython .gd { color: #A00000 } /* Generic.Deleted */
+.cython .ge { font-style: italic } /* Generic.Emph */
+.cython .gr { color: #FF0000 } /* Generic.Error */
+.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.cython .gi { color: #00A000 } /* Generic.Inserted */
+.cython .go { color: #888888 } /* Generic.Output */
+.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.cython .gs { font-weight: bold } /* Generic.Strong */
+.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.cython .gt { color: #0044DD } /* Generic.Traceback */
+.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.cython .kp { color: #008000 } /* Keyword.Pseudo */
+.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.cython .kt { color: #B00040 } /* Keyword.Type */
+.cython .m { color: #666666 } /* Literal.Number */
+.cython .s { color: #BA2121 } /* Literal.String */
+.cython .na { color: #7D9029 } /* Name.Attribute */
+.cython .nb { color: #008000 } /* Name.Builtin */
+.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.cython .no { color: #880000 } /* Name.Constant */
+.cython .nd { color: #AA22FF } /* Name.Decorator */
+.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.cython .nf { color: #0000FF } /* Name.Function */
+.cython .nl { color: #A0A000 } /* Name.Label */
+.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.cython .nv { color: #19177C } /* Name.Variable */
+.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.cython .w { color: #bbbbbb } /* Text.Whitespace */
+.cython .mb { color: #666666 } /* Literal.Number.Bin */
+.cython .mf { color: #666666 } /* Literal.Number.Float */
+.cython .mh { color: #666666 } /* Literal.Number.Hex */
+.cython .mi { color: #666666 } /* Literal.Number.Integer */
+.cython .mo { color: #666666 } /* Literal.Number.Oct */
+.cython .sa { color: #BA2121 } /* Literal.String.Affix */
+.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
+.cython .sc { color: #BA2121 } /* Literal.String.Char */
+.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.cython .s2 { color: #BA2121 } /* Literal.String.Double */
+.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.cython .sx { color: #008000 } /* Literal.String.Other */
+.cython .sr { color: #BB6688 } /* Literal.String.Regex */
+.cython .s1 { color: #BA2121 } /* Literal.String.Single */
+.cython .ss { color: #19177C } /* Literal.String.Symbol */
+.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.cython .fm { color: #0000FF } /* Name.Function.Magic */
+.cython .vc { color: #19177C } /* Name.Variable.Class */
+.cython .vg { color: #19177C } /* Name.Variable.Global */
+.cython .vi { color: #19177C } /* Name.Variable.Instance */
+.cython .vm { color: #19177C } /* Name.Variable.Magic */
+.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -295,7 +369,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="randoms.cpp">randoms.cpp</a></p>
-<div class="cython"><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: import numpy as np</pre>
+<div class="cython"><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: <span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span></pre>
 <pre class='cython code score-16 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_numpy, 0, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_np, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(1, 1, __pyx_L1_error)</span>
@@ -305,10 +379,10 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_test, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(1, 1, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">002</span>: from libcpp.vector cimport vector</pre>
-<pre class="cython line score-0">&#xA0;<span class="">003</span>: from pyqumo.cqumo.randoms cimport RandomVariable as CxxRandomVariable, Randoms</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">002</span>: <span class="k">from</span> <span class="nn">libcpp.vector</span> <span class="k">cimport</span> <span class="n">vector</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">003</span>: <span class="k">from</span> <span class="nn">pyqumo.cqumo.randoms</span> <span class="k">cimport</span> <span class="n">RandomVariable</span> <span class="k">as</span> <span class="n">CxxRandomVariable</span><span class="p">,</span> <span class="n">Randoms</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">004</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">005</span>: cdef class Rnd:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">005</span>: <span class="k">cdef</span> <span class="k">class</span> <span class="nf">Rnd</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>struct __pyx_obj_6pyqumo_5cqumo_7randoms_Rnd {
   PyObject_HEAD
   struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Rnd *__pyx_vtab;
@@ -323,12 +397,12 @@ struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Rnd {
 };
 static struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Rnd *__pyx_vtabptr_6pyqumo_5cqumo_7randoms_Rnd;
 
-</pre><pre class="cython line score-0">&#xA0;<span class="">006</span>:     cdef int index</pre>
-<pre class="cython line score-0">&#xA0;<span class="">007</span>:     cdef vector[double] samples</pre>
-<pre class="cython line score-0">&#xA0;<span class="">008</span>:     cdef int cacheSize</pre>
-<pre class="cython line score-0">&#xA0;<span class="">009</span>:     cdef object fn</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">006</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">index</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">007</span>:     <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">samples</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">008</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">cacheSize</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">009</span>:     <span class="k">cdef</span> <span class="kt">object</span> <span class="nf">fn</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">010</span>: </pre>
-<pre class="cython line score-31" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>:     def __cinit__(self, object fn, int cache_size = 10000):</pre>
+<pre class="cython line score-31" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>:     <span class="k">def</span> <span class="nf">__cinit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span> <span class="n">fn</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cache_size</span> <span class="o">=</span> <span class="mf">10000</span><span class="p">):</span></pre>
 <pre class='cython code score-31 '>/* Python wrapper */
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -415,9 +489,9 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd___cinit__(struct __pyx_obj_6pyq
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:         self.cacheSize = cache_size</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">cacheSize</span> <span class="o">=</span> <span class="n">cache_size</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;cacheSize = __pyx_v_cache_size;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         self.samples = vector[double](cache_size, 0.0)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">vector</span><span class="p">[</span><span class="n">double</span><span class="p">](</span><span class="n">cache_size</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  try {
     __pyx_t_1 = std::vector&lt;double&gt; (__pyx_v_cache_size, 0.0);
   } catch(...) {
@@ -425,16 +499,16 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd___cinit__(struct __pyx_obj_6pyq
     <span class='error_goto'>__PYX_ERR(1, 13, __pyx_L1_error)</span>
   }
   __pyx_v_self-&gt;samples = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:         self.index = cache_size</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">cache_size</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;index = __pyx_v_cache_size;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         self.fn = fn</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_fn);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_v_fn);
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_v_self-&gt;fn);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_v_self-&gt;fn);
   __pyx_v_self-&gt;fn = __pyx_v_fn;
 </pre><pre class="cython line score-0">&#xA0;<span class="">016</span>: </pre>
-<pre class="cython line score-22" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>:     def __init__(self, fn, cache_size=10000):</pre>
+<pre class="cython line score-22" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>:     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mf">10000</span><span class="p">):</span></pre>
 <pre class='cython code score-22 '>/* Python wrapper */
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_3__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_3__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -513,10 +587,10 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_2__init__(CYTHON_UNUSED struct 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">018</span>:         pass</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">018</span>:         <span class="k">pass</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">019</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">020</span>:     # noinspection PyAttributeOutsideInit</pre>
-<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:     cdef double eval(self):</pre>
+<pre class="cython line score-0">&#xA0;<span class="">020</span>:     <span class="c"># noinspection PyAttributeOutsideInit</span></pre>
+<pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:     <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-7 '>static double __pyx_f_6pyqumo_5cqumo_7randoms_3Rnd_eval(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Rnd *__pyx_v_self) {
   int __pyx_v_cacheSize;
   int __pyx_v_index;
@@ -539,23 +613,23 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_2__init__(CYTHON_UNUSED struct 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:         cdef int cacheSize = self.cacheSize</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:         <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">cacheSize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cacheSize</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = __pyx_v_self-&gt;cacheSize;
   __pyx_v_cacheSize = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         cdef int index = self.index</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = __pyx_v_self-&gt;index;
   __pyx_v_index = __pyx_t_1;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>:         cdef object fn = &lt;object&gt;self.fn</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>:         <span class="k">cdef</span> <span class="kt">object</span> <span class="nf">fn</span> <span class="o">=</span> <span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = __pyx_v_self-&gt;fn;
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_2);
   __pyx_v_fn = __pyx_t_2;
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:         if index &gt;= cacheSize:</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:         <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">cacheSize</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_3 = ((__pyx_v_index &gt;= __pyx_v_cacheSize) != 0);
   if (__pyx_t_3) {
 /* … */
   }
-</pre><pre class="cython line score-21" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:             self.samples = fn(cacheSize)</pre>
+</pre><pre class="cython line score-21" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">cacheSize</span><span class="p">)</span></pre>
 <pre class='cython code score-21 '>    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_cacheSize);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 26, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
     <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_v_fn);
@@ -578,17 +652,17 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_2__init__(CYTHON_UNUSED struct 
     __pyx_t_7 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_t_2);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 26, __pyx_L1_error)</span>
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_self-&gt;samples = __pyx_t_7;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:             self.index = 0</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mf">0</span></pre>
 <pre class='cython code score-0 '>    __pyx_v_self-&gt;index = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:         x = self.samples[self.index]</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_x = (__pyx_v_self-&gt;samples[__pyx_v_self-&gt;index]);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         self.index += 1</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mf">1</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;index = (__pyx_v_self-&gt;index + 1);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:         return x</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:         <span class="k">return</span> <span class="n">x</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = __pyx_v_x;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">031</span>: </pre>
-<pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:     def __call__(self):</pre>
+<pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-14 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -620,7 +694,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_4__call__(struct __pyx_ob
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         return self.eval()</pre>
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></pre>
 <pre class='cython code score-6 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Rnd *)__pyx_v_self-&gt;__pyx_vtab)-&gt;eval(__pyx_v_self));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 33, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
@@ -628,7 +702,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_4__call__(struct __pyx_ob
   __pyx_t_1 = 0;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">034</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:     def __repr__(self):</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_7__repr__(PyObject *__pyx_v_self); /*proto*/
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_3Rnd_7__repr__(PyObject *__pyx_v_self) {
@@ -653,22 +727,22 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_3Rnd_6__repr__(CYTHON_UNUSED s
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:         return f"&lt;CyRnd: -&gt;"</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:         <span class="k">return</span> <span class="n">f</span><span class="s">&quot;&lt;CyRnd: -&gt;&quot;</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_kp_u_CyRnd);
   __pyx_r = __pyx_kp_u_CyRnd;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">037</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">038</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>: cdef class RandomsFactory:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>: <span class="k">cdef</span> <span class="k">class</span> <span class="nf">RandomsFactory</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>struct __pyx_obj_6pyqumo_5cqumo_7randoms_RandomsFactory {
   PyObject_HEAD
   cqumo::Randoms *randoms;
 };
 
-</pre><pre class="cython line score-0">&#xA0;<span class="">040</span>:     cdef Randoms* randoms</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">040</span>:     <span class="k">cdef</span> <span class="kt">Randoms</span>* <span class="nf">randoms</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">041</span>: </pre>
-<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">042</span>:     def __init__(self):</pre>
+<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">042</span>:     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-11 '>/* Python wrapper */
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -695,10 +769,10 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory___init__(struct __p
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>:         self.randoms = new Randoms()</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Randoms</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;randoms = new cqumo::Randoms();
 </pre><pre class="cython line score-0">&#xA0;<span class="">044</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>:     def __dealloc__(self):</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>:     <span class="k">def</span> <span class="nf">__dealloc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>/* Python wrapper */
 static void __pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
 static void __pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_3__dealloc__(PyObject *__pyx_v_self) {
@@ -717,10 +791,10 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_2__dealloc__(struc
   /* function exit code */
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:         del self.randoms</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span></pre>
 <pre class='cython code score-0 '>  delete __pyx_v_self-&gt;randoms;
 </pre><pre class="cython line score-0">&#xA0;<span class="">047</span>: </pre>
-<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:     def createConstantVariable(self, value):</pre>
+<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:     <span class="k">def</span> <span class="nf">createConstantVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></pre>
 <pre class='cython code score-4 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_5createConstantVariable(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_4createConstantVariable[] = "RandomsFactory.createConstantVariable(self, value)";
@@ -753,25 +827,25 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_4createConsta
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-10" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         cdef CxxRandomVariable *c_var = self.randoms.createConstant(value)</pre>
+</pre><pre class="cython line score-10" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createConstant</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></pre>
 <pre class='cython code score-10 '>  __pyx_t_1 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_value); if (unlikely((__pyx_t_1 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 49, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createConstant(__pyx_t_1);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 50, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 51, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">053</span>: </pre>
-<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:     def createExponentialVariable(self, rate):</pre>
+<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:     <span class="k">def</span> <span class="nf">createExponentialVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">):</span></pre>
 <pre class='cython code score-4 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_7createExponentialVariable(PyObject *__pyx_v_self, PyObject *__pyx_v_rate); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_6createExponentialVariable[] = "RandomsFactory.createExponentialVariable(self, rate)";
@@ -804,25 +878,25 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_6createExpone
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-10" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         cdef CxxRandomVariable *c_var = self.randoms.createExponential(rate)</pre>
+</pre><pre class="cython line score-10" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createExponential</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span></pre>
 <pre class='cython code score-10 '>  __pyx_t_1 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_rate); if (unlikely((__pyx_t_1 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 55, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createExponential(__pyx_t_1);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 56, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 57, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">059</span>: </pre>
-<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:     def createNormalVariable(self, mean, std):</pre>
+<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:     <span class="k">def</span> <span class="nf">createNormalVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span></pre>
 <pre class='cython code score-28 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_9createNormalVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_8createNormalVariable[] = "RandomsFactory.createNormalVariable(self, mean, std)";
@@ -906,26 +980,26 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_8createNormal
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-20" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:         cdef CxxRandomVariable *c_var = self.randoms.createNormal(mean, std)</pre>
+</pre><pre class="cython line score-20" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createNormal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span></pre>
 <pre class='cython code score-20 '>  __pyx_t_1 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_mean); if (unlikely((__pyx_t_1 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 61, __pyx_L1_error)</span>
   __pyx_t_2 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_std); if (unlikely((__pyx_t_2 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 61, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createNormal(__pyx_t_1, __pyx_t_2);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 62, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_3 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 63, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">065</span>: </pre>
-<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:     def createUniformVariable(self, a, b):</pre>
+<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:     <span class="k">def</span> <span class="nf">createUniformVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span></pre>
 <pre class='cython code score-28 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_11createUniformVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_10createUniformVariable[] = "RandomsFactory.createUniformVariable(self, a, b)";
@@ -1009,26 +1083,26 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_10createUnifo
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-20" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         cdef CxxRandomVariable *c_var = self.randoms.createUniform(a, b)</pre>
+</pre><pre class="cython line score-20" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createUniform</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></pre>
 <pre class='cython code score-20 '>  __pyx_t_1 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_a); if (unlikely((__pyx_t_1 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 67, __pyx_L1_error)</span>
   __pyx_t_2 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_b); if (unlikely((__pyx_t_2 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 67, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createUniform(__pyx_t_1, __pyx_t_2);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 68, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_3 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 69, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">071</span>: </pre>
-<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">072</span>:     def createHyperExponentialVariable(self, rates, weights):</pre>
+<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">072</span>:     <span class="k">def</span> <span class="nf">createHyperExponentialVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rates</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span></pre>
 <pre class='cython code score-28 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_13createHyperExponentialVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_12createHyperExponentialVariable[] = "RandomsFactory.createHyperExponentialVariable(self, rates, weights)";
@@ -1114,31 +1188,31 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_12createHyper
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>:         cdef vector[double] _rates = rates</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">_rates</span> <span class="o">=</span> <span class="n">rates</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_rates);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 73, __pyx_L1_error)</span>
   __pyx_v__rates = __pyx_t_1;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:         cdef vector[double] _weights = weights</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">_weights</span> <span class="o">=</span> <span class="n">weights</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_weights);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 74, __pyx_L1_error)</span>
   __pyx_v__weights = __pyx_t_1;
-</pre><pre class="cython line score-0">&#xA0;<span class="">075</span>:         cdef CxxRandomVariable *c_var = \</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:             self.randoms.createHyperExp(_rates, _weights)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">075</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> \</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createHyperExp</span><span class="p">(</span><span class="n">_rates</span><span class="p">,</span> <span class="n">_weights</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createHyperExp(__pyx_v__rates, __pyx_v__weights);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 77, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 78, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">079</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">079</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">080</span>: </pre>
-<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:     def createErlangVariable(self, shape, param):</pre>
+<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:     <span class="k">def</span> <span class="nf">createErlangVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span></pre>
 <pre class='cython code score-28 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_15createErlangVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_14createErlangVariable[] = "RandomsFactory.createErlangVariable(self, shape, param)";
@@ -1222,26 +1296,26 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_14createErlan
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         cdef CxxRandomVariable *c_var = self.randoms.createErlang(shape, param)</pre>
+</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createErlang</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span></pre>
 <pre class='cython code score-17 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_shape); if (unlikely((__pyx_t_1 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 82, __pyx_L1_error)</span>
   __pyx_t_2 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_v_param); if (unlikely((__pyx_t_2 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 82, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createErlang(__pyx_t_1, __pyx_t_2);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">083</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">083</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 83, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">084</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">084</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_3 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 84, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">086</span>: </pre>
-<pre class="cython line score-33" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:     def createMixtureVariable(self, vars, weights):</pre>
+<pre class="cython line score-33" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:     <span class="k">def</span> <span class="nf">createMixtureVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">vars</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span></pre>
 <pre class='cython code score-33 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_17createMixtureVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_16createMixtureVariable[] = "RandomsFactory.createMixtureVariable(self, vars, weights)";
@@ -1334,11 +1408,11 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_16createMixtu
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">088</span>:         cdef vector[CxxRandomVariable*] _vars</pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         cdef vector[double] _weights = weights</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">088</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">CxxRandomVariable</span>*] <span class="nf">_vars</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">_weights</span> <span class="o">=</span> <span class="n">weights</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_weights);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 89, __pyx_L1_error)</span>
   __pyx_v__weights = __pyx_t_1;
-</pre><pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:         for var in vars:</pre>
+</pre><pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span></pre>
 <pre class='cython code score-43 '>  if (likely(<span class='py_c_api'>PyList_CheckExact</span>(__pyx_v_vars)) || <span class='py_c_api'>PyTuple_CheckExact</span>(__pyx_v_vars)) {
     __pyx_t_2 = __pyx_v_vars; <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
@@ -1383,13 +1457,13 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_16createMixtu
 /* … */
   }
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:             if not isinstance(var, Variable):</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span></pre>
 <pre class='cython code score-2 '>    __pyx_t_6 = <span class='pyx_c_api'>__Pyx_TypeCheck</span>(__pyx_v_var, __pyx_ptype_6pyqumo_5cqumo_7randoms_Variable); 
     __pyx_t_7 = ((!(__pyx_t_6 != 0)) != 0);
     if (unlikely(__pyx_t_7)) {
 /* … */
     }
-</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">092</span>:                 classname = f"{Variable.__module__}.{Variable.__name__}"</pre>
+</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">092</span>:                 <span class="n">classname</span> <span class="o">=</span> <span class="n">f</span><span class="s">&quot;{Variable.__module__}.{Variable.__name__}&quot;</span></pre>
 <pre class='cython code score-34 '>      __pyx_t_5 = <span class='py_c_api'>PyTuple_New</span>(3);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 92, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
       __pyx_t_8 = 0;
@@ -1423,7 +1497,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_16createMixtu
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_classname = ((PyObject*)__pyx_t_10);
       __pyx_t_10 = 0;
-</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">093</span>:                 raise RuntimeError(f"var type {type(var)} is not {classname}")</pre>
+</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">093</span>:                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s">&quot;var type {type(var)} is not {classname}&quot;</span><span class="p">)</span></pre>
 <pre class='cython code score-35 '>      __pyx_t_10 = <span class='py_c_api'>PyTuple_New</span>(4);<span class='error_goto'> if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 93, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_10);
       __pyx_t_8 = 0;
@@ -1457,32 +1531,32 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_16createMixtu
       <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_t_10, 0, 0, 0);
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_10); __pyx_t_10 = 0;
       <span class='error_goto'>__PYX_ERR(1, 93, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">094</span>:             _vars.push_back((&lt;Variable&gt;var).get_variable())</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">094</span>:             <span class="n">_vars</span><span class="o">.</span><span class="n">push_back</span><span class="p">((&lt;</span><span class="kt">Variable</span><span class="p">&gt;</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">get_variable</span><span class="p">())</span></pre>
 <pre class='cython code score-0 '>    try {
       __pyx_v__vars.push_back(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)-&gt;__pyx_vtab)-&gt;get_variable(((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)));
     } catch(...) {
       __Pyx_CppExn2PyErr();
       <span class='error_goto'>__PYX_ERR(1, 94, __pyx_L1_error)</span>
     }
-</pre><pre class="cython line score-0">&#xA0;<span class="">095</span>:         cdef CxxRandomVariable *c_var = \</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:             self.randoms.createMixture(_vars, _weights)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">095</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> \</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createMixture</span><span class="p">(</span><span class="n">_vars</span><span class="p">,</span> <span class="n">_weights</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createMixture(__pyx_v__vars, __pyx_v__weights);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:         ret_var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:         <span class="n">ret_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 97, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_v_ret_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">098</span>:         ret_var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">098</span>:         <span class="n">ret_var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_ret_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_ret_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 98, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:         return ret_var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:         <span class="k">return</span> <span class="n">ret_var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_ret_var));
   __pyx_r = ((PyObject *)__pyx_v_ret_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">100</span>: </pre>
-<pre class="cython line score-45" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">101</span>:     def createAbsorbSemiMarkovVariable(self, vars, p0, trans, absorb_state):</pre>
+<pre class="cython line score-45" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">101</span>:     <span class="k">def</span> <span class="nf">createAbsorbSemiMarkovVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">vars</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">absorb_state</span><span class="p">):</span></pre>
 <pre class='cython code score-45 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_19createAbsorbSemiMarkovVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsorbSemiMarkovVariable[] = "RandomsFactory.createAbsorbSemiMarkovVariable(self, vars, p0, trans, absorb_state)";
@@ -1599,19 +1673,19 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsor
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">102</span>:         cdef vector[CxxRandomVariable*] c_vars</pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">103</span>:         cdef vector[double] c_initProbs = p0</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">102</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">CxxRandomVariable</span>*] <span class="nf">c_vars</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">103</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">c_initProbs</span> <span class="o">=</span> <span class="n">p0</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_p0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 103, __pyx_L1_error)</span>
   __pyx_v_c_initProbs = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">104</span>:         cdef vector[vector[double]] c_trans = trans</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">104</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">vector</span>[<span class="kt">double</span>]] <span class="nf">c_trans</span> <span class="o">=</span> <span class="n">trans</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_2 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_trans);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 104, __pyx_L1_error)</span>
   __pyx_v_c_trans = __pyx_t_2;
-</pre><pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>:         cdef int c_absorbState = absorb_state</pre>
+</pre><pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>:         <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">c_absorbState</span> <span class="o">=</span> <span class="n">absorb_state</span></pre>
 <pre class='cython code score-7 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_v_absorb_state); if (unlikely((__pyx_t_3 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(1, 105, __pyx_L1_error)</span>
   __pyx_v_c_absorbState = __pyx_t_3;
 </pre><pre class="cython line score-0">&#xA0;<span class="">106</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">107</span>:         # Fill variables:</pre>
-<pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:         for var in vars:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">107</span>:         <span class="c"># Fill variables:</span></pre>
+<pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span></pre>
 <pre class='cython code score-43 '>  if (likely(<span class='py_c_api'>PyList_CheckExact</span>(__pyx_v_vars)) || <span class='py_c_api'>PyTuple_CheckExact</span>(__pyx_v_vars)) {
     __pyx_t_4 = __pyx_v_vars; <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_4); __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
@@ -1656,13 +1730,13 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsor
 /* … */
   }
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:             if not isinstance(var, Variable):</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span></pre>
 <pre class='cython code score-2 '>    __pyx_t_8 = <span class='pyx_c_api'>__Pyx_TypeCheck</span>(__pyx_v_var, __pyx_ptype_6pyqumo_5cqumo_7randoms_Variable); 
     __pyx_t_9 = ((!(__pyx_t_8 != 0)) != 0);
     if (unlikely(__pyx_t_9)) {
 /* … */
     }
-</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:                 classname = f"{Variable.__module__}.{Variable.__name__}"</pre>
+</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:                 <span class="n">classname</span> <span class="o">=</span> <span class="n">f</span><span class="s">&quot;{Variable.__module__}.{Variable.__name__}&quot;</span></pre>
 <pre class='cython code score-34 '>      __pyx_t_7 = <span class='py_c_api'>PyTuple_New</span>(3);<span class='error_goto'> if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 110, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_7);
       __pyx_t_10 = 0;
@@ -1696,7 +1770,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsor
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_classname = ((PyObject*)__pyx_t_12);
       __pyx_t_12 = 0;
-</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:                 raise RuntimeError(f"var type {type(var)} is not {classname}")</pre>
+</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s">&quot;var type {type(var)} is not {classname}&quot;</span><span class="p">)</span></pre>
 <pre class='cython code score-35 '>      __pyx_t_12 = <span class='py_c_api'>PyTuple_New</span>(4);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 111, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
       __pyx_t_10 = 0;
@@ -1730,7 +1804,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsor
       <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_t_12, 0, 0, 0);
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
       <span class='error_goto'>__PYX_ERR(1, 111, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">112</span>:             c_vars.push_back((&lt;Variable&gt;var).get_variable())</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">112</span>:             <span class="n">c_vars</span><span class="o">.</span><span class="n">push_back</span><span class="p">((&lt;</span><span class="kt">Variable</span><span class="p">&gt;</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">get_variable</span><span class="p">())</span></pre>
 <pre class='cython code score-0 '>    try {
       __pyx_v_c_vars.push_back(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)-&gt;__pyx_vtab)-&gt;get_variable(((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)));
     } catch(...) {
@@ -1738,27 +1812,27 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_18createAbsor
       <span class='error_goto'>__PYX_ERR(1, 112, __pyx_L1_error)</span>
     }
 </pre><pre class="cython line score-0">&#xA0;<span class="">113</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">114</span>:         cdef CxxRandomVariable *c_ret_var = \</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>:             self.randoms.createAbsorbSemiMarkov(</pre>
+<pre class="cython line score-0">&#xA0;<span class="">114</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_ret_var</span> <span class="o">=</span> \</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createAbsorbSemiMarkov</span><span class="p">(</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_ret_var = __pyx_v_self-&gt;randoms-&gt;createAbsorbSemiMarkov(__pyx_v_c_vars, __pyx_v_c_initProbs, __pyx_v_c_trans, __pyx_v_c_absorbState);
-</pre><pre class="cython line score-0">&#xA0;<span class="">116</span>:                 c_vars, c_initProbs, c_trans, c_absorbState</pre>
-<pre class="cython line score-0">&#xA0;<span class="">117</span>:             )</pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">118</span>:         result = Variable()</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">116</span>:                 <span class="n">c_vars</span><span class="p">,</span> <span class="n">c_initProbs</span><span class="p">,</span> <span class="n">c_trans</span><span class="p">,</span> <span class="n">c_absorbState</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">117</span>:             <span class="p">)</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">118</span>:         <span class="n">result</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 118, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_v_result = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_4);
   __pyx_t_4 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>:         result.set_variable(c_ret_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>:         <span class="n">result</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_ret_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_4 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_result-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_result, __pyx_v_c_ret_var);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 119, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>:         return result</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>:         <span class="k">return</span> <span class="n">result</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">121</span>: </pre>
-<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">122</span>:     def createChoiceVariable(self, values, weights):</pre>
+<pre class="cython line score-28" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">122</span>:     <span class="k">def</span> <span class="nf">createChoiceVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span></pre>
 <pre class='cython code score-28 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_21createChoiceVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_20createChoiceVariable[] = "RandomsFactory.createChoiceVariable(self, values, weights)";
@@ -1842,27 +1916,27 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_20createChoic
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">123</span>:         cdef CxxRandomVariable *c_var = \</pre>
-<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">124</span>:             self.randoms.createChoice(values, weights)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">123</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_var</span> <span class="o">=</span> \</pre>
+<pre class="cython line score-4" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">124</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createChoice</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span></pre>
 <pre class='cython code score-4 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_values);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 124, __pyx_L1_error)</span>
   __pyx_t_2 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_weights);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 124, __pyx_L1_error)</span>
   __pyx_v_c_var = __pyx_v_self-&gt;randoms-&gt;createChoice(__pyx_t_1, __pyx_t_2);
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">125</span>:         var = Variable()</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">125</span>:         <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 125, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_v_var = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">126</span>:         var.set_variable(c_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">126</span>:         <span class="n">var</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_3 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_var, __pyx_v_c_var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 126, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">127</span>:         return var</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">127</span>:         <span class="k">return</span> <span class="n">var</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_var));
   __pyx_r = ((PyObject *)__pyx_v_var);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">128</span>: </pre>
-<pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">129</span>:     def createSemiMarkovArrivalVariable(self, vars, p0, all_trans_probs):</pre>
+<pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">129</span>:     <span class="k">def</span> <span class="nf">createSemiMarkovArrivalVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">vars</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">all_trans_probs</span><span class="p">):</span></pre>
 <pre class='cython code score-39 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_14RandomsFactory_23createSemiMarkovArrivalVariable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static char __pyx_doc_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiMarkovArrivalVariable[] = "RandomsFactory.createSemiMarkovArrivalVariable(self, vars, p0, all_trans_probs)";
@@ -1967,16 +2041,16 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiM
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">130</span>:         cdef vector[CxxRandomVariable*] c_vars</pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:         cdef vector[double] c_initProbs = p0</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">130</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">CxxRandomVariable</span>*] <span class="nf">c_vars</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">double</span>] <span class="nf">c_initProbs</span> <span class="o">=</span> <span class="n">p0</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_1 = <span class='pyx_c_api'>__pyx_convert_vector_from_py_double</span>(__pyx_v_p0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 131, __pyx_L1_error)</span>
   __pyx_v_c_initProbs = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">132</span>:         cdef vector[vector[double]] c_allTransProbs = all_trans_probs</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">132</span>:         <span class="k">cdef</span> <span class="kt">vector</span>[<span class="kt">vector</span>[<span class="kt">double</span>]] <span class="nf">c_allTransProbs</span> <span class="o">=</span> <span class="n">all_trans_probs</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_2 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_all_trans_probs);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 132, __pyx_L1_error)</span>
   __pyx_v_c_allTransProbs = __pyx_t_2;
 </pre><pre class="cython line score-0">&#xA0;<span class="">133</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">134</span>:         # Fill variables:</pre>
-<pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">135</span>:         for var in vars:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">134</span>:         <span class="c"># Fill variables:</span></pre>
+<pre class="cython line score-43" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">135</span>:         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span></pre>
 <pre class='cython code score-43 '>  if (likely(<span class='py_c_api'>PyList_CheckExact</span>(__pyx_v_vars)) || <span class='py_c_api'>PyTuple_CheckExact</span>(__pyx_v_vars)) {
     __pyx_t_3 = __pyx_v_vars; <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_3); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
@@ -2021,13 +2095,13 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiM
 /* … */
   }
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">136</span>:             if not isinstance(var, Variable):</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">136</span>:             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span></pre>
 <pre class='cython code score-2 '>    __pyx_t_7 = <span class='pyx_c_api'>__Pyx_TypeCheck</span>(__pyx_v_var, __pyx_ptype_6pyqumo_5cqumo_7randoms_Variable); 
     __pyx_t_8 = ((!(__pyx_t_7 != 0)) != 0);
     if (unlikely(__pyx_t_8)) {
 /* … */
     }
-</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">137</span>:                 classname = f"{Variable.__module__}.{Variable.__name__}"</pre>
+</pre><pre class="cython line score-34" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">137</span>:                 <span class="n">classname</span> <span class="o">=</span> <span class="n">f</span><span class="s">&quot;{Variable.__module__}.{Variable.__name__}&quot;</span></pre>
 <pre class='cython code score-34 '>      __pyx_t_6 = <span class='py_c_api'>PyTuple_New</span>(3);<span class='error_goto'> if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 137, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_6);
       __pyx_t_9 = 0;
@@ -2061,7 +2135,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiM
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_v_classname = ((PyObject*)__pyx_t_11);
       __pyx_t_11 = 0;
-</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">138</span>:                 raise RuntimeError(f"var type {type(var)} is not {classname}")</pre>
+</pre><pre class="cython line score-35" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">138</span>:                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s">&quot;var type {type(var)} is not {classname}&quot;</span><span class="p">)</span></pre>
 <pre class='cython code score-35 '>      __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(4);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 138, __pyx_L1_error)</span>
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
       __pyx_t_9 = 0;
@@ -2095,7 +2169,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiM
       <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_t_11, 0, 0, 0);
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_11); __pyx_t_11 = 0;
       <span class='error_goto'>__PYX_ERR(1, 138, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">139</span>:             c_vars.push_back((&lt;Variable&gt;var).get_variable())</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">139</span>:             <span class="n">c_vars</span><span class="o">.</span><span class="n">push_back</span><span class="p">((&lt;</span><span class="kt">Variable</span><span class="p">&gt;</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">get_variable</span><span class="p">())</span></pre>
 <pre class='cython code score-0 '>    try {
       __pyx_v_c_vars.push_back(((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)-&gt;__pyx_vtab)-&gt;get_variable(((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_var)));
     } catch(...) {
@@ -2103,27 +2177,27 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_14RandomsFactory_22createSemiM
       <span class='error_goto'>__PYX_ERR(1, 139, __pyx_L1_error)</span>
     }
 </pre><pre class="cython line score-0">&#xA0;<span class="">140</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">141</span>:         cdef CxxRandomVariable *c_ret_var = \</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">142</span>:             self.randoms.createSemiMarkovArrival(</pre>
+<pre class="cython line score-0">&#xA0;<span class="">141</span>:         <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">c_ret_var</span> <span class="o">=</span> \</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">142</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">randoms</span><span class="o">.</span><span class="n">createSemiMarkovArrival</span><span class="p">(</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_c_ret_var = __pyx_v_self-&gt;randoms-&gt;createSemiMarkovArrival(__pyx_v_c_vars, __pyx_v_c_initProbs, __pyx_v_c_allTransProbs);
-</pre><pre class="cython line score-0">&#xA0;<span class="">143</span>:                 c_vars, c_initProbs, c_allTransProbs)</pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">144</span>:         result = Variable()</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">143</span>:                 <span class="n">c_vars</span><span class="p">,</span> <span class="n">c_initProbs</span><span class="p">,</span> <span class="n">c_allTransProbs</span><span class="p">)</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">144</span>:         <span class="n">result</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_6pyqumo_5cqumo_7randoms_Variable));<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 144, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_v_result = ((struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">145</span>:         result.set_variable(c_ret_var)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">145</span>:         <span class="n">result</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="n">c_ret_var</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_3 = ((struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *)__pyx_v_result-&gt;__pyx_vtab)-&gt;set_variable(__pyx_v_result, __pyx_v_c_ret_var);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 145, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">146</span>:         return result</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">146</span>:         <span class="k">return</span> <span class="n">result</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">147</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">148</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">149</span>: cdef class Variable:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">149</span>: <span class="k">cdef</span> <span class="k">class</span> <span class="nf">Variable</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable {
   PyObject_HEAD
   struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *__pyx_vtab;
@@ -2136,9 +2210,9 @@ struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable {
   PyObject *(*eval)(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_6pyqumo_5cqumo_7randoms_Variable *__pyx_vtabptr_6pyqumo_5cqumo_7randoms_Variable;
-</pre><pre class="cython line score-0">&#xA0;<span class="">150</span>:     cdef CxxRandomVariable* variable</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">150</span>:     <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span>* <span class="nf">variable</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">151</span>: </pre>
-<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">152</span>:     def __init__(self):</pre>
+<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">152</span>:     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-11 '>/* Python wrapper */
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -2165,10 +2239,10 @@ static int __pyx_pf_6pyqumo_5cqumo_7randoms_8Variable___init__(struct __pyx_obj_
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">153</span>:         self.variable = NULL</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">153</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="bp">NULL</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;variable = NULL;
 </pre><pre class="cython line score-0">&#xA0;<span class="">154</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">155</span>:     def __dealloc__(self):</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">155</span>:     <span class="k">def</span> <span class="nf">__dealloc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>/* Python wrapper */
 static void __pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
 static void __pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_3__dealloc__(PyObject *__pyx_v_self) {
@@ -2187,10 +2261,10 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_2__dealloc__(struct __pyx
   /* function exit code */
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">156</span>:         del self.variable</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">156</span>:         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span></pre>
 <pre class='cython code score-0 '>  delete __pyx_v_self-&gt;variable;
 </pre><pre class="cython line score-0">&#xA0;<span class="">157</span>: </pre>
-<pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">158</span>:     cdef set_variable(self, CxxRandomVariable *variable):</pre>
+<pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">158</span>:     <span class="k">cdef</span> <span class="nf">set_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">CxxRandomVariable</span> <span class="o">*</span><span class="n">variable</span><span class="p">):</span></pre>
 <pre class='cython code score-1 '>static PyObject *__pyx_f_6pyqumo_5cqumo_7randoms_8Variable_set_variable(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *__pyx_v_self, cqumo::RandomVariable *__pyx_v_variable) {
   PyObject *__pyx_r = NULL;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -2202,10 +2276,10 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_2__dealloc__(struct __pyx
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">159</span>:         self.variable = variable</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">159</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;variable = __pyx_v_variable;
 </pre><pre class="cython line score-0">&#xA0;<span class="">160</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">161</span>:     cdef CxxRandomVariable *get_variable(self):</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">161</span>:     <span class="k">cdef</span> <span class="kt">CxxRandomVariable</span> *<span class="nf">get_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>static cqumo::RandomVariable *__pyx_f_6pyqumo_5cqumo_7randoms_8Variable_get_variable(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *__pyx_v_self) {
   cqumo::RandomVariable *__pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -2216,11 +2290,11 @@ static void __pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_2__dealloc__(struct __pyx
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">162</span>:         return self.variable</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">162</span>:         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = __pyx_v_self-&gt;variable;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">163</span>: </pre>
-<pre class="cython line score-32" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">164</span>:     cpdef eval(self):</pre>
+<pre class="cython line score-32" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">164</span>:     <span class="k">cpdef</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-32 '>static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_5eval(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyObject *__pyx_f_6pyqumo_5cqumo_7randoms_8Variable_eval(struct __pyx_obj_6pyqumo_5cqumo_7randoms_Variable *__pyx_v_self, int __pyx_skip_dispatch) {
   PyObject *__pyx_r = NULL;
@@ -2322,7 +2396,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_4eval(struct __pyx_o
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">165</span>:         return self.variable.eval()</pre>
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">165</span>:         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></pre>
 <pre class='cython code score-6 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_self-&gt;variable-&gt;eval());<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
@@ -2330,7 +2404,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_4eval(struct __pyx_o
   __pyx_t_1 = 0;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">166</span>: </pre>
-<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">167</span>:     def __call__(self, size):</pre>
+<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">167</span>:     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span></pre>
 <pre class='cython code score-26 '>/* Python wrapper */
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_7__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyObject *__pyx_pw_6pyqumo_5cqumo_7randoms_8Variable_7__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -2405,7 +2479,7 @@ static PyObject *__pyx_pf_6pyqumo_5cqumo_7randoms_8Variable_6__call__(struct __p
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-77" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">168</span>:         return np.asarray([self.eval() for _ in range(size)])</pre>
+</pre><pre class="cython line score-77" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">168</span>:         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)])</span></pre>
 <pre class='cython code score-77 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_2, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 168, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);

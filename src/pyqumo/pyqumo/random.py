@@ -121,6 +121,18 @@ class Distribution:
         return np.asarray([self.rnd.eval() for _ in range(size)])
 
     @property
+    def order(self) -> int:
+        """
+        Get distribution order.
+
+        By default, distribution has order 1 (e.g., normal, exponential,
+        uniform, etc.). However, if the distribution is a kind of a
+        sequence or mixture of distributions, it can have greater order.
+        For instance, Erlang distribution shape is its order.
+        """
+        return 1
+
+    @property
     def rnd(self) -> Variable:
         raise NotImplementedError
 
@@ -340,6 +352,10 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         self._param = rate
 
     @property
+    def order(self) -> int:
+        return 1
+
+    @property
     def param(self):
         return self._param
 
@@ -407,8 +423,18 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
             raise ValueError("rate must be positive")
         self._shape, self._param = int(np.round(shape)), param
 
+    def as_ph(self):
+        """
+        Get representation of this Erlang distribution as PH distribution.
+        """
+        return PhaseType.erlang(self.shape, self.rate)
+
     @property
     def shape(self) -> int:
+        return self._shape
+
+    @property
+    def order(self) -> int:
         return self._shape
 
     @property
@@ -498,8 +524,8 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
                  weights: Optional[Sequence[float]] = None,
                  factory: RandomsFactory = None):
         super().__init__(factory)
-        order = len(states)
-        if order == 0:
+        num_states = len(states)
+        if num_states == 0:
             raise ValueError("no distributions provided")
         if weights is not None:
             if len(states) != len(weights):
@@ -511,11 +537,11 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
                 raise ValueError(f"negative weights disallowed: {weights}")
             self._probs = weights / weights.sum()
         else:
-            weights = np.ones(order)
-            self._probs = 1/order * weights
+            weights = np.ones(num_states)
+            self._probs = 1/num_states * weights
         # Store distributions as a new tuple:
         self._states = tuple(states)
-        self._order = order
+        self._num_states = num_states
 
     @property
     def states(self) -> Sequence[Distribution]:
@@ -526,8 +552,16 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
         return self._probs
 
     @property
+    def num_states(self) -> int:
+        return self._num_states
+
+    @property
     def order(self) -> int:
-        return self._order
+        """
+        Get the distribution order as the sum of orders of internal
+        distributions.
+        """
+        return sum(state.order for state in self._states)
 
     @lru_cache
     def _moment(self, n: int) -> float:
@@ -559,6 +593,15 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
             [state.copy() for state in self._states],
             self._probs
         )
+
+    def as_ph(self):
+        """
+        Get representation in the form of PH distribution.
+
+        If any internal distribution can not be represented as PH distribution,
+        raise ValueError.
+        """
+        return PhaseType.erlang(self.shape, self.rate)
 
 
 class HyperExponential(MixtureDistribution):
@@ -618,7 +661,6 @@ class HyperExponential(MixtureDistribution):
                                f"r1 = {r1}; selected r2={r2}.")
 
         return HyperExponential([r1, r2], [p1, p2])
-
 
 
 # noinspection PyUnresolvedReferences
