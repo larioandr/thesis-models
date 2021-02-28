@@ -7,7 +7,7 @@ from scipy import linalg, integrate
 import scipy.stats
 from scipy.special import ndtr
 
-from pyqumo import stats, cqumo
+from pyqumo import stats
 from pyqumo.cqumo.randoms import RandomsFactory, Variable
 from pyqumo.errors import MatrixShapeError
 from pyqumo.matrix import is_pmf, order_of, cbdiag, fix_stochastic, \
@@ -138,6 +138,14 @@ class Distribution:
 
     def copy(self) -> 'Distribution':
         raise NotImplementedError
+
+    def as_ph(self, **kwargs) -> 'PhaseType':
+        """
+        Get distribution representation in the form of a PH distribution.
+
+        By default, raise `RuntimeError`, but can be overridden.
+        """
+        raise RuntimeError(f"{repr(self)} can not be casted to PhaseType")
 
 
 class AbstractCdfMixin:
@@ -400,6 +408,9 @@ class Exponential(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
         """
         return Exponential(1 / avg)
 
+    def as_ph(self, **kwargs):
+        return PhaseType.exponential(self.rate)
+
 
 class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
     """
@@ -423,11 +434,11 @@ class Erlang(ContinuousDistributionMixin, AbstractCdfMixin, Distribution):
             raise ValueError("rate must be positive")
         self._shape, self._param = int(np.round(shape)), param
 
-    def as_ph(self):
+    def as_ph(self, **kwargs):
         """
         Get representation of this Erlang distribution as PH distribution.
         """
-        return PhaseType.erlang(self.shape, self.rate)
+        return PhaseType.erlang(self.shape, self.param)
 
     @property
     def shape(self) -> int:
@@ -594,14 +605,42 @@ class MixtureDistribution(ContinuousDistributionMixin, AbstractCdfMixin,
             self._probs
         )
 
-    def as_ph(self):
+    def as_ph(self, **kwargs):
         """
         Get representation in the form of PH distribution.
 
-        If any internal distribution can not be represented as PH distribution,
-        raise ValueError.
+        If any internal distribution with probability greater or equal to
+        `min_prob` can not be represented as PH distribution,
+        raise `RuntimeError`.
+
+        Parameters
+        ----------
+        min_prob : float, optional
+            all states with probability below this value will not be included
+            into the PH distribution (default: 1e-5)
+
+        Returns
+        -------
+        ph : PhaseType
         """
-        return PhaseType.erlang(self.shape, self.rate)
+        min_prob = kwargs.get('min_prob', 1e-5)
+        state_ph = []
+        state_probs = []
+        for p, state in zip(self.probs, self.states):
+            if p >= min_prob:
+                state_ph.append(state.as_ph(**kwargs))
+                state_probs.append(p)
+        order = sum(ph.order for ph in state_ph)
+        mat = np.zeros((order, order))
+        probs = np.zeros(order)
+        base = 0
+        for p, ph in zip(state_probs, state_ph):
+            n = ph.order
+            probs[base] = p
+            mat[base:base+n, base:base+n] = ph.s
+            base += n
+        probs = np.asarray(probs) / sum(probs)
+        return PhaseType(mat, probs)
 
 
 class HyperExponential(MixtureDistribution):
@@ -661,6 +700,45 @@ class HyperExponential(MixtureDistribution):
                                f"r1 = {r1}; selected r2={r2}.")
 
         return HyperExponential([r1, r2], [p1, p2])
+
+
+class HyperErlang(MixtureDistribution):
+    """Hyper-Erlang distribution.
+
+    Hyper-Erlang distribution is defined by:
+
+    - a vector of parameters (a1, ..., aN)
+    - a vector of shapes (n1, ..., nN)
+    - probabilities mass function (p1, ..., pN)
+
+    Then the resulting probability is a weighted sum of Erlang
+    distributions Erlang(ni, ai) with weights pi:
+
+    $X = \\sum_{i=1}^{N}{p_i X_i}$, where $X_i ~ Er(ni, ai)$
+    """
+    def __init__(
+            self,
+            params: Sequence[float],
+            shapes: Sequence[int],
+            probs: Sequence[float],
+            factory: RandomsFactory = None):
+        states = [Erlang(shape, param) for shape, param in zip(shapes, params)]
+        super().__init__(states, probs, factory)
+
+    # noinspection PyUnresolvedReferences
+    @cached_property
+    def params(self) -> np.ndarray:
+        return np.asarray([state.param for state in self.states])
+
+    @cached_property
+    def shapes(self) -> np.ndarray:
+        return np.asarray([state.shape for state in self.states])
+
+    def __repr__(self):
+        return f"(HyperErlang: " \
+               f"probs={str_array(self.probs)}, " \
+               f"shapes={str_array(self.shapes)}, " \
+               f"params={str_array(self.params)})"
 
 
 # noinspection PyUnresolvedReferences
@@ -798,6 +876,10 @@ class PhaseType(ContinuousDistributionMixin,
         return self._pmf0
 
     @property
+    def p(self):
+        return self._pmf0
+
+    @property
     def trans_probs(self):
         return self._trans_probs
 
@@ -828,13 +910,17 @@ class PhaseType(ContinuousDistributionMixin,
         p = np.asarray(self._pmf0)
         ones = np.ones(self.order)
         s = np.asarray(self._subgenerator)
-        return lambda x: 0 if x < 0 else 1 - p.dot(linalg.expm(x * s)).dot(ones)
+        return lambda x: 0 if x < 0 else \
+            1 - p.dot(linalg.expm(x * s)).dot(ones)
 
     def __repr__(self):
         return f"(PH: s={str_array(self.s)}, p={str_array(self.init_probs)})"
 
     def copy(self) -> 'PhaseType':
         return PhaseType(self._subgenerator, self._pmf0, safe=True)
+
+    def as_ph(self, **kwargs) -> 'PhaseType':
+        return self.copy()
 
 
 class Choice(DiscreteDistributionMixin, AbstractCdfMixin, Distribution):
