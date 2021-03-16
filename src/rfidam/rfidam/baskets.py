@@ -6,8 +6,8 @@ import numpy as np
 from math import factorial
 from functools import lru_cache as cache, cached_property
 from scipy.special import comb
-from collections import namedtuple, Iterable
-from typing import Sequence, Union
+from collections import namedtuple
+from typing import Sequence
 
 from rfidam.baskets_mc import baskets_monte_carlo
 
