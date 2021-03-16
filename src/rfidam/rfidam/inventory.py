@@ -50,7 +50,7 @@ class SlotModel:
         Fields:
         - empty: empty slot duration
         - collided: float
-        - reply: tuple (probs, durations) of np.ndarrays
+        - reply: tuple (probs, durations) of np.ndarray(s)
 
         Returns
         -------
@@ -59,7 +59,7 @@ class SlotModel:
         collided: float
             collided slot duration
         reply: (probs, durations)
-            tuple of two np.ndarrays for probabilities and durations
+            tuple of two np.ndarray instances for probabilities and durations
         """
         t1 = self._protocol.timings.t1
         t2 = self._protocol.timings.t2
@@ -93,7 +93,7 @@ class SlotModel:
         Get slot probabilities.
         """
         n_slots = self.protocol.props.n_slots
-        baskets_model = BasketsOccupancyProblem(n_slots, self.n_tags)
+        baskets_model = BasketsOccupancyProblem.create(n_slots, self.n_tags)
         p0 = baskets_model.avg_count.empty / n_slots
         p1 = baskets_model.avg_count.single / n_slots
         p2 = 1 - p0 - p1
@@ -115,7 +115,7 @@ class RoundModel:
         return self._n_tags
 
     @property
-    def ber(self) -> int:
+    def ber(self) -> float:
         return self._ber
 
     @cached_property

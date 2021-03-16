@@ -1,5 +1,5 @@
 """
-This module contains combinatoric routines for computing distributions of
+This module contains combinations routines for computing distributions of
 balls in baskets.
 """
 import numpy as np
@@ -8,6 +8,8 @@ from functools import lru_cache as cache, cached_property
 from scipy.special import comb
 from collections import namedtuple, Iterable
 from typing import Sequence, Union
+
+from rfidam.baskets_mc import baskets_monte_carlo
 
 
 def valez_alonso(m: int, n_balls: int, n_baskets: int):
@@ -32,13 +34,15 @@ def valez_alonso(m: int, n_balls: int, n_baskets: int):
     """
     if m > n_balls or m > n_baskets:
         return 0.0
-    try:
-        k = (factorial(n_baskets) * factorial(n_balls) /
-             (factorial(m) * np.power(n_baskets, n_balls)))
-    except ZeroDivisionError as er:
-        print(f'Exception occured when n_balls={n_balls}, '
-              f'n_baskets={n_baskets}')
-        raise er
+    # try:
+    k = factorial(n_baskets) / factorial(m) * (
+        np.arange(1, n_balls+1) / n_baskets).prod()
+    # k = (factorial(n_baskets) * factorial(n_balls) /
+    #      (factorial(m) * np.power(n_baskets, n_balls)))
+    # except ZeroDivisionError as er:
+    #     print(f'Exception raised when n_balls={n_balls}, '
+    #           f'n_baskets={n_baskets}')
+    #     raise er
     sum_ = 0.0
     for i in range(n_balls - m + 1):
         sum_ += (pow(-1, i) *
@@ -81,7 +85,7 @@ def stirling2(n: int, k: int) -> int:
     sum_ = 0
     for i in range(0, k + 1):
         sum_ += pow(-1, i) * comb(k, i) * pow(k - i, n)
-    return sum_ / np.math.factorial(k)
+    return sum_ // np.math.factorial(k)
 
 
 @cache
@@ -133,9 +137,7 @@ Occupancy = namedtuple('Occupancy', ['empty', 'single', 'many'])
 
 
 def estimate_occupancy_rates(
-        n_baskets: int,
-        n_balls: int,
-        n_iters: Union[int, Iterable] = 20000) -> Occupancy:
+        n_baskets: int, n_balls: int, n_iters: int = 20000) -> Occupancy:
     """
     Estimate occupancy of N baskets when K balls are put at random.
 
@@ -173,37 +175,8 @@ def estimate_occupancy_rates(
     many : numpy.ndarray
         probability mass function of the number of baskets with 2+ balls
     """
-    n_empty = []  # list of numbers of empty baskets
-    n_single = []  # list of numbers of baskets with one ball
-    n_many = []  # list of numbers of baskets with two and more balls
-
-    # Simulate balls distribution:
-    iters = n_iters if isinstance(n_iters, Iterable) else range(n_iters)
-    for _ in iters:
-        baskets = np.zeros(n_baskets)
-        for i in range(n_balls):
-            baskets[np.random.randint(0, n_baskets)] += 1
-        n_empty.append(sum(baskets == 0))
-        n_single.append(sum(baskets == 1))
-        n_many.append(sum(baskets > 1))
-
-    # Compute numbers of occasions that `m` baskets were empty, occupied with
-    # single or many balls, for each `m = 0 ... n_baskets`:
-    empty_counts = np.zeros(n_baskets + 1)
-    single_counts = np.zeros(n_baskets + 1)
-    many_counts = np.zeros(n_baskets + 1)
-    for m in n_empty:
-        empty_counts[m] += 1
-    for m in n_single:
-        single_counts[m] += 1
-    for m in n_many:
-        many_counts[m] += 1
-
-    # Compute and return probabilities mass functions:
-    return Occupancy(
-        empty=(empty_counts / len(n_empty)),
-        single=(single_counts / len(n_single)),
-        many=(many_counts / len(n_many)))
+    empty, single, many = baskets_monte_carlo(n_baskets, n_balls, n_iters)
+    return Occupancy(empty=empty, single=single, many=many)
 
 
 def mean_num(pmf: Sequence[float]) -> float:
@@ -259,21 +232,32 @@ class BasketsOccupancyProblem:
         return self._n_balls
 
     @cached_property
+    def _estimated_occupancy(self):
+        return estimate_occupancy_rates(
+            n_baskets=self.n_baskets,
+            n_balls=self.n_balls,
+            n_iters=BasketsOccupancyProblem.N_ITER)
+
+    @cached_property
     def empty(self) -> np.ndarray:
         """
         Get probability distribution of the number of empty baskets.
         """
+        # For large dimensions use Monte-Carlo method:
+        if self.n_baskets > 8 or self.n_balls > 8:
+            return self._estimated_occupancy.empty
+
+        # For smaller values use analytic expression:
         probs = []
         n_baskets = self._n_baskets
         n_balls = self._n_balls
-        n_combinations = pow(n_baskets, n_balls)
         for m in range(self.n_baskets + 1):
-            n_empty_baskets_combs = comb(n_baskets, m)
-            n_balls_partitions = stirling2(n_balls, n_baskets - m)
-            n_permutations = factorial(n_baskets - m)
-            probs.append(
-                (n_empty_baskets_combs * n_balls_partitions * n_permutations) /
-                n_combinations)
+            p = stirling2(n_balls, n_baskets - m) / factorial(m)
+            k = min(n_baskets, n_balls)
+            p *= (np.arange(n_baskets, n_baskets - k, -1) / n_baskets).prod()
+            p *= factorial(n_baskets - k)
+            p /= pow(n_baskets, n_balls - k)
+            probs.append(p)
         return np.asarray(probs)
 
     @cached_property
@@ -286,13 +270,9 @@ class BasketsOccupancyProblem:
 
         # In bad case, when formula from Valez-Alonso paper doesn't work,
         # use Monte-Carlo method to estimate probabilities:
-        if self.n_baskets < self.n_balls or (
-                self.n_baskets > 8 and self.n_balls > 8):
-            occupancy = estimate_occupancy_rates(
-                n_baskets=self.n_baskets,
-                n_balls=self.n_balls,
-                n_iters=BasketsOccupancyProblem.N_ITER)
-            return occupancy.single
+        if self.n_baskets < self.n_balls or self.n_baskets > 8 or \
+                self.n_balls > 8:
+            return self._estimated_occupancy.single
 
         # Otherwise, use formula from Valez-Alonso paper:
         return np.asarray([
@@ -332,4 +312,4 @@ class BasketsOccupancyProblem:
 
     @cache
     def get_p1(self, m: int) -> float:
-        return self.single_urns_pmf[m]
+        return self.single[m]
