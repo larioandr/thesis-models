@@ -20,6 +20,54 @@ def get_rx_prob(frame: TagFrame, ber: float):
 SlotValues = namedtuple('SlotValues', ['empty', 'reply', 'collided'])
 
 
+@cache
+def create_slot_model(
+        protocol: Protocol,
+        ber: float,
+        n_tags: int) -> 'SlotModel':
+    """
+    Factory function for creating slot model.
+
+    This routine is cached, so calling it multiple time won't add much
+    overhead.
+
+    Parameters
+    ----------
+    protocol : Protocol
+    ber : float
+    n_tags : int
+
+    Returns
+    -------
+    model : SlotModel
+    """
+    return SlotModel(protocol, ber=ber, n_tags=n_tags)
+
+
+@cache
+def create_round_model(
+        protocol: Protocol,
+        ber: float,
+        n_tags: int) -> 'RoundModel':
+    """
+    Factory function for creating round model.
+
+    This routine is cached, so calling it multiple time won't add much
+    overhead.
+
+    Parameters
+    ----------
+    protocol : Protocol
+    ber : float
+    n_tags : int
+
+    Returns
+    -------
+    model : SlotModel
+    """
+    return RoundModel(protocol, ber=ber, n_tags=n_tags)
+
+
 class SlotModel:
     """
     Slot model provides routines for estimation of slot durations and
