@@ -88,51 +88,6 @@ def stirling2(n: int, k: int) -> int:
     return sum_ // np.math.factorial(k)
 
 
-@cache
-def count_collided_parts(n: int, k: int) -> int:
-    """
-    Compute the number of ways to split n elements into k collided parts.
-
-    Collided part is a part which contains two or more elements. This
-    function returns the number of ways to split the set of n elements into
-    k parts in a way that each part contains two or more elements.
-
-    Let us denote this function as Sc(n, k), Stirling 2nd kind number as
-    S(n, k) and number of combinations as C(n, k). Then:
-
-    Sc(n, k) = S(n, k) - C(k, 1) Sc(n-1, k-1) - C(k, 2) Sc(n-2, k-2) - ...
-        - C(k, k) Sc(n-k, 0).
-
-    # TODO: test me!
-
-    Trivial cases:
-
-    - Sc(n, 0) = 0 when n > 0
-    - Sc(n, 1) = 0
-    - Sc(n, n) = 0 when n > 0
-    - Sc(0, 0) = 1
-
-    Parameters
-    ----------
-    n : int
-        number of elements
-    k : int
-        number of parts
-
-    Returns
-    -------
-    s : int
-    """
-    if n == 0 and k == 0:
-        return 1
-    if k <= 1 or n < 2*k:
-        return 0
-    x = stirling2(n, k)
-    for i in range(1, k):
-        x -= comb(n, i) * count_collided_parts(n - i, k - i)
-    return x
-
-
 Occupancy = namedtuple('Occupancy', ['empty', 'single', 'many'])
 
 
@@ -280,23 +235,6 @@ class BasketsOccupancyProblem:
             for m in baskets
         ])
 
-    @cache
-    def get_single_cond_prob(self, m: int, n_empty: int):
-        # FIXME: WRONG RESULTS!
-        n_baskets = self.n_baskets
-        n_balls = self.n_balls
-
-        if n_empty >= n_baskets or m > n_balls or m > n_baskets - n_empty:
-            return 0.0
-
-        num = comb(n_balls, m) * comb(n_baskets - n_empty, m) * \
-            comb(n_baskets, n_empty) * factorial(m) * \
-            count_collided_parts(n_balls - m, n_baskets - n_empty - m) * \
-            factorial(n_baskets - n_empty - m)
-        den = (n_baskets - n_empty) ** n_balls
-
-        return num / den
-
     @cached_property
     def avg_count(self) -> Occupancy:
         """
@@ -309,7 +247,3 @@ class BasketsOccupancyProblem:
             empty=avg_empty,
             single=avg_single,
             many=(self.n_baskets - avg_empty - avg_single))
-
-    @cache
-    def get_p1(self, m: int) -> float:
-        return self.single[m]

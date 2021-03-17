@@ -1677,7 +1677,7 @@ static PyObject *__pyx_codeobj__4;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_6rfidam_10baskets_mc_1baskets_monte_carlo(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6rfidam_10baskets_mc_baskets_monte_carlo[] = "\n    Estimate occupancy of N baskets when K balls are put at random.\n\n    More precise, it estimates probability mass functions of three random\n    variables:\n\n    - number of empty baskets\n    - number of baskets with single ball\n    - number of baskets with two or more balls\n\n    While these variables are not independent, the routine returns only\n    marginal distribution of each variable, since this is sufficient for the\n    inventory round model.\n\n    Each component of the returned `Occupancy` tuple contains a `numpy.ndarray`\n    instance with i-th component equal to probability that i baskets has\n    the corresponding type of occupancy (empty, single ball, many balls).\n\n    This routine uses Monte-Carlo method: the process of balls distribution\n    over baskets is repeated `n_iters` times, and occupancy is estimated\n    from the values obtained.\n\n    Routine is implemented very low-level, all internal parts except\n    getting random basket index are written in pure C-language.\n\n    Parameters\n    ----------\n    n_baskets : int\n    n_balls : int\n    n_iters : int, optional (default = 20'000)\n\n    Returns\n    -------\n    empty : numpy.ndarray\n        probability mass function of the number of empty baskets\n    single : numpy.ndarray\n        probability mass function of the number of baskets with one ball\n    many : numpy.ndarray\n        probability mass function of the number of baskets with 2+ balls\n    ";
+static char __pyx_doc_6rfidam_10baskets_mc_baskets_monte_carlo[] = "\n    Estimate occupancy of N baskets when K balls are put at random.\n\n    More precise, it estimates probability mass functions of three random\n    variables:\n\n    - number of empty baskets\n    - number of baskets with single ball\n    - number of baskets with two or more balls\n\n    While these variables are not independent, the routine returns only\n    marginal distribution of each variable, since this is sufficient for the\n    inventory round model.\n\n    This routine uses Monte-Carlo method: the process of balls distribution\n    over baskets is repeated `n_iters` times, and occupancy is estimated\n    from the values obtained.\n\n    Routine is implemented very low-level, all internal parts except\n    getting random basket index are written in pure C-language.\n\n    Parameters\n    ----------\n    n_baskets : int\n    n_balls : int\n    n_iters : int, optional (default = 20'000)\n\n    Returns\n    -------\n    empty : numpy.ndarray\n        probability mass function of the number of empty baskets\n    single : numpy.ndarray\n        probability mass function of the number of baskets with one ball\n    many : numpy.ndarray\n        probability mass function of the number of baskets with 2+ balls\n    ";
 static PyMethodDef __pyx_mdef_6rfidam_10baskets_mc_1baskets_monte_carlo = {"baskets_monte_carlo", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6rfidam_10baskets_mc_1baskets_monte_carlo, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6rfidam_10baskets_mc_baskets_monte_carlo};
 static PyObject *__pyx_pw_6rfidam_10baskets_mc_1baskets_monte_carlo(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_n_baskets = 0;
@@ -1788,37 +1788,37 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("baskets_monte_carlo", 0);
 
-  /* "rfidam/baskets_mc.pyx":47
+  /* "rfidam/baskets_mc.pyx":43
  *         probability mass function of the number of baskets with 2+ balls
  *     """
  *     cdef int c_n_iters = n_iters             # <<<<<<<<<<<<<<
  *     cdef int c_n_baskets = n_baskets
  *     cdef int c_n_balls = n_balls
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_iters); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_iters); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_v_c_n_iters = __pyx_t_1;
 
-  /* "rfidam/baskets_mc.pyx":48
+  /* "rfidam/baskets_mc.pyx":44
  *     """
  *     cdef int c_n_iters = n_iters
  *     cdef int c_n_baskets = n_baskets             # <<<<<<<<<<<<<<
  *     cdef int c_n_balls = n_balls
  * 
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_baskets); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_baskets); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 44, __pyx_L1_error)
   __pyx_v_c_n_baskets = __pyx_t_1;
 
-  /* "rfidam/baskets_mc.pyx":49
+  /* "rfidam/baskets_mc.pyx":45
  *     cdef int c_n_iters = n_iters
  *     cdef int c_n_baskets = n_baskets
  *     cdef int c_n_balls = n_balls             # <<<<<<<<<<<<<<
  * 
  *     cdef int* n_empty_array = <int*> malloc(c_n_iters * sizeof(int))
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_balls); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_n_balls); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L1_error)
   __pyx_v_c_n_balls = __pyx_t_1;
 
-  /* "rfidam/baskets_mc.pyx":51
+  /* "rfidam/baskets_mc.pyx":47
  *     cdef int c_n_balls = n_balls
  * 
  *     cdef int* n_empty_array = <int*> malloc(c_n_iters * sizeof(int))             # <<<<<<<<<<<<<<
@@ -1827,7 +1827,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   __pyx_v_n_empty_array = ((int *)malloc((__pyx_v_c_n_iters * (sizeof(int)))));
 
-  /* "rfidam/baskets_mc.pyx":52
+  /* "rfidam/baskets_mc.pyx":48
  * 
  *     cdef int* n_empty_array = <int*> malloc(c_n_iters * sizeof(int))
  *     cdef int* n_single_array = <int*> malloc(c_n_iters * sizeof(int))             # <<<<<<<<<<<<<<
@@ -1836,7 +1836,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   __pyx_v_n_single_array = ((int *)malloc((__pyx_v_c_n_iters * (sizeof(int)))));
 
-  /* "rfidam/baskets_mc.pyx":53
+  /* "rfidam/baskets_mc.pyx":49
  *     cdef int* n_empty_array = <int*> malloc(c_n_iters * sizeof(int))
  *     cdef int* n_single_array = <int*> malloc(c_n_iters * sizeof(int))
  *     cdef int* n_many_array = <int*> malloc(c_n_iters * sizeof(int))             # <<<<<<<<<<<<<<
@@ -1845,7 +1845,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   __pyx_v_n_many_array = ((int *)malloc((__pyx_v_c_n_iters * (sizeof(int)))));
 
-  /* "rfidam/baskets_mc.pyx":54
+  /* "rfidam/baskets_mc.pyx":50
  *     cdef int* n_single_array = <int*> malloc(c_n_iters * sizeof(int))
  *     cdef int* n_many_array = <int*> malloc(c_n_iters * sizeof(int))
  *     cdef int* baskets = <int*> malloc(c_n_baskets * sizeof(int))             # <<<<<<<<<<<<<<
@@ -1854,40 +1854,40 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   __pyx_v_baskets = ((int *)malloc((__pyx_v_c_n_baskets * (sizeof(int)))));
 
-  /* "rfidam/baskets_mc.pyx":58
+  /* "rfidam/baskets_mc.pyx":54
  *     cdef int i, j, k, basket_index, num_balls
  * 
  *     cdef np.ndarray random_indexes = np.random.randint(             # <<<<<<<<<<<<<<
  *         0,
  *         c_n_baskets,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_random); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_random); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_randint); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_randint); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "rfidam/baskets_mc.pyx":60
+  /* "rfidam/baskets_mc.pyx":56
  *     cdef np.ndarray random_indexes = np.random.randint(
  *         0,
  *         c_n_baskets,             # <<<<<<<<<<<<<<
  *         size=(c_n_balls * c_n_iters))
  * 
  */
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_c_n_baskets); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_c_n_baskets); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "rfidam/baskets_mc.pyx":58
+  /* "rfidam/baskets_mc.pyx":54
  *     cdef int i, j, k, basket_index, num_balls
  * 
  *     cdef np.ndarray random_indexes = np.random.randint(             # <<<<<<<<<<<<<<
  *         0,
  *         c_n_baskets,
  */
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -1896,37 +1896,37 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "rfidam/baskets_mc.pyx":61
+  /* "rfidam/baskets_mc.pyx":57
  *         0,
  *         c_n_baskets,
  *         size=(c_n_balls * c_n_iters))             # <<<<<<<<<<<<<<
  * 
  *     k = 0  # index of the random number
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_int((__pyx_v_c_n_balls * __pyx_v_c_n_iters)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int((__pyx_v_c_n_balls * __pyx_v_c_n_iters)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_size, __pyx_t_5) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_size, __pyx_t_5) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "rfidam/baskets_mc.pyx":58
+  /* "rfidam/baskets_mc.pyx":54
  *     cdef int i, j, k, basket_index, num_balls
  * 
  *     cdef np.ndarray random_indexes = np.random.randint(             # <<<<<<<<<<<<<<
  *         0,
  *         c_n_baskets,
  */
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 58, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 54, __pyx_L1_error)
   __pyx_v_random_indexes = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "rfidam/baskets_mc.pyx":63
+  /* "rfidam/baskets_mc.pyx":59
  *         size=(c_n_balls * c_n_iters))
  * 
  *     k = 0  # index of the random number             # <<<<<<<<<<<<<<
@@ -1935,7 +1935,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   __pyx_v_k = 0;
 
-  /* "rfidam/baskets_mc.pyx":66
+  /* "rfidam/baskets_mc.pyx":62
  * 
  *     # Simulate balls distribution:
  *     for i in range(c_n_iters):             # <<<<<<<<<<<<<<
@@ -1947,7 +1947,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "rfidam/baskets_mc.pyx":67
+    /* "rfidam/baskets_mc.pyx":63
  *     # Simulate balls distribution:
  *     for i in range(c_n_iters):
  *         for j in range(c_n_baskets):             # <<<<<<<<<<<<<<
@@ -1959,7 +1959,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_j = __pyx_t_10;
 
-      /* "rfidam/baskets_mc.pyx":68
+      /* "rfidam/baskets_mc.pyx":64
  *     for i in range(c_n_iters):
  *         for j in range(c_n_baskets):
  *             baskets[j] = 0             # <<<<<<<<<<<<<<
@@ -1969,7 +1969,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
       (__pyx_v_baskets[__pyx_v_j]) = 0;
     }
 
-    /* "rfidam/baskets_mc.pyx":70
+    /* "rfidam/baskets_mc.pyx":66
  *             baskets[j] = 0
  * 
  *         for j in range(c_n_balls):             # <<<<<<<<<<<<<<
@@ -1981,20 +1981,20 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_j = __pyx_t_10;
 
-      /* "rfidam/baskets_mc.pyx":71
+      /* "rfidam/baskets_mc.pyx":67
  * 
  *         for j in range(c_n_balls):
  *             basket_index = random_indexes[k]             # <<<<<<<<<<<<<<
  *             baskets[basket_index] += 1
  *             k += 1
  */
-      __pyx_t_5 = __Pyx_GetItemInt(((PyObject *)__pyx_v_random_indexes), __pyx_v_k, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_GetItemInt(((PyObject *)__pyx_v_random_indexes), __pyx_v_k, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_basket_index = __pyx_t_11;
 
-      /* "rfidam/baskets_mc.pyx":72
+      /* "rfidam/baskets_mc.pyx":68
  *         for j in range(c_n_balls):
  *             basket_index = random_indexes[k]
  *             baskets[basket_index] += 1             # <<<<<<<<<<<<<<
@@ -2004,7 +2004,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
       __pyx_t_11 = __pyx_v_basket_index;
       (__pyx_v_baskets[__pyx_t_11]) = ((__pyx_v_baskets[__pyx_t_11]) + 1);
 
-      /* "rfidam/baskets_mc.pyx":73
+      /* "rfidam/baskets_mc.pyx":69
  *             basket_index = random_indexes[k]
  *             baskets[basket_index] += 1
  *             k += 1             # <<<<<<<<<<<<<<
@@ -2014,7 +2014,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
       __pyx_v_k = (__pyx_v_k + 1);
     }
 
-    /* "rfidam/baskets_mc.pyx":76
+    /* "rfidam/baskets_mc.pyx":72
  * 
  *         # Count number of baskets empty, with a single or many balls
  *         n_empty_array[i] = 0             # <<<<<<<<<<<<<<
@@ -2023,7 +2023,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
     (__pyx_v_n_empty_array[__pyx_v_i]) = 0;
 
-    /* "rfidam/baskets_mc.pyx":77
+    /* "rfidam/baskets_mc.pyx":73
  *         # Count number of baskets empty, with a single or many balls
  *         n_empty_array[i] = 0
  *         n_single_array[i] = 0             # <<<<<<<<<<<<<<
@@ -2032,7 +2032,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
     (__pyx_v_n_single_array[__pyx_v_i]) = 0;
 
-    /* "rfidam/baskets_mc.pyx":78
+    /* "rfidam/baskets_mc.pyx":74
  *         n_empty_array[i] = 0
  *         n_single_array[i] = 0
  *         n_many_array[i] = 0             # <<<<<<<<<<<<<<
@@ -2041,7 +2041,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
     (__pyx_v_n_many_array[__pyx_v_i]) = 0;
 
-    /* "rfidam/baskets_mc.pyx":80
+    /* "rfidam/baskets_mc.pyx":76
  *         n_many_array[i] = 0
  * 
  *         for j in range(c_n_baskets):             # <<<<<<<<<<<<<<
@@ -2053,7 +2053,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_j = __pyx_t_10;
 
-      /* "rfidam/baskets_mc.pyx":81
+      /* "rfidam/baskets_mc.pyx":77
  * 
  *         for j in range(c_n_baskets):
  *             num_balls = baskets[j]             # <<<<<<<<<<<<<<
@@ -2062,7 +2062,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
       __pyx_v_num_balls = (__pyx_v_baskets[__pyx_v_j]);
 
-      /* "rfidam/baskets_mc.pyx":82
+      /* "rfidam/baskets_mc.pyx":78
  *         for j in range(c_n_baskets):
  *             num_balls = baskets[j]
  *             if num_balls == 0:             # <<<<<<<<<<<<<<
@@ -2072,7 +2072,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
       switch (__pyx_v_num_balls) {
         case 0:
 
-        /* "rfidam/baskets_mc.pyx":83
+        /* "rfidam/baskets_mc.pyx":79
  *             num_balls = baskets[j]
  *             if num_balls == 0:
  *                 n_empty_array[i] += 1             # <<<<<<<<<<<<<<
@@ -2082,7 +2082,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
         __pyx_t_11 = __pyx_v_i;
         (__pyx_v_n_empty_array[__pyx_t_11]) = ((__pyx_v_n_empty_array[__pyx_t_11]) + 1);
 
-        /* "rfidam/baskets_mc.pyx":82
+        /* "rfidam/baskets_mc.pyx":78
  *         for j in range(c_n_baskets):
  *             num_balls = baskets[j]
  *             if num_balls == 0:             # <<<<<<<<<<<<<<
@@ -2092,7 +2092,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
         break;
         case 1:
 
-        /* "rfidam/baskets_mc.pyx":85
+        /* "rfidam/baskets_mc.pyx":81
  *                 n_empty_array[i] += 1
  *             elif num_balls == 1:
  *                 n_single_array[i] += 1             # <<<<<<<<<<<<<<
@@ -2102,7 +2102,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
         __pyx_t_11 = __pyx_v_i;
         (__pyx_v_n_single_array[__pyx_t_11]) = ((__pyx_v_n_single_array[__pyx_t_11]) + 1);
 
-        /* "rfidam/baskets_mc.pyx":84
+        /* "rfidam/baskets_mc.pyx":80
  *             if num_balls == 0:
  *                 n_empty_array[i] += 1
  *             elif num_balls == 1:             # <<<<<<<<<<<<<<
@@ -2112,7 +2112,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
         break;
         default:
 
-        /* "rfidam/baskets_mc.pyx":87
+        /* "rfidam/baskets_mc.pyx":83
  *                 n_single_array[i] += 1
  *             else:
  *                 n_many_array[i] += 1             # <<<<<<<<<<<<<<
@@ -2126,133 +2126,133 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
     }
   }
 
-  /* "rfidam/baskets_mc.pyx":91
+  /* "rfidam/baskets_mc.pyx":87
  *     # Compute numbers of occasions that `m` baskets were empty, occupied with
  *     # single or many balls, for each `m = 0 ... n_baskets`:
  *     cdef np.ndarray empty_counts = np.zeros((n_baskets + 1,), dtype=np.int)             # <<<<<<<<<<<<<<
  *     cdef np.ndarray single_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  *     cdef np.ndarray many_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (!(likely(((__pyx_t_12) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_12, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (!(likely(((__pyx_t_12) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_12, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_empty_counts = ((PyArrayObject *)__pyx_t_12);
   __pyx_t_12 = 0;
 
-  /* "rfidam/baskets_mc.pyx":92
+  /* "rfidam/baskets_mc.pyx":88
  *     # single or many balls, for each `m = 0 ... n_baskets`:
  *     cdef np.ndarray empty_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  *     cdef np.ndarray single_counts = np.zeros((n_baskets + 1,), dtype=np.int)             # <<<<<<<<<<<<<<
  *     cdef np.ndarray many_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_12);
   __pyx_t_12 = 0;
-  __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_v_single_counts = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "rfidam/baskets_mc.pyx":93
+  /* "rfidam/baskets_mc.pyx":89
  *     cdef np.ndarray empty_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  *     cdef np.ndarray single_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  *     cdef np.ndarray many_counts = np.zeros((n_baskets + 1,), dtype=np.int)             # <<<<<<<<<<<<<<
  * 
  *     for i in range(c_n_iters):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_v_n_baskets, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_12);
   __pyx_t_12 = 0;
-  __pyx_t_12 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_12); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_12); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 89, __pyx_L1_error)
   __pyx_v_many_counts = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "rfidam/baskets_mc.pyx":95
+  /* "rfidam/baskets_mc.pyx":91
  *     cdef np.ndarray many_counts = np.zeros((n_baskets + 1,), dtype=np.int)
  * 
  *     for i in range(c_n_iters):             # <<<<<<<<<<<<<<
@@ -2264,7 +2264,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "rfidam/baskets_mc.pyx":96
+    /* "rfidam/baskets_mc.pyx":92
  * 
  *     for i in range(c_n_iters):
  *         empty_counts[n_empty_array[i]] += 1             # <<<<<<<<<<<<<<
@@ -2272,15 +2272,15 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  *         many_counts[n_many_array[i]] += 1
  */
     __pyx_t_8 = (__pyx_v_n_empty_array[__pyx_v_i]);
-    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_empty_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_empty_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_empty_counts), __pyx_t_8, __pyx_t_12, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 96, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_empty_counts), __pyx_t_8, __pyx_t_12, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-    /* "rfidam/baskets_mc.pyx":97
+    /* "rfidam/baskets_mc.pyx":93
  *     for i in range(c_n_iters):
  *         empty_counts[n_empty_array[i]] += 1
  *         single_counts[n_single_array[i]] += 1             # <<<<<<<<<<<<<<
@@ -2288,15 +2288,15 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  * 
  */
     __pyx_t_8 = (__pyx_v_n_single_array[__pyx_v_i]);
-    __pyx_t_12 = __Pyx_GetItemInt(((PyObject *)__pyx_v_single_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_GetItemInt(((PyObject *)__pyx_v_single_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_t_12, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_t_12, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_single_counts), __pyx_t_8, __pyx_t_3, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_single_counts), __pyx_t_8, __pyx_t_3, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "rfidam/baskets_mc.pyx":98
+    /* "rfidam/baskets_mc.pyx":94
  *         empty_counts[n_empty_array[i]] += 1
  *         single_counts[n_single_array[i]] += 1
  *         many_counts[n_many_array[i]] += 1             # <<<<<<<<<<<<<<
@@ -2304,16 +2304,16 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  *     free(n_empty_array)
  */
     __pyx_t_8 = (__pyx_v_n_many_array[__pyx_v_i]);
-    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_many_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_many_counts), __pyx_t_8, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_many_counts), __pyx_t_8, __pyx_t_12, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_many_counts), __pyx_t_8, __pyx_t_12, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   }
 
-  /* "rfidam/baskets_mc.pyx":100
+  /* "rfidam/baskets_mc.pyx":96
  *         many_counts[n_many_array[i]] += 1
  * 
  *     free(n_empty_array)             # <<<<<<<<<<<<<<
@@ -2322,7 +2322,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   free(__pyx_v_n_empty_array);
 
-  /* "rfidam/baskets_mc.pyx":101
+  /* "rfidam/baskets_mc.pyx":97
  * 
  *     free(n_empty_array)
  *     free(n_single_array)             # <<<<<<<<<<<<<<
@@ -2331,7 +2331,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   free(__pyx_v_n_single_array);
 
-  /* "rfidam/baskets_mc.pyx":102
+  /* "rfidam/baskets_mc.pyx":98
  *     free(n_empty_array)
  *     free(n_single_array)
  *     free(n_many_array)             # <<<<<<<<<<<<<<
@@ -2340,7 +2340,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   free(__pyx_v_n_many_array);
 
-  /* "rfidam/baskets_mc.pyx":103
+  /* "rfidam/baskets_mc.pyx":99
  *     free(n_single_array)
  *     free(n_many_array)
  *     free(baskets)             # <<<<<<<<<<<<<<
@@ -2349,7 +2349,7 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  */
   free(__pyx_v_baskets);
 
-  /* "rfidam/baskets_mc.pyx":106
+  /* "rfidam/baskets_mc.pyx":102
  * 
  *     # Compute and return probabilities mass functions:
  *     return (empty_counts / n_iters,             # <<<<<<<<<<<<<<
@@ -2357,34 +2357,34 @@ static PyObject *__pyx_pf_6rfidam_10baskets_mc_baskets_monte_carlo(CYTHON_UNUSED
  *             many_counts / n_iters)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_empty_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_empty_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
 
-  /* "rfidam/baskets_mc.pyx":107
+  /* "rfidam/baskets_mc.pyx":103
  *     # Compute and return probabilities mass functions:
  *     return (empty_counts / n_iters,
  *             single_counts / n_iters,             # <<<<<<<<<<<<<<
  *             many_counts / n_iters)
  */
-  __pyx_t_3 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_single_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_single_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "rfidam/baskets_mc.pyx":108
+  /* "rfidam/baskets_mc.pyx":104
  *     return (empty_counts / n_iters,
  *             single_counts / n_iters,
  *             many_counts / n_iters)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_2 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_many_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_many_counts), __pyx_v_n_iters); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "rfidam/baskets_mc.pyx":106
+  /* "rfidam/baskets_mc.pyx":102
  * 
  *     # Compute and return probabilities mass functions:
  *     return (empty_counts / n_iters,             # <<<<<<<<<<<<<<
  *             single_counts / n_iters,
  *             many_counts / n_iters)
  */
-  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_12);
@@ -3357,7 +3357,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 62, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 884, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;

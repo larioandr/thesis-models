@@ -18,10 +18,6 @@ def baskets_monte_carlo(n_baskets, n_balls, n_iters):
     marginal distribution of each variable, since this is sufficient for the
     inventory round model.
 
-    Each component of the returned `Occupancy` tuple contains a `numpy.ndarray`
-    instance with i-th component equal to probability that i baskets has
-    the corresponding type of occupancy (empty, single ball, many balls).
-
     This routine uses Monte-Carlo method: the process of balls distribution
     over baskets is repeated `n_iters` times, and occupancy is estimated
     from the values obtained.
