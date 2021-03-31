@@ -21,37 +21,142 @@ class ModelParams:
 
 @dataclass
 class Tag:
-    pos: float
-    in_area: bool
-    flag: InventoryFlag
+    pos: Optional[float] = None
+    flag: InventoryFlag = InventoryFlag.A
 
     # History records
-    arrived_at: float         # model time when tag arrived
-    departed_at: float        # model time when tag departed
-    first_round_index: int    # first round index (simulation-wide)
-    first_round_offset: int   # offset in scenario of the first round
-    num_rounds_total: int     # total number of rounds the tag was in area
-    num_rounds_active: int    # number of rounds the tag participated in
-    num_identified: int       # number of times the tag was completely read
+    arrived_at: float = 0.0       # model time when tag arrived
+    departed_at: float = 0.0      # model time when tag departed
+    first_round_index: int = 0    # first round index (simulation-wide)
+    num_rounds_total: int = 0     # total number of rounds the tag was in area
+    num_rounds_active: int = 0    # number of rounds the tag participated in
+    num_identified: int = 0       # number of times the tag was completely read
 
 
 @dataclass
 class Round:
     spec: RoundSpec
     index: int
-    offset: int
-    num_tags_total: int
-    num_tags_active: int
-    num_tags_identified: int
-    started_at: float
-    duration: float           # without power off, even if it is needed
+    num_tags_total: int = 0
+    num_tags_active: int = 0
+    num_tags_identified: int = 0
+    started_at: float = 0.0
+    duration: float = 0.0         # without power off, even if it is needed
+    num_collisions: int = 0
 
 
-def simulate(params: ModelParams, max_tags: int = 1000):
-    pass
+def simulate(params: ModelParams):
+    # print("Yo")
+    time = 0.0  # model time
+    max_tags = len(params.arrivals)
+
+    tags: List[Tag] = []
+    tag_offset: int = 0
+    rounds: List[Round] = []
+    round_index = 0
+    arrival_offset = 0
+    round_duration = 0.0
+
+    # MAX_ITER = 10
+    num_iter = 0
+
+    while arrival_offset < max_tags or tag_offset < len(tags):
+        num_iter += 1
+        if num_iter > 0 and num_iter % 1000 == 0:
+            print(f"* {num_iter} iterations passed, tags at: ",
+                  [tag.pos for tag in tags[tag_offset:]], tag_offset, len(tags),
+                  arrival_offset)
+        # print(f"---------- iteration #{num_iter}")
+        # print(tags)
+        # Move tags
+        # print("moving tags")
+        _move_tags(tags, tag_offset, round_duration, params.speed)
+
+        # Add new tags to area:
+        # print("new tags arriving")
+        arrival_offset += _arrive_tags(
+            tags,
+            time=time,
+            speed=params.speed,
+            round_index=round_index,
+            arrivals=params.arrivals,
+            arrival_offset=arrival_offset)
+
+        # Depart old tags
+        # -- we need to depart here, since in rare cases new tags may become
+        #    too old just after creation.
+        # print("departing tags")
+        tag_offset = _depart_tags(tags, tag_offset, params.length, time)
+
+        round_ = Round(
+            spec=params.scenario[round_index % len(params.scenario)],
+            index=round_index,
+        )
+        rounds.append(round_)
+
+        # print("starting round #", round_index, round_.spec)
+        round_duration = _sim_round(params.protocol, params.ber, round_,
+                                    tags[tag_offset:])
+        time += round_duration
+        round_index += 1
+
+    return tags, rounds
 
 
-def sim_round(protocol: Protocol, round_: Round, tags: Sequence[Tag]) -> float:
+def _move_tags(tags: List[Tag], tag_offset: int, dt: float,
+               speed: float) -> None:
+    """Update tags positions."""
+    dx = dt * speed
+    for tag in tags[tag_offset:]:
+        tag.pos += dx
+
+
+def _depart_tags(tags: List[Tag], tag_offset: int, length: float,
+                 time: float) -> int:
+    """
+    Filter out tags with positions greater than length. For these
+    tags also set departed_at to time value and "forget" position.
+
+    Returns
+    -------
+    tag_offset : int
+        offset of the first tag in the area in tags list
+    """
+    num_tags = len(tags)
+    while tag_offset < num_tags and tags[tag_offset].pos >= length:
+        tag = tags[tag_offset]
+        tag.pos = None
+        tag.departed_at = time
+        tag_offset += 1
+    return tag_offset
+
+
+def _arrive_tags(tags: List[Tag], time: float, speed: float, round_index: int,
+                 arrivals: Sequence[float], arrival_offset: int) -> int:
+    """
+    Add tags arrived to this moment (time).
+
+    Returns
+    -------
+    num_tags : int
+        number of tags created
+    """
+    num_arrivals = len(arrivals)
+    num_new_tags = 0
+    while arrival_offset < num_arrivals and time >= arrivals[arrival_offset]:
+        arrived_at = arrivals[arrival_offset]
+        tags.append(Tag(
+            pos=((time - arrived_at) * speed),
+            arrived_at=arrived_at,
+            first_round_index=round_index,
+        ))
+        arrival_offset += 1
+        num_new_tags += 1
+    return num_new_tags
+
+
+def _sim_round(protocol: Protocol, ber: float, round_: Round,
+               tags: Sequence[Tag]) -> float:
     """
     Simulate round and return its duration.
     """
@@ -81,6 +186,7 @@ def sim_round(protocol: Protocol, round_: Round, tags: Sequence[Tag]) -> float:
 
     n_empty = (num_tags_per_slot == 0).sum()
     n_collided = (num_tags_per_slot > 1).sum()
+    round_.num_collisions = n_collided
 
     # Compute round duration including all empty and collided slots,
     # Query and QueryRep commands. These durations don't depend on
@@ -99,32 +205,38 @@ def sim_round(protocol: Protocol, round_: Round, tags: Sequence[Tag]) -> float:
 
         # Attempt to transmit RN16:
         duration += t1 + tr_link.rn16.duration + t2
-        if np.random.uniform() > get_rx_prob(tr_link.rn16):
+        if np.random.uniform() > get_rx_prob(tr_link.rn16, ber):
+            # print("> failed to receive RN16")
             continue  # Error in RN16 reception
 
         # Reader transmits Ack, tag attempts to transmit EPCID.
         # Since tag transmitted EPCID, and we model no NACKs, invert tag flag.
         duration += rt_link.ack.duration + t1 + tr_link.epc.duration + t2
         tag.flag = tag.flag.invert()
-        if np.random.uniform() > get_rx_prob(tr_link.epc):
+        if np.random.uniform() > get_rx_prob(tr_link.epc, ber):
+            # print("> failed to receive EPC")
             continue  # Error in EPCID reception
 
         if not link.use_tid:
+            # print("> Tag identified!")
             tag.num_identified += 1
             round_.num_tags_identified += 1
             continue  # Tag was identified, nothing more needed
 
         # Reader transmits Req_Rn, tag attempts to transmit Handle:
         duration += rt_link.req_rn.duration + t1 + tr_link.handle.duration + t2
-        if np.random.uniform() > get_rx_prob(tr_link.handle):
+        if np.random.uniform() > get_rx_prob(tr_link.handle, ber):
+            # print("> failed to receive HANDLE")
             continue  # Error in Handle reception
 
         # Reader transmits Read, tag attempts to transmit Data:
         duration += rt_link.read.duration + t1 + tr_link.data.duration + t2
-        if np.random.uniform() <= get_rx_prob(tr_link.data):
+        if np.random.uniform() <= get_rx_prob(tr_link.data, ber):
+            # print("> received DATA!")
             tag.num_identified += 1
             round_.num_tags_identified += 1
             continue
+        # print("> failed to receive DATA")
 
     # If reader turns off after round, reset all tags flags and add
     # turn off period to round duration.
