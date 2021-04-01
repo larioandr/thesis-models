@@ -1,4 +1,3 @@
-from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import Sequence, Set, Optional, List, Tuple, Dict, Any
 import numpy as np
@@ -20,11 +19,7 @@ class ModelParams:
 
 
 @dataclass
-class Tag:
-    pos: Optional[float] = None
-    flag: InventoryFlag = InventoryFlag.A
-
-    # History records
+class TagJournalRecord:
     arrived_at: float = 0.0       # model time when tag arrived
     departed_at: float = 0.0      # model time when tag departed
     first_round_index: int = 0    # first round index (simulation-wide)
@@ -34,8 +29,7 @@ class Tag:
 
 
 @dataclass
-class Round:
-    spec: RoundSpec
+class RoundJournalRecord:
     index: int
     num_tags_total: int = 0
     num_tags_active: int = 0
@@ -45,14 +39,114 @@ class Round:
     num_collisions: int = 0
 
 
-def simulate(params: ModelParams):
-    # print("Yo")
+@dataclass
+class ScenarioStats:
+    means: np.ndarray
+    errors: np.ndarray
+    num_samples: np.ndarray
+
+    @staticmethod
+    def build(all_samples: Sequence[Sequence[float]]) -> "ScenarioStats":
+        num_samples = np.asarray([len(samples) for samples in all_samples])
+        all_samples = [np.asarray(samples) if len(samples) > 0 else np.zeros(1)
+                       for samples in all_samples]
+        return ScenarioStats(
+            means=np.asarray([samples.mean() for samples in all_samples]),
+            errors=np.asarray([samples.std() for samples in all_samples]),
+            num_samples=num_samples
+        )
+
+
+@dataclass
+class Journal:
+    rounds: List[RoundJournalRecord] = field(default_factory=list)
+    tags: List[TagJournalRecord] = field(default_factory=list)
+
+    def durations(self, scenario_length: int) -> ScenarioStats:
+        """
+        Get a list of round durations grouped by the offset in scenario.
+
+        Scenario length may be any positive number, but it is reasonable
+        to set it equal to `(K * len(params.scenario))`.
+
+        Returns
+        -------
+        stats : ScenarioStats
+        """
+        durations = [list() for _ in range(scenario_length)]
+        for round_ in self.rounds:
+            durations[round_.index % scenario_length].append(round_.duration)
+        return ScenarioStats.build(durations)
+
+    def id_prob(self):
+        """
+        Get probability that tag was identified, no matter when arrived.
+        """
+        num_tags = len(self.tags)
+        num_identified_tags = \
+            len([tag for tag in self.tags if tag.num_identified > 0])
+        return num_identified_tags / num_tags if num_tags > 0 else 1.0
+
+    def id_probs(self, scenario_length) -> np.ndarray:
+        """
+        Get probabilities that tag was identified depending on the round
+        offset when it arrived.
+        """
+        identified = np.zeros(scenario_length)
+        total = np.zeros(scenario_length)
+        for tag in self.tags:
+            offset = tag.first_round_index % scenario_length
+            total[offset] += 1
+            if tag.num_identified > 0:
+                identified[offset] += 1
+        return np.asarray(
+            [x / y if y > 0 else 1.0 for x, y in zip(identified, total)])
+
+    def num_active(self, scenario_length: int) -> ScenarioStats:
+        """
+        Get statistics of number of active tags per round depending on
+        the round offset from the extended scenario start.
+        """
+        num_active = [list() for _ in range(scenario_length)]
+        for round_ in self.rounds:
+            num_active[round_.index % scenario_length].append(
+                round_.num_tags_active)
+        return ScenarioStats.build(num_active)
+
+    def num_rounds_active(self, scenario_length: int) -> ScenarioStats:
+        """
+        Get the number of rounds the tag took part in depending on the offset
+        the tag arrived at.
+        """
+        num_rounds = [list() for _ in range(scenario_length)]
+        for tag in self.tags:
+            offset = tag.first_round_index % scenario_length
+            num_rounds[offset].append(tag.num_rounds_active)
+        return ScenarioStats.build(num_rounds)
+
+
+@dataclass
+class Tag:
+    pos: Optional[float] = None
+    flag: InventoryFlag = InventoryFlag.A
+    record: TagJournalRecord = None
+
+
+@dataclass
+class Round:
+    spec: RoundSpec
+    index: int
+    record: RoundJournalRecord = None
+
+
+def simulate(params: ModelParams, verbose: bool = False) -> Journal:
     time = 0.0  # model time
     max_tags = len(params.arrivals)
 
+    journal = Journal()
+
     tags: List[Tag] = []
     tag_offset: int = 0
-    rounds: List[Round] = []
     round_index = 0
     arrival_offset = 0
     round_duration = 0.0
@@ -62,37 +156,38 @@ def simulate(params: ModelParams):
 
     while arrival_offset < max_tags or tag_offset < len(tags):
         num_iter += 1
-        if num_iter > 0 and num_iter % 1000 == 0:
-            print(f"* {num_iter} iterations passed, tags at: ",
-                  [tag.pos for tag in tags[tag_offset:]], tag_offset, len(tags),
-                  arrival_offset)
-        # print(f"---------- iteration #{num_iter}")
-        # print(tags)
-        # Move tags
-        # print("moving tags")
+        if verbose:
+            if num_iter > 0 and num_iter % 1000 == 0:
+                print(f"* {num_iter} iterations passed, time = {time}, "
+                      f"generated {arrival_offset}/{len(params.arrivals)} "
+                      f"tags, "
+                      f"positions: {[tag.pos for tag in tags[tag_offset:]]}")
+
         _move_tags(tags, tag_offset, round_duration, params.speed)
 
-        # Add new tags to area:
-        # print("new tags arriving")
-        arrival_offset += _arrive_tags(
-            tags,
+        # Create and add new tags to the area:
+        new_tags = _create_new_tags(
+            params.arrivals[arrival_offset:],
             time=time,
             speed=params.speed,
-            round_index=round_index,
-            arrivals=params.arrivals,
-            arrival_offset=arrival_offset)
+            round_index=round_index)
+
+        for tag in new_tags:
+            tags.append(tag)
+            journal.tags.append(tag.record)
+            arrival_offset += len(new_tags)
 
         # Depart old tags
         # -- we need to depart here, since in rare cases new tags may become
         #    too old just after creation.
-        # print("departing tags")
         tag_offset = _depart_tags(tags, tag_offset, params.length, time)
 
         round_ = Round(
             spec=params.scenario[round_index % len(params.scenario)],
             index=round_index,
+            record=RoundJournalRecord(index=round_index)
         )
-        rounds.append(round_)
+        journal.rounds.append(round_.record)
 
         # print("starting round #", round_index, round_.spec)
         round_duration = _sim_round(params.protocol, params.ber, round_,
@@ -100,7 +195,7 @@ def simulate(params: ModelParams):
         time += round_duration
         round_index += 1
 
-    return tags, rounds
+    return journal
 
 
 def _move_tags(tags: List[Tag], tag_offset: int, dt: float,
@@ -131,8 +226,30 @@ def _depart_tags(tags: List[Tag], tag_offset: int, length: float,
     return tag_offset
 
 
-def _arrive_tags(tags: List[Tag], time: float, speed: float, round_index: int,
-                 arrivals: Sequence[float], arrival_offset: int) -> int:
+def _create_new_tags(arrivals: Sequence[float], time: float, speed: float,
+                     round_index: int) -> Tuple[Tag]:
+    """
+    Create new tags arrived up to `time`.
+
+    Returns
+    -------
+    tuple of Tag(s)
+    """
+    max_arrivals = len(arrivals)
+    offset = 0
+    tags = []
+    while offset < max_arrivals and time >= arrivals[offset]:
+        arrived_at = arrivals[offset]
+        record = TagJournalRecord(arrived_at=arrived_at,
+                                  first_round_index=round_index)
+        tags.append(Tag(speed * (time - arrived_at), record=record))
+        offset += 1
+    return tuple(tags)
+
+
+def _arrive_tags(tags: List[Tag], journal: Journal, time: float, speed: float,
+                 round_index: int, arrivals: Sequence[float],
+                 arrival_offset: int) -> int:
     """
     Add tags arrived to this moment (time).
 
@@ -145,11 +262,11 @@ def _arrive_tags(tags: List[Tag], time: float, speed: float, round_index: int,
     num_new_tags = 0
     while arrival_offset < num_arrivals and time >= arrivals[arrival_offset]:
         arrived_at = arrivals[arrival_offset]
-        tags.append(Tag(
-            pos=((time - arrived_at) * speed),
+        record = TagJournalRecord(
             arrived_at=arrived_at,
-            first_round_index=round_index,
-        ))
+            first_round_index=round_index)
+        tags.append(Tag((time - arrived_at) * speed, record=record))
+        journal.tags.append(record)
         arrival_offset += 1
         num_new_tags += 1
     return num_new_tags
@@ -170,9 +287,9 @@ def _sim_round(protocol: Protocol, ber: float, round_: Round,
     # Record number of tags in area and number of active tags
     # to tag and round journals:
     for tag in tags:
-        tag.num_rounds_total += 1
+        tag.record.num_rounds_total += 1
     for tag in active_tags:
-        tag.num_rounds_active += 1
+        tag.record.num_rounds_active += 1
     round_.num_tags_total = len(tags)
     round_.num_tags_active = len(active_tags)
 
@@ -219,8 +336,8 @@ def _sim_round(protocol: Protocol, ber: float, round_: Round,
 
         if not link.use_tid:
             # print("> Tag identified!")
-            tag.num_identified += 1
-            round_.num_tags_identified += 1
+            tag.record.num_identified += 1
+            round_.record.num_tags_identified += 1
             continue  # Tag was identified, nothing more needed
 
         # Reader transmits Req_Rn, tag attempts to transmit Handle:
@@ -233,8 +350,8 @@ def _sim_round(protocol: Protocol, ber: float, round_: Round,
         duration += rt_link.read.duration + t1 + tr_link.data.duration + t2
         if np.random.uniform() <= get_rx_prob(tr_link.data, ber):
             # print("> received DATA!")
-            tag.num_identified += 1
-            round_.num_tags_identified += 1
+            tag.record.num_identified += 1
+            round_.record.num_tags_identified += 1
             continue
         # print("> failed to receive DATA")
 
@@ -248,207 +365,3 @@ def _sim_round(protocol: Protocol, ber: float, round_: Round,
     # Write round duration and return it:
     round_.duration = duration
     return duration
-
-
-# @dataclass
-# class RoundRecord:
-#     index: int
-#     duration: float = 0.0
-#     started_at: float = 0.0
-#     flag: InventoryFlag = InventoryFlag.A
-#     active_tags: Set[int] = field(default_factory=set)
-#     identified_tags: Set[int] = field(default_factory=set)
-#
-#
-# @dataclass
-# class TagRecord:
-#     index: Optional[int] = None
-#     arrived_at: float = 0.0
-#     departed_at: float = 0.0
-#     identified: bool = False
-#     n_id: int = 0
-#     first_round: int = -1
-#     last_round: int = -1
-#
-#
-# class Journal:
-#     def __init__(self):
-#         self.rounds: List[RoundRecord] = list()
-#         self.tags: List[TagRecord] = list()
-#         self._next_round_index = 0
-#         self._next_tag_index = 0
-#
-#     def add_round(self, index: int) -> RoundRecord:
-#         record = RoundRecord(index=index)
-#         self.rounds.append(record)
-#         return record
-#
-#     def add_tag(self, index: int) -> TagRecord:
-#         record = TagRecord(index=index)
-#         self.tags.append(record)
-#         return record
-#
-#
-# @dataclass
-# class TagState:
-#     index: int
-#     flag: InventoryFlag
-#     active: bool
-#     position: float
-#     record: TagRecord
-#
-#
-# @dataclass
-# class State:
-#     time: float
-#     reader_flag: InventoryFlag
-#     scenario_offset: int = 0
-#     next_arrival_index: int = 0
-#     next_tag_index: int = 0
-#     next_round_index: int = 0
-#     tags: Sequence[TagState] = field(default_factory=list)
-#
-#
-#
-# def simulate(params: ModelParams):
-#     """
-#     Simulate moving tags identification.
-#     """
-#     arrivals = np.asarray(params.arrivals)
-#
-#     # Check arrival timestamps are ascending:
-#     if arrivals[0] < 0 or ((arrivals[1:] - arrivals[:-1]) < 0).any():
-#         raise ValueError("arrival timestamps must be positive ascending")
-#
-#     # Check at least one symbol in scenario is A or B:
-#     if 'A' not in params.scenario and 'B' not in params.scenario:
-#         raise ValueError("at least one A or B symbol must be at scenario")
-#
-#     # Since A or B in scenario, find the first A or B and set the time
-#     # and offset correspondingly
-#     scenario_offset = 0
-#     while params.scenario[scenario_offset] not in ['A', 'B']:
-#         scenario_offset += 1
-#
-#     # Create state with scenario offset found above, create journal:
-#     state = State(
-#         time=(params.protocol.props.t_off * scenario_offset),
-#         scenario_offset=scenario_offset,
-#         reader_flag=InventoryFlag.parse(params.scenario[scenario_offset])
-#     )
-#     journal = Journal()
-#
-#     if len(params.arrivals) == 0:
-#         return journal
-#
-#     # Initialize next arrival:
-#     next_arrival = arrivals[state.next_arrival_index]
-#
-#     while state.time < next_arrival:
-#         # Check current scenario symbol:
-#         # - if it is A or B, then set inventory flag and start round
-#         # - otherwise, turn reader off
-#         symbol = params.scenario[reader.scenario_offset].upper()
-#         if symbol == 'X':
-#             time += params.protocol.props.t_off
-#             for tag in curr_tags:
-#                 tag.flag = InventoryFlag.A
-#         else:
-#             reader.flag = InventoryFlag.A if symbol == 'A' else InventoryFlag.B
-#             simulate_round(state, params.protocol, params.ber)
-#
-#
-# def simulate_round(state: State, params: ModelParams, journal: Journal) -> None:
-#     # Choose active tags (flag equals to reader flag) and initialize their
-#     # slot counters:
-#     n_slots = params.protocol.props.n_slots
-#     active_tags = [tag for tag in state.tags if tag.flag == state.reader_flag]
-#     slots = np.random.randint(0, n_slots, size=len(active_tags))
-#     curr_slot = 0
-#
-#     # Extract protocol parameters those are used often:
-#     t1 = params.protocol.timings.t1
-#     t2 = params.protocol.timings.t2
-#     t3 = params.protocol.timings.t3
-#     rt_link = params.protocol.rt_link
-#     tr_link = params.protocol.tr_link
-#
-#     round_index = state.next_round_index
-#     state.next_round_index += 1
-#
-#     round_record = journal.add_round(round_index)
-#     state.next_round_index += 1
-#     round_record.flag = state.reader_flag
-#     round_record.started_at = state.time
-#     round_record.active_tags = [tag.index for tag in active_tags]
-#     for tag in state.tags:
-#         if tag.record.first_round < 0:
-#             tag.record.first_round = round_index
-#         tag.record.last_round = round_index
-#
-#     # Start slots
-#     next_query_cmd = rt_link.query
-#     round_duration = 0.0
-#     while curr_slot < n_slots:
-#         # Transmit Query/QueryRep and wait T1:
-#         round_duration += next_query_cmd.duration + t1
-#         # Select tags those are going to respond in this slot:
-#         reply_tags = [t for i, t in enumerate(active_tags) if slots[i] == 0]
-#         n_reply_tags = len(reply_tags)
-#         # If no tags are going to reply, just wait T3 more:
-#         if n_reply_tags == 0:
-#             round_duration += t3
-#         elif n_reply_tags > 1:
-#             round_duration += tr_link.rn16.duration + t2
-#         else:
-#             # Single tag is replying
-#             reply_slot_ret = simulate_reply_slot(params.protocol, params.ber)
-#             round_duration += reply_slot_ret.duration
-#             if reply_slot_ret.identified:
-#                 reply_tags[0].record.identified = True
-#                 reply_tags[0].record.n_id += 1
-#
-#
-#
-# ReplySlotSimRet = namedtuple('ReplySlotSimRet', (
-#     'duration',
-#     'invert_flag',
-#     'identified'
-# ))
-#
-#
-# def simulate_reply_slot(protocol: Protocol, ber: float) -> ReplySlotSimRet:
-#     rt_link = protocol.rt_link
-#     tr_link = protocol.tr_link
-#     t1 = protocol.timings.t1
-#     t2 = protocol.timings.t2
-#
-#     duration = tr_link.rn16.duration + t2
-#     if np.random.random_sample() > get_rx_prob(tr_link.rn16, ber):
-#         return ReplySlotSimRet(duration, invert_flag=False, identified=False)
-#
-#     duration += rt_link.ack.duration + t1 + tr_link.epc.duration + t2
-#     if np.random.random_sample() > get_rx_prob(tr_link.epc, ber):
-#         return ReplySlotSimRet(duration, invert_flag=True, identified=False)
-#
-#     if not protocol.props.use_tid:
-#         return ReplySlotSimRet(duration, invert_flag=True, identified=True)
-#
-#     duration += rt_link.req_rn.duration + t1 + tr_link.handle.duration + t2
-#     if np.random.random_sample() > get_rx_prob(tr_link.handle, ber):
-#         return ReplySlotSimRet(duration, invert_flag=True, identified=True)
-#
-#     duration += rt_link.read.duration + t1 + tr_link.data.duration + t2
-#     identified = np.random.random_sample() > get_rx_prob(tr_link.data, ber)
-#     return ReplySlotSimRet(duration, invert_flag=True, identified=identified)
-#
-#
-# def choose_slots(tags: Sequence[TagState], protocol: Protocol) -> None:
-#     """
-#     Assign random slots to tags.
-#     """
-#     for tag in tags:
-#         tag.slot = np.random.randint(0, protocol.props.n_slots)
-#
-#
-# def create_tag(time: float, journal: Journal):
